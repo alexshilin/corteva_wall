@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 81223080e7ef2435d9e7892d3e987072
+timeCreated: 1553797013
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Gilroy
+  fontNames:
+  - Gilroy
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 28fb11073a05e4a61a3c76d814d9c178, type: 3}
+  - {fileID: 12800000, guid: 591394cab3a0544b1b899f010787174c, type: 3}
+  - {fileID: 12800000, guid: 6407a9ae8a5db4afab24520fb2041af7, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
