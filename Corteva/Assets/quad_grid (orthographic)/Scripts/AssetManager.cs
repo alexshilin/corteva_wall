@@ -213,8 +213,6 @@ public class AssetManager : MonoBehaviour {
 
 	#region PRIVATE methods
 	private IEnumerator LoadImages () {
-
-		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 		//check which platform we're on
 		//Application.platform
 
@@ -232,44 +230,46 @@ public class AssetManager : MonoBehaviour {
 		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), -2));
 
 		//hardcode for dev
-		#if UNITY_EDITOR
-		basePath = "/Users/user/Documents/WORK/Baji/Corteva/_builds";
-		#endif
+		if (Application.isEditor) {
+			basePath = "/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds";
+		}
+
+		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		//asset folder name
 		string assetsFolder = basePath + "/assets/";
-		Debug.Log("assets folder: "+assetsFolder);
+		ScreenManager.Instance.Log("assets path: "+assetsFolder);
 
 		//TEMP
 		//save paths of files from the following directories
 		DirectoryInfo dir = new DirectoryInfo(assetsFolder+"images_1x1/");
 		FileInfo[] info = dir.GetFiles("*.jpg");
 		foreach (FileInfo fi in info){
-			filesToLoad1x1.Add (f+fi);
+			filesToLoad1x1.Add (f + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"images_1x2/");
 		info = dir.GetFiles("*.jpg");
 		foreach (FileInfo fi in info){
-			filesToLoad1x2.Add (f+fi);
+			filesToLoad1x2.Add (f + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			videoFiles.Add (f+fi);
+			videoFiles.Add (f + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos_HD/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			hdVideoFiles.Add (f+fi);
+			hdVideoFiles.Add (f + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos_HD_329/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			videoFiles329.Add (f+fi);
+			videoFiles329.Add (f + fi.FullName);
 		}
 
 
