@@ -26,4 +26,4 @@ This project is currently hardcoded to pull its image/video content from this fo
 
 Do not remove or rename any of the subfolders in `_builds/assets/`, but you can add/remove/rename files within each subdirectory if need be. Unity will load all the files in each subfolder based on the .extentions.
 
-All files in the `_builds` directory will be ignored by Git *except* `_builds/assets/`. So you can safely keep your working builds in this directory without clogging up the repo.
+All files in the `_builds` directory will be ignored by Git *except* `_builds/assets/`. So you can safely keep your working builds in `_builds` without clogging up the repo.
