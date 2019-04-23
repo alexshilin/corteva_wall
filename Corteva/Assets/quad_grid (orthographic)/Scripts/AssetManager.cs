@@ -229,15 +229,15 @@ public class AssetManager : MonoBehaviour {
 		basePath = Application.dataPath;
 		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), -2));
 
-		//hardcode for dev
-		if (Application.isEditor) {
-			basePath = "/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds";
-		}
-
 		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		//asset folder name
 		string assetsFolder = basePath + "/assets/";
+		//hardcode for dev
+		if (Application.isEditor) {
+			assetsFolder = basePath + "/_builds/assets/";
+		}
+
 		ScreenManager.Instance.Log("assets path: "+assetsFolder);
 
 		//TEMP
