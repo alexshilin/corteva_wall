@@ -38,6 +38,7 @@ public class EaseCurve : MonoBehaviour
 									Mathf.Lerp (_start.height, _end.height, _curve.Evaluate (t)));
 			yield return null;
 		}
+		_target.rect = new Rect (_end.x, _end.y, _end.width, _end.height);
 		//Debug.Log ("EaseCamRect finished "+_target.name+" in " + t + " sec. (" + _target.rect + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();

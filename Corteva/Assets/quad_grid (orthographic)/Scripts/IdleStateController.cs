@@ -132,6 +132,8 @@ public class IdleStateController : MonoBehaviour {
 
 	void StartIdleLoop(){
 		Debug.Log ("[StartIdleLoop]");
+		timeElapsedSinceLastTransition = timeToNextTransition;
+		panelsInTransition = false;
 		activeTransitionLoop = true;
 //		mainLoop = LoopIdle ();
 //		StartCoroutine(mainLoop);
@@ -143,24 +145,45 @@ public class IdleStateController : MonoBehaviour {
 //		}
 //	}
 
-	void updateFromKioskRequest (Vector2 _gridPos){
+	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen){
 		aKioskIsOpen = true;
 		Vector2 gridPos = _gridPos;
+		bool doOpen = _doOpen;
 
 		//2 display
 //		if (gridPos.x > 2) {
 //			gridPos.x -= 3;
 //		}
 		//end
+		if (doOpen) {
+			kioskColumns [(int)gridPos.x] = 1;
+			Debug.Log (kioskColumns.Length + " " + (int)gridPos.x);
+			if (idleSequence.Count > 0) {
+				PanelAction pa = idleSequence.Find (x => x.row == gridPos.y && x.col == gridPos.x);
+				if (pa != null) {
+					pa.panel = null;
+					HideTitlePanel ();
+				} else {
+					if (idleSequence [0].panel != null) {
+						HideTitlePanel ();
+					} else {
+						StartIdleLoop ();
+					}
+				}
+			} else {
+				StartIdleLoop ();
+			}
+		} else {
+			Debug.Log ("close kiosk " + _gridPos.x);
+			//TODO
+			//animate kiosk out
+			//then animate replacement panel in
+			//update kiosk list
+			kioskColumns [(int)gridPos.x] = 0;
+		}
+//		if(mainLoop!=null)
+//			StopCoroutine (mainLoop);
 
-		kioskColumns [(int)gridPos.x] = 1;
-		Debug.Log (kioskColumns.Length + " " + (int)gridPos.x);
-		PanelAction pa = idleSequence.Find (x => x.row == gridPos.y && x.col == gridPos.x);
-		if(pa!=null)
-			pa.panel = null;
-		if(mainLoop!=null)
-			StopCoroutine (mainLoop);
-		HideTitlePanel ();
 	}
 
 	void HideTitlePanel(){
@@ -644,24 +667,28 @@ public class IdleStateController : MonoBehaviour {
 				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].toPos, idleSequence [0].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
 			}
 		} else {
-			int alreadyRemoved = (idleSequence [0].panel.transform.localPosition != idleSequence [0].fromPos) ? 0 : 1;
-			for (int i = idleSequence.Count - 1; i >= alreadyRemoved; i--) {
-				if (idleSequence [i].cellCam.activeSelf) {
-					speed = group * 0.2f;
-					wait = group * 0.05f;
-					if (i > alreadyRemoved) {
-						if (idleSequence [i - 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
-							group++;
-					}
-					idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
-					if (idleSequence [i].panel != null) {
-						if (i == alreadyRemoved) {
-							EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, nextSequence, "local");
-						} else {
-							EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
+			if (idleSequence.Count > 0) {
+				int alreadyRemoved = (idleSequence [0].panel.transform.localPosition != idleSequence [0].fromPos) ? 0 : 1;
+				for (int i = idleSequence.Count - 1; i >= alreadyRemoved; i--) {
+					if (idleSequence [i].cellCam.activeSelf) {
+						speed = group * 0.2f;
+						wait = group * 0.05f;
+						if (i > alreadyRemoved) {
+							if (idleSequence [i - 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
+								group++;
+						}
+						idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
+						if (idleSequence [i].panel != null) {
+							if (i == alreadyRemoved) {
+								EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, nextSequence, "local");
+							} else {
+								EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
+							}
 						}
 					}
 				}
+			} else {
+				nextSequence ();
 			}
 		}
 	}
@@ -713,14 +740,14 @@ public class IdleStateController : MonoBehaviour {
 
 
 		//single 32:9 display
-		float cellW = 1 / GM.desiredGrid.x;
-		float cellH = 1 / GM.desiredGrid.y;
+		float cellW = 1f / GM.desiredGrid.x;
+		float cellH = 1f / GM.desiredGrid.y;
 		float x = cellW * _col;
-		if (_size.x == 2 && _dir == Vector3.left)
-			x = cellW * (_col - 1);
-		float y = cellH * ((GM.desiredGrid.y - 1) - _row);
-		if (_size.x == 2)
-			y = cellH * ((GM.desiredGrid.y - 1) - (_row + 1));
+		if (_size.x == 2f && _dir == Vector3.left)
+			x = cellW * (_col - 1f);
+		float y = cellH * ((GM.desiredGrid.y - 1f) - _row);
+		if (_size.x == 2f)
+			y = cellH * ((GM.desiredGrid.y - 1f) - (_row + 1f));
 		float w = cellW * _size.x;
 		float h = cellH * _size.y;
 

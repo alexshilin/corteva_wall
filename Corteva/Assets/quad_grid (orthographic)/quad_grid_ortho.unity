@@ -524,7 +524,7 @@ MonoBehaviour:
   videoFiles: []
   hdVideoFiles: []
   videoFiles329: []
-  mainCamera: {fileID: 1421995476}
+  mainCamera: {fileID: 1937405590}
   userInitCamera: {fileID: 1721195345}
   userPanelCamera: {fileID: 0}
   panels: {fileID: 2048776448}
@@ -3692,7 +3692,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!124 &1721195343
 Behaviour:
   m_ObjectHideFlags: 0

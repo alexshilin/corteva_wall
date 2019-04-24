@@ -86,7 +86,16 @@ public class GridManagerOrtho : MonoBehaviour {
 	}
 
 	void Start () {
-		desiredGrid = new Vector2 (6, 3);
+		float camAspect = AssetManager.Instance.mainCamera.aspect;
+		if (camAspect > 1.7f && camAspect < 1.8f) {
+			Debug.Log ("[16:9] SETTING 3x3 GRID");
+			desiredGrid = new Vector2 (3, 3);
+		}
+		if (camAspect > 3.5 && camAspect < 3.6f) {
+			Debug.Log ("[32:9] SETTING 6x3 GRID");
+			desiredGrid = new Vector2 (6, 3);
+		}
+
 		EventsManager.Instance.OnAssetsFinishedLoading += assetsLoaded;
 	}
 
@@ -110,15 +119,25 @@ public class GridManagerOrtho : MonoBehaviour {
 		//AssetManager.Instance.LoadScene("user_space");
 
 		if (desiredGrid.x == 6) {
-			Debug.Log ("hi "+desiredGrid.x);
+			Debug.Log ("hi " + desiredGrid.x);
 			AssetManager.Instance.bgPanel1.transform.localScale *= 2;
 			AssetManager.Instance.bgPanel2.transform.localScale *= 2;
+			AssetManager.Instance.bgPanel1.gameObject.SetActive (true);
+			AssetManager.Instance.bgPanel1.SetAs329Video (true);
+			AssetManager.Instance.bgPanel2.gameObject.SetActive (true);
+			AssetManager.Instance.bgPanel2.SetAs329Video (false);
+		} else {
+			AssetManager.Instance.bgPanel1.gameObject.SetActive (true);
+			AssetManager.Instance.bgPanel1.SetAsVideo (true, true);
+			AssetManager.Instance.bgPanel2.gameObject.SetActive (true);
+			AssetManager.Instance.bgPanel2.SetAsVideo (true, false);
 		}
 
-		AssetManager.Instance.bgPanel1.gameObject.SetActive (true);
-		AssetManager.Instance.bgPanel1.SetAs329Video (true);
-		AssetManager.Instance.bgPanel2.gameObject.SetActive (true);
-		AssetManager.Instance.bgPanel2.SetAs329Video (false);
+
+	}
+
+	void SetScreenMode(){
+
 	}
 
 	void sceneLoaded(string _scene){

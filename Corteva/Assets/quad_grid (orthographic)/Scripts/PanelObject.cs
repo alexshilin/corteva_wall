@@ -155,7 +155,9 @@ public class PanelObject : MonoBehaviour {
 		transformGesture.Transformed += transformedHandler;
 		transformGesture.TransformCompleted += transformCompletedHandler;
 
-		videoPlayer329.Events.AddListener(OnMediaPlayerEvent);
+		if (videoPlayer329.gameObject.activeSelf) {
+			videoPlayer329.Events.AddListener (OnMediaPlayerEvent);
+		}
 	}
 
 	private void OnDisable()
@@ -165,8 +167,10 @@ public class PanelObject : MonoBehaviour {
 		transformGesture.Transformed -= transformedHandler;
 		transformGesture.TransformCompleted -= transformCompletedHandler;
 
-		videoPlayer329.Events.RemoveListener(OnMediaPlayerEvent);
-		videoPlayer329.CloseVideo ();
+		if (videoPlayer329.gameObject.activeSelf) {
+			videoPlayer329.Events.RemoveListener (OnMediaPlayerEvent);
+			videoPlayer329.CloseVideo ();
+		}
 	}
 
 	private void tappedHandler(object sender, EventArgs e)
@@ -185,7 +189,7 @@ public class PanelObject : MonoBehaviour {
 				EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 				ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 				Debug.Log ("panelGridPos: " + this.panelGridPos);
-				EventsManager.Instance.UserKioskRequest (this.panelGridPos);
+				EventsManager.Instance.UserKioskRequest (this.panelGridPos, true);
 				StartCoroutine (MoveToKiosk (GridManagerOrtho.Instance.gridPositions [panelID].col-1));
 			} else {
 				//background/beauty panels are non interactable and should not remain when tapped
@@ -193,7 +197,7 @@ public class PanelObject : MonoBehaviour {
 				//Debug.Log ("from: " + );
 				//tapGesture
 				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-				EventsManager.Instance.UserKioskRequest (tappedGridPos);
+				EventsManager.Instance.UserKioskRequest (tappedGridPos, true);
 			}
 		}
 		if (isUserActive) {

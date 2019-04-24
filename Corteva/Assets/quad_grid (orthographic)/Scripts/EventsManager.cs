@@ -29,7 +29,7 @@ public class EventsManager : MonoBehaviour {
 	public event SceneFinishedLoadingEvent OnSceneFinishedLoading;
 	public void SceneFinishedLoading(string _scene){ OnSceneFinishedLoading (_scene); }
 
-	public delegate void UserKioskRequestEvent(Vector2 _gridPos);
+	public delegate void UserKioskRequestEvent(Vector2 _gridPos, bool _doOpen);
 	public event UserKioskRequestEvent OnUserKioskRequest;
-	public void UserKioskRequest(Vector2 _gridPos){ OnUserKioskRequest (_gridPos); }
+	public void UserKioskRequest(Vector2 _gridPos, bool _doOpen){ OnUserKioskRequest (_gridPos, _doOpen); }
 }

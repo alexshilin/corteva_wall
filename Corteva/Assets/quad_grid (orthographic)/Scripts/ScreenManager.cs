@@ -65,7 +65,7 @@ public class ScreenManager : MonoBehaviour {
 		screenActualPx = new Vector2 ((float)Screen.width, (float)Screen.height);
 		Log ("current resolution: " + screenActualPx);
 		string aspect = getAspect (new Vector2 ((float)Screen.width, (float)Screen.height));
-		Log ("current aspect: " + aspect);
+		Log ("current aspect: " + aspect +" | "+AssetManager.Instance.mainCamera.aspect);
 		detectedDPI = Screen.dpi;
 		Log ("DPI: " + detectedDPI);
 		//QualitySettings.vSyncCount = 0;

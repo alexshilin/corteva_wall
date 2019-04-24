@@ -17,7 +17,7 @@ public class UserGrid : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		for (int i = 1; i <= panels; i++) {
-			GameObject panel = Instantiate (panelPrefab, transform);
+			GameObject panel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 			panel.transform.localPosition = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
 //			if(ScreenManager.Instance!=null)
 //				ScreenManager.Instance.MoveToLayer (panel.transform, LayerMask.NameToLayer ("User1"));
@@ -28,7 +28,6 @@ public class UserGrid : MonoBehaviour {
 				currRow = 1;
 				currColumn++;
 			}
-			panel.SetActive (true);
 			PanelObject po = panel.GetComponent<PanelObject> ();
 			int r = Random.Range (0, 3);
 			if (r == 1) {
@@ -40,6 +39,7 @@ public class UserGrid : MonoBehaviour {
 				po.SetAsImage ();
 			}
 			po.panelState = "Thumbnail";
+			panel.SetActive (true);
 
 		}
 		//this.gameObject.SetActive (false);

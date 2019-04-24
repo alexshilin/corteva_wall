@@ -228,16 +228,13 @@ public class AssetManager : MonoBehaviour {
 		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
 		basePath = Application.dataPath;
 		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), -2));
-
 		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		//asset folder name
 		string assetsFolder = basePath + "/assets/";
-		//hardcode for dev
 		if (Application.isEditor) {
 			assetsFolder = basePath + "/_builds/assets/";
 		}
-
 		ScreenManager.Instance.Log("assets path: "+assetsFolder);
 
 		//TEMP

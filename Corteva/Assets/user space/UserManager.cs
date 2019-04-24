@@ -101,12 +101,12 @@ public class UserManager : MonoBehaviour {
 	public void SetCam(float _totalColumns, float _userColumn){
 		float userColumn = _userColumn;
 		Debug.Log ("Placing user camera at col " + userColumn + " of " + _totalColumns);
-		if (userColumn > 2) {
-			userColumn -= 3;
-			userCam.targetDisplay = 1;
-			Debug.Log ("\ton display 2");
-		}
-		camRectW = 1f / 3f;// _totalColumns;
+//		if (userColumn > 2) {
+//			userColumn -= 3;
+//			userCam.targetDisplay = 1;
+//			Debug.Log ("\ton display 2");
+//		}
+		camRectW = 1f / _totalColumns;
 		camRectX = camRectW * userColumn;
 		float camRectXm = camRectX + (camRectW * 0.5f);
 		camClosedRect = new Rect (camRectXm, 0, 0, 1);
