@@ -30,13 +30,14 @@ public class UserKioskController : MonoBehaviour {
 
 	*/
 
-	private void tryOpenKiosk(Vector2 _gridPos, bool _doOpen){
+	private void tryOpenKiosk(Vector2 _gridPos, bool _doOpen, Environment _env){
 		if (_doOpen) {
 			Vector2 gridPos = _gridPos;
 			GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
 			uK.name = "UserKiosk_" + _gridPos.x;
 			uK.transform.parent = AssetManager.Instance.kiosks;
 			uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
+			uK.GetComponent<UserManager> ().env = _env;
 			uK.GetComponent<UserManager> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;

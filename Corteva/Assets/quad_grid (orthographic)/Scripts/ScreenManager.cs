@@ -20,6 +20,8 @@ public class ScreenManager : MonoBehaviour {
 	public Vector2 screenActualPx;
 	public Vector3 screenCalcIn;
 	public float detectedDPI;
+	public enum Aspect{ is169, is329 }
+	public Aspect currAspect;
 
 	private static ScreenManager _instance;
 	public static ScreenManager Instance { get { return _instance; } }
@@ -64,8 +66,16 @@ public class ScreenManager : MonoBehaviour {
 //		Log("\tTotal resolution ["+screenActualPx.x+" x "+screenActualPx.y+"] "+getAspect (new Vector2 (screenActualPx.x, screenActualPx.y)));
 		screenActualPx = new Vector2 ((float)Screen.width, (float)Screen.height);
 		Log ("current resolution: " + screenActualPx);
-		string aspect = getAspect (new Vector2 ((float)Screen.width, (float)Screen.height));
-		Log ("current aspect: " + aspect +" | "+AssetManager.Instance.mainCamera.aspect);
+
+		float camAspect = AssetManager.Instance.mainCamera.aspect;
+		if (camAspect > 1.7f && camAspect < 1.8f) {
+			currAspect = Aspect.is169;
+		}
+		if (camAspect > 3.5 && camAspect < 3.6f) {
+			currAspect = Aspect.is329;
+		}
+		Log ("current aspect: " + currAspect);
+
 		detectedDPI = Screen.dpi;
 		Log ("DPI: " + detectedDPI);
 		//QualitySettings.vSyncCount = 0;

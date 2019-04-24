@@ -86,16 +86,6 @@ public class GridManagerOrtho : MonoBehaviour {
 	}
 
 	void Start () {
-		float camAspect = AssetManager.Instance.mainCamera.aspect;
-		if (camAspect > 1.7f && camAspect < 1.8f) {
-			Debug.Log ("[16:9] SETTING 3x3 GRID");
-			desiredGrid = new Vector2 (3, 3);
-		}
-		if (camAspect > 3.5 && camAspect < 3.6f) {
-			Debug.Log ("[32:9] SETTING 6x3 GRID");
-			desiredGrid = new Vector2 (6, 3);
-		}
-
 		EventsManager.Instance.OnAssetsFinishedLoading += assetsLoaded;
 	}
 
@@ -118,8 +108,19 @@ public class GridManagerOrtho : MonoBehaviour {
 		//AssetManager.Instance.LoadScene("earth_bg");
 		//AssetManager.Instance.LoadScene("user_space");
 
+		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is169) {
+			Debug.Log ("[16:9] SETTING 3x3 GRID");
+			desiredGrid = new Vector2 (3, 3);
+			desiredFullScreenAspect = new Vector2 (16, 9);
+		}
+		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+			Debug.Log ("[32:9] SETTING 6x3 GRID");
+			desiredGrid = new Vector2 (6, 3);
+			desiredFullScreenAspect = new Vector2 (32, 9);
+		}
+
+		Debug.Log ("hi " + desiredGrid.x);
 		if (desiredGrid.x == 6) {
-			Debug.Log ("hi " + desiredGrid.x);
 			AssetManager.Instance.bgPanel1.transform.localScale *= 2;
 			AssetManager.Instance.bgPanel2.transform.localScale *= 2;
 			AssetManager.Instance.bgPanel1.gameObject.SetActive (true);

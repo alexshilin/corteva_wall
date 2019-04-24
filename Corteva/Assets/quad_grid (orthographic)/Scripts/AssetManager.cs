@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-
+using System.IO;
 /*
 {
 	"environment": {
@@ -37,7 +37,18 @@ using UnityEngine.SceneManagement;
 	}
 }
 */
-using System.IO;
+
+
+[System.Serializable]
+public class Environment
+{
+	public int envID;
+	public Color32 envColor;
+	public Texture2D envIcon;
+	public string envTitle;
+	public string envSummary;
+	public List<string> envBackgroundVideos;
+}
 
 public class AssetManager : MonoBehaviour {
 	#region class variables
@@ -80,6 +91,7 @@ public class AssetManager : MonoBehaviour {
 	public GameObject cellCameraPrefab;
 	public GameObject userKioskPrefab;
 	public List<GameObject> panelPool = new List<GameObject> ();
+	public List<Environment> environments = new List<Environment>();
 	#endregion
 
 
@@ -116,7 +128,23 @@ public class AssetManager : MonoBehaviour {
 		//load new assets if needed
 
 	void Start(){
-		
+		//TEMP
+		Environment e = new Environment ();
+		e.envTitle = "Globe";
+		e.envColor = new Color32 (0, 114, 206, 255);
+		environments.Add (e);
+		e = new Environment ();
+		e.envTitle = "Farm";
+		e.envColor = new Color32 (0, 191, 111, 255);
+		environments.Add (e);
+		e = new Environment ();
+		e.envTitle = "Plant";
+		e.envColor = new Color32 (252, 76, 2, 255);
+		environments.Add (e);
+		e = new Environment ();
+		e.envTitle = "Seed";
+		e.envColor = new Color32 (32, 32, 32, 255);
+		environments.Add (e);
 	}
 
 
@@ -236,6 +264,11 @@ public class AssetManager : MonoBehaviour {
 			assetsFolder = basePath + "/_builds/assets/";
 		}
 		ScreenManager.Instance.Log("assets path: "+assetsFolder);
+
+		Debug.Log ("system memory size: " + SystemInfo.systemMemorySize+"MB");
+		Debug.Log ("graphics memory size: " + SystemInfo.graphicsMemorySize+"MB");
+//		System.GC.Collect();
+//		Debug.Log ("using [" + UnityEngine.Profiling.Profiler.GetMonoUsedSizeLong () + "] of [" + UnityEngine.Profiling.Profiler.GetMonoHeapSizeLong () + "]");
 
 		//TEMP
 		//save paths of files from the following directories

@@ -25,14 +25,6 @@ public class IdleStateController : MonoBehaviour {
 		public float distanceToOrigin;
 	}
 
-	[System.Serializable]
-	public class Environment
-	{
-		public int envID;
-		public Color32 envColor;
-		public string titleTxt;
-	}
-
 	#region manager references
 	private ScreenManager SM;
 	private AssetManager AM;
@@ -58,7 +50,7 @@ public class IdleStateController : MonoBehaviour {
 	#endregion
 
 
-	List<Environment> environments = new List<Environment>();
+	List<Environment> environments;
 	int currEnv = -1;
 	int startColumn;
 
@@ -83,23 +75,7 @@ public class IdleStateController : MonoBehaviour {
 			kioskColumns = new[]{ 0, 0, 0 };
 		}
 
-		//TEMP
-		Environment e = new Environment ();
-		e.titleTxt = "Globe";
-		e.envColor = new Color32 (0, 114, 206, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.titleTxt = "Farm";
-		e.envColor = new Color32 (0, 191, 111, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.titleTxt = "Plant";
-		e.envColor = new Color32 (252, 76, 2, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.titleTxt = "Seed";
-		e.envColor = new Color32 (32, 32, 32, 255);
-		environments.Add (e);
+		environments = new List<Environment>(AssetManager.Instance.environments);
 	}
 
 	//NOTE: consider putting kiosk activation logic in this class.
@@ -145,7 +121,7 @@ public class IdleStateController : MonoBehaviour {
 //		}
 //	}
 
-	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen){
+	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen, Environment _env){
 		aKioskIsOpen = true;
 		Vector2 gridPos = _gridPos;
 		bool doOpen = _doOpen;
@@ -249,7 +225,7 @@ public class IdleStateController : MonoBehaviour {
 			startColumn = kCols[Random.Range (0, kCols.Count)];
 		}
 
-		Debug.Log ("\tENV (" + currEnv + " of "+environments.Count+"): " + environments [currEnv].titleTxt);
+		Debug.Log ("\tENV (" + currEnv + " of "+environments.Count+"): " + environments [currEnv].envTitle);
 
 		//reset vars
 		usedTypes.Clear ();
@@ -546,6 +522,7 @@ public class IdleStateController : MonoBehaviour {
 			panel.GetComponent<PanelObject>().panelID = idleSequence[i].col + (int)GM.desiredGrid.x * idleSequence[i].row;
 			panel.GetComponent<PanelObject> ().panelState = "Idle";
 			panel.GetComponent<PanelObject> ().panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
+			panel.GetComponent<PanelObject> ().env = environments [currEnv];
 
 			panel.name = "Panel "+idleSequence [i].col+", "+idleSequence [i].row;
 
@@ -555,7 +532,7 @@ public class IdleStateController : MonoBehaviour {
 				
 			panel.GetComponent<PanelObject> ().SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {
-				panel.GetComponent<PanelObject> ().SetAsTitle (environments [currEnv].titleTxt);
+				panel.GetComponent<PanelObject> ().SetAsTitle (environments [currEnv].envTitle);
 			}else if (idleSequence[i].panelType == new Vector2(1,2)) {
 				panel.GetComponent<PanelObject> ().SetAsImage1x2 ();
 				//panel.GetComponent<PanelObject> ().SetAsNonInteractive ();
@@ -794,6 +771,10 @@ public class IdleStateController : MonoBehaviour {
 		readyBg.transform.position = readyPosition;
 		readyBg.transform.localScale = baseScale;
 		readyBg.frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
-		readyBg.SetAs329Video (false);
+		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+			readyBg.SetAs329Video (false);
+		} else {
+			readyBg.SetAsVideo (true, false);
+		}
 	}
 }

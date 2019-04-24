@@ -35,6 +35,8 @@ public class UserManager : MonoBehaviour {
 	private Vector3 gridFinalPos;
 	private Vector3 bgFinalPos;
 
+	public Environment env;
+
 
 //	void OnEnable(){
 //		EventsManager.Instance.OnUserKioskRequest += openKiosk;
@@ -130,8 +132,10 @@ public class UserManager : MonoBehaviour {
 		headerPanel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 		headerPanel.name = "headerPanel";
 		headerPanel.transform.localPosition = new Vector3 (0, 6, 50);
-		headerPanel.GetComponent<PanelObject> ().SetPanelColors (new Color32 (0, 114, 206, 255));
-		headerPanel.GetComponent<PanelObject> ().SetAsTitle ("Title");
+		if (env == null)
+			env = AssetManager.Instance.environments [Random.Range (0, AssetManager.Instance.environments.Count)];
+		headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
+		headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
 		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
 		headerPanel.SetActive (false);
 

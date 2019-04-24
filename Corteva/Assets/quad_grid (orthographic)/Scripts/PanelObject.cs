@@ -51,6 +51,8 @@ public class PanelObject : MonoBehaviour {
 	public Transform pivot;
 	public GameObject viz;
 	public Color currentColor = Color.black;
+	[HideInInspector]
+	public Environment env;
 
 	[Header("Front Full Panel 32:9")]
 	public Transform frontFullPanel329;
@@ -189,7 +191,7 @@ public class PanelObject : MonoBehaviour {
 				EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 				ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 				Debug.Log ("panelGridPos: " + this.panelGridPos);
-				EventsManager.Instance.UserKioskRequest (this.panelGridPos, true);
+				EventsManager.Instance.UserKioskRequest (this.panelGridPos, true, env);
 				StartCoroutine (MoveToKiosk (GridManagerOrtho.Instance.gridPositions [panelID].col-1));
 			} else {
 				//background/beauty panels are non interactable and should not remain when tapped
