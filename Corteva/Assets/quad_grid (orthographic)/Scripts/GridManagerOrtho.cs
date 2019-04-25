@@ -44,11 +44,20 @@ public class GridManagerOrtho : MonoBehaviour {
 
 	void Start () {
 		EventsManager.Instance.OnAssetsFinishedLoading += assetsLoaded;
+		EventsManager.Instance.OnClearEverything += recalculateGrid;
+	}
+
+	void OnDisabled(){
+		EventsManager.Instance.OnClearEverything -= recalculateGrid;
 	}
 
 	void assetsLoaded(){
 		EventsManager.Instance.OnAssetsFinishedLoading -= assetsLoaded;
 		Init ();
+	}
+
+	void recalculateGrid(){
+		//Init ();
 	}
 
 	void Init(){

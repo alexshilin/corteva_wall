@@ -145,6 +145,17 @@ public class PanelObject : MonoBehaviour {
 		}
 	}
 
+	public void PauseVideo(){
+		if (using329video) {
+			//if (videoPlayer329.isPrepared && !videoPlayer329.isPlaying)
+			//if(videoPlayer329
+			videoPlayer329.Control.Pause ();
+		} else {
+			if (videoPlayer.isPrepared && !videoPlayer.isPlaying)
+				videoPlayer.Pause ();
+		}
+	}
+
 
 	#region touch
 	private void OnEnable()
@@ -237,7 +248,7 @@ public class PanelObject : MonoBehaviour {
 	{
 		//Debug.Log("[SimpleController] Event: " + et.ToString());
 		if (et.ToString () == "ResolutionChanged") {
-			Debug.Log ("\t" + videoPlayer329.Info.GetVideoWidth() + " " + videoPlayer329.Info.GetVideoHeight());
+			//Debug.Log ("\t" + videoPlayer329.Info.GetVideoWidth() + " " + videoPlayer329.Info.GetVideoHeight());
 		}
 		_eventLog.Enqueue(et.ToString());
 		if (_eventLog.Count > 5)

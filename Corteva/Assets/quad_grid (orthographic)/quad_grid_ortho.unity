@@ -539,6 +539,7 @@ MonoBehaviour:
   userKioskPrefab: {fileID: 1091292406517696, guid: 52922933ad9614f5a934d19a4df1123a,
     type: 2}
   panelPool: []
+  environments: []
 --- !u!4 &221888337
 Transform:
   m_ObjectHideFlags: 0
@@ -3469,14 +3470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3ba013efbaec4c4f96bb43f53c1102e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenOptions:
-  - resolutionPX: {x: 11520, y: 3240}
-    aspectRatio: {x: 32, y: 9}
-    gridType: {x: 6, y: 3}
-  - resolutionPX: {x: 5760, y: 3240}
-    aspectRatio: {x: 16, y: 9}
-    gridType: {x: 3, y: 3}
-  splitDisplays: 0
   desiredGrid: {x: 6, y: 3}
   gridPositions: []
 --- !u!4 &1532880094
@@ -3671,7 +3664,8 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64029329477884820, guid: 1455857e875e74c949183a9827cd5549, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1455857e875e74c949183a9827cd5549, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1721195341
@@ -3991,6 +3985,7 @@ MonoBehaviour:
   screenActualPx: {x: 0, y: 0}
   screenCalcIn: {x: 0, y: 0, z: 0}
   detectedDPI: 0
+  currAspect: 0
 --- !u!114 &1892522689
 MonoBehaviour:
   m_ObjectHideFlags: 0

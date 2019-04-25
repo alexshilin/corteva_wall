@@ -32,4 +32,8 @@ public class EventsManager : MonoBehaviour {
 	public delegate void UserKioskRequestEvent(Vector2 _gridPos, bool _doOpen, Environment _env = null);
 	public event UserKioskRequestEvent OnUserKioskRequest;
 	public void UserKioskRequest(Vector2 _gridPos, bool _doOpen, Environment _env = null){ OnUserKioskRequest (_gridPos, _doOpen, _env); }
+
+	public delegate void ClearEverything();
+	public event ClearEverything OnClearEverything;
+	public void ClearEverythingRequest(){ OnClearEverything (); }
 }

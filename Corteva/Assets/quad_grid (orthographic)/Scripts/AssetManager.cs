@@ -103,12 +103,6 @@ public class AssetManager : MonoBehaviour {
 //	public event SceneFinishedLoadingEvent OnSceneFinishedLoading;
 	#endregion
 
-
-
-
-
-
-
 	private static AssetManager _instance;
 	public static AssetManager Instance { get { return _instance; } }
 	private void Awake()

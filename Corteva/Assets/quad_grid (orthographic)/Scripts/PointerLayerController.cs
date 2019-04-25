@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// TouchManager has its own layering for touches. These touch layers are attached to camera obejcts.
+/// Since we instantiate cameras constantly, this class watches for new touch layers (cameras) and sorts
+/// the TouchManager's layers to match the depth's of the cameras.
+/// </summary>
 public class PointerLayerController : MonoBehaviour {
 
 	private int layerCount = 0;
@@ -22,9 +27,8 @@ public class PointerLayerController : MonoBehaviour {
 				}
 			}
 		}
-		//			foreach (TouchScript.Layers.TouchLayer l in TouchScript.LayerManager.Instance.Layers) {
-		//				Debug.Log ("after\t" + l.Name+" "+l.GetComponent<Camera>().depth);
-		//			}
+
+		//update new layer count
 		layerCount = TouchScript.LayerManager.Instance.LayerCount;
 	}
 

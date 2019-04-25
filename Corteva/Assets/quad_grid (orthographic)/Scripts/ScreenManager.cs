@@ -105,7 +105,7 @@ public class ScreenManager : MonoBehaviour {
 		//			Debug.Log ("layer: " + l.Name);
 		//			if (l.Name == "UserCam") {
 		//				Debug.Log ("moving " + l.Name + "from layer: " + currentLayer + " to " + 0);
-		//				TouchScript.LayerManager.Instance.ChangeLayerIndex (currentLayer, 0);
+//						TouchScript.LayerManager.Instance.ChangeLayerIndex (currentLayer, 0);
 		//			}
 		//			currentLayer++;
 		//		}
@@ -130,10 +130,10 @@ public class ScreenManager : MonoBehaviour {
 		heightText.text = screenActualPx.y.ToString()+"px";
 		heightText.text += "\n"+screenCalcIn.y.ToString()+"in";
 
+
 		if (Input.GetKeyDown (KeyCode.M)) {
 			ToggleAdmin ();
 		}
-
 		//toggle fullscreen
 		if (Input.GetKeyDown (KeyCode.F)) {
 			Screen.fullScreen = !Screen.fullScreen;
@@ -144,17 +144,27 @@ public class ScreenManager : MonoBehaviour {
 			int newHeight = Mathf.RoundToInt((float)Screen.width / (16f/9f));
 			Screen.SetResolution (Screen.width, newHeight, false);
 
+			if (currAspect != Aspect.is169) {
+				EventsManager.Instance.ClearEverythingRequest ();
+				currAspect = Aspect.is169;
+			}
+
 		}
 		//switch to windowed and resize to 32:9 aspect resolution
 		if (Input.GetKeyDown (KeyCode.Alpha7)) {
 			Screen.fullScreen = !Screen.fullScreen;
 			int newHeight = Mathf.RoundToInt((float)Screen.width / (32f/9f));
 			Screen.SetResolution (Screen.width, newHeight, false);
+
+			if (currAspect != Aspect.is329) {
+				EventsManager.Instance.ClearEverythingRequest ();
+				currAspect = Aspect.is329;
+			}
 		}
 	}
 
 
-
+	//this method is called from a UI button
 	public void SetResolutionByScreens(){
 		string w = setSingleScreenWidthText.text;
 		string h = setSingleScreenheightText.text;

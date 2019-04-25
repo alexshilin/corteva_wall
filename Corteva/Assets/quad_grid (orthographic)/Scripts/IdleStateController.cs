@@ -43,6 +43,7 @@ public class IdleStateController : MonoBehaviour {
 	Vector3 previousPanelPos = Vector3.zero;
 	Vector2 startPanelPos;
 	int[] kioskColumns;
+	List<PanelObject> bgPanels = new List<PanelObject> ();
 
 	float timeElapsedSinceLastTransition;
 	float timeToNextTransition = 10f;
@@ -54,7 +55,7 @@ public class IdleStateController : MonoBehaviour {
 	int currEnv = -1;
 	int startColumn;
 
-	int currBg = 1;
+	int currBg = 0;
 
 	Transform currTitleCam;
 	Transform currTitlePanel;
@@ -79,39 +80,19 @@ public class IdleStateController : MonoBehaviour {
 	void Start(){
 		AM = AssetManager.Instance;
 		GM = GridManagerOrtho.Instance;
-
-		EventsManager.Instance.OnUserKioskRequest += updateFromKioskRequest;
-
-		if (GM.desiredGrid.x == 6) {
-			kioskColumns = new[]{ 0, 0, 0, 0, 0, 0 };
-		} else {
-			kioskColumns = new[]{ 0, 0, 0 };
-		}
+		SM = ScreenManager.Instance;
 
 		environments = new List<Environment>(AM.environments);
+
+		EventsManager.Instance.OnUserKioskRequest += updateFromKioskRequest;
+		EventsManager.Instance.OnClearEverything += clearEverything;
 	}
 
 	//NOTE: consider putting kiosk activation logic in this class.
 
 	void OnDisable(){
 		EventsManager.Instance.OnUserKioskRequest -= updateFromKioskRequest;
-	}
-
-	public void Prepare(){
-		Debug.Log ("[Prepare] idle grid for " + GM.desiredGrid.x + " columns.");
-		if (GM.desiredGrid.x == 6) {
-			AM.bgPanel1.transform.localScale *= 2;
-			AM.bgPanel2.transform.localScale *= 2;
-			AM.bgPanel1.gameObject.SetActive (true);
-			AM.bgPanel1.SetAs329Video (true);
-			AM.bgPanel2.gameObject.SetActive (true);
-			AM.bgPanel2.SetAs329Video (false);
-		} else {
-			AM.bgPanel1.gameObject.SetActive (true);
-			AM.bgPanel1.SetAsVideo (false, true);
-			AM.bgPanel2.gameObject.SetActive (true);
-			AM.bgPanel2.SetAsVideo (false, false);
-		}
+		EventsManager.Instance.OnClearEverything -= clearEverything;
 	}
 
 	void Update(){
@@ -123,7 +104,7 @@ public class IdleStateController : MonoBehaviour {
 			StartIdleLoop ();
 		}
 		if (Input.GetKeyDown (KeyCode.Backspace)) {
-			ClearPanels ();
+			ClearCellCams ();
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha8)) {
 			ZoomBG ();
@@ -134,6 +115,54 @@ public class IdleStateController : MonoBehaviour {
 				UnPlaceCameras ();
 			}
 		}
+	}
+
+	public void Prepare(){
+		Debug.Log ("[Prepare] idle grid for " + GM.desiredGrid.x + " columns.");
+		if (GM.desiredGrid.x == 6) {
+			kioskColumns = new[]{ 0, 0, 0, 0, 0, 0 };
+		} else {
+			kioskColumns = new[]{ 0, 0, 0 };
+		}
+
+//		if (GM.desiredGrid.x == 6) {
+//			AM.bgPanel1.transform.localScale *= 2;
+//			AM.bgPanel2.transform.localScale *= 2;
+//			AM.bgPanel1.gameObject.SetActive (true);
+//			AM.bgPanel1.SetAs329Video (true);
+//			AM.bgPanel2.gameObject.SetActive (true);
+//			AM.bgPanel2.SetAs329Video (false);
+//		} else {
+//			AM.bgPanel1.gameObject.SetActive (true);
+//			AM.bgPanel1.SetAsVideo (false, true);
+//			AM.bgPanel2.gameObject.SetActive (true);
+//			AM.bgPanel2.SetAsVideo (false, false);
+//		}
+		MakeBackgroundPanels();
+	}
+
+	void MakeBackgroundPanels(){
+		List<string> bgVideos = new List<string> (SM.currAspect==ScreenManager.Aspect.is169 ? AM.videoFiles : AM.videoFiles329);
+		for (int i = 0; i < bgVideos.Count; i++) {
+			Debug.Log (i + " " + bgVideos [i]);
+			GameObject bgPanel = Instantiate (AM.panelPrefab);
+			bgPanel.SetActive (true);
+			bgPanel.transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
+			bgPanel.transform.localScale *= GM.desiredGrid.x;
+			if (SM.currAspect==ScreenManager.Aspect.is169) {
+				bgPanel.GetComponent<PanelObject> ().SetAsVideo (false, i == 0);
+			} else {
+				bgPanel.GetComponent<PanelObject> ().SetAs329Video (i == 0);
+			}
+			bgPanels.Add (bgPanel.GetComponent<PanelObject> ());
+			//bgPanel.SetActive (i == 0);
+		}
+		currBg = 0;
+	}
+
+	void clearEverything(){
+		ClearCellCams ();
+		idleSequence.Clear ();
 	}
 
 	void StartIdleLoop(){
@@ -701,18 +730,15 @@ public class IdleStateController : MonoBehaviour {
 	}
 
 	public void nextSequence(){
-		ClearPanels ();
+		ClearCellCams ();
 		PlanLayout ();
 	}
 
 
 
 	//clear all panels and reset depth
-	void ClearPanels(){
-		Debug.Log ("[ClearPanels] " + AM.cams.childCount + " panels");
-//		foreach (Transform child in AM.panels) {
-//			GameObject.Destroy(child.gameObject);
-//		}
+	void ClearCellCams(){
+		Debug.Log ("[ClearCellCams] " + AM.cams.childCount);
 		foreach (Transform child in AM.cams) {
 			if (currTitleCam != null) {
 				if (child != currTitleCam)
@@ -763,54 +789,87 @@ public class IdleStateController : MonoBehaviour {
 	}
 		
 	void ZoomBG(){
-		PanelObject activeBg;
-		PanelObject readyBg;
-		if (currBg == 1) {
-			activeBg = AM.bgPanel1;
-			readyBg = AM.bgPanel2;
-		} else {
-			activeBg = AM.bgPanel2;
-			readyBg = AM.bgPanel1;
-		}
-		readyBg.PlayVideo ();
+//		PanelObject activeBg;
+//		PanelObject readyBg;
+//
+//		if (currBg == 1) {
+//			activeBg = AM.bgPanel1;
+//			readyBg = AM.bgPanel2;
+//		} else {
+//			activeBg = AM.bgPanel2;
+//			readyBg = AM.bgPanel1;
+//		}
+		int nextBGi = currBg+1;
+		if (nextBGi == bgPanels.Count)
+			nextBGi = 0;
+		bgPanels [nextBGi].transform.position = nextPosition;
+		bgPanels[nextBGi].PlayVideo ();
 		Material bgMat;
 		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
-			bgMat = activeBg.frontFullPanelTexture329.GetComponent<Renderer> ().material;
+			bgMat = bgPanels[currBg].frontFullPanelTexture329.GetComponent<Renderer> ().material;
+			bgPanels [nextBGi].frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
 		} else {
-			bgMat = activeBg.frontFullPanelTexture.GetComponent<Renderer> ().material;
+			bgMat = bgPanels[currBg].frontFullPanelTexture.GetComponent<Renderer> ().material;
+			bgPanels [nextBGi].frontFullPanelTexture.GetComponent<Renderer> ().material.color = baseColor;
 		}
 		Color32 toColor = bgMat.color;
 		toColor.a = 0;
 		//EaseCurve.Instance.Scl (AM.bgPanel2.transform, AM.bgPanel2.transform.localScale * 2, AM.bgPanel1.transform.localScale, 0.5f, 0, EaseCurve.Instance.linear);
-		EaseCurve.Instance.Scl (activeBg.transform, activeBg.transform.localScale, activeBg.transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG);
-		EaseCurve.Instance.MatColor (bgMat, bgMat.color, toColor, 0.5f, 0, EaseCurve.Instance.linear);
+		EaseCurve.Instance.Scl (bgPanels[currBg].transform, bgPanels[currBg].transform.localScale, bgPanels[currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG);
+		EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
+		//Invoke ("UpdateBG", 0.5f);
 	}
 	Vector3 baseScale;// = new Vector3 (GM.desiredGrid.x, GM.desiredGrid.x, GM.desiredGrid.x);
 	Vector3 activePosition = new Vector3 (0, 0, 100);
-	Vector3 readyPosition = new Vector3 (0, 0, 110);
+	Vector3 nextPosition = new Vector3 (0, 0, 105);
+	Vector3 readyPosition = new Vector3 (0, 100, 100);
 	Color32 baseColor = new Color32 (255, 255, 255, 255);
 	void UpdateBG(){
-		PanelObject activeBg;
-		PanelObject readyBg;
-		if (currBg == 1) {
-			activeBg = AM.bgPanel2;
-			readyBg = AM.bgPanel1;
-			currBg = 2;
-		} else {
-			activeBg = AM.bgPanel1;
-			readyBg = AM.bgPanel2;
-			currBg = 1;
-		}
+//		PanelObject activeBg;
+//		PanelObject readyBg;
+//		if (currBg == 1) {
+//			activeBg = AM.bgPanel2;
+//			readyBg = AM.bgPanel1;
+//			currBg = 2;
+//		} else {
+//			activeBg = AM.bgPanel1;
+//			readyBg = AM.bgPanel2;
+//			currBg = 1;
+//		}
+		//move move current bg to back on the line
 		baseScale = new Vector3 (GM.desiredGrid.x, GM.desiredGrid.x, GM.desiredGrid.x);
-		activeBg.transform.position = activePosition;
-		readyBg.transform.position = readyPosition;
-		readyBg.transform.localScale = baseScale;
-		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
-			readyBg.frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
-			readyBg.SetAs329Video (false);
-		} else {
-			readyBg.frontFullPanelTexture.GetComponent<Renderer> ().material.color = baseColor;
-			readyBg.SetAsVideo (true, false);
-		}
+
+//		if (SM.currAspect == ScreenManager.Aspect.is329) {
+//			bgPanels[currBg].frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
+//		} else {
+//			bgPanels[currBg].frontFullPanelTexture.GetComponent<Renderer> ().material.color = baseColor;
+//		}
+		bgPanels[currBg].PauseVideo ();
+		//bgPanels[currBg].gameObject.SetActive(false);
+		bgPanels[currBg].transform.position = readyPosition;
+		bgPanels[currBg].transform.localScale = baseScale;
+		//set next bg as current
+		currBg++;
+		if (currBg == bgPanels.Count)
+			currBg = 0;
+		bgPanels[currBg].transform.position = activePosition;
+		//set up on deck
+//		int nextBGi = currBg<bgPanels.Count-1?currBg+1:0;
+//		bgPanels[nextBGi].transform.position = nextPosition;
+		//bgPanels[nextBGi].gameObject.SetActive (true);
+
+
+		//
+
+//		activeBg.transform.position = activePosition;
+//		readyBg.transform.position = readyPosition;
+//		readyBg.transform.localScale = baseScale;
+//		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+//			readyBg.frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
+//			readyBg.SetAs329Video (false);
+//		} else {
+//			readyBg.frontFullPanelTexture.GetComponent<Renderer> ().material.color = baseColor;
+//			readyBg.SetAsVideo (true, false);
+//		}
 	}
 }
