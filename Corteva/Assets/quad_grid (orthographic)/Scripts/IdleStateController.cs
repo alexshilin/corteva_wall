@@ -108,9 +108,9 @@ public class IdleStateController : MonoBehaviour {
 			AM.bgPanel2.SetAs329Video (false);
 		} else {
 			AM.bgPanel1.gameObject.SetActive (true);
-			AM.bgPanel1.SetAsVideo (true, true);
+			AM.bgPanel1.SetAsVideo (false, true);
 			AM.bgPanel2.gameObject.SetActive (true);
-			AM.bgPanel2.SetAsVideo (true, false);
+			AM.bgPanel2.SetAsVideo (false, false);
 		}
 	}
 

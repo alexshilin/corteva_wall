@@ -133,6 +133,24 @@ public class ScreenManager : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.M)) {
 			ToggleAdmin ();
 		}
+
+		//toggle fullscreen
+		if (Input.GetKeyDown (KeyCode.F)) {
+			Screen.fullScreen = !Screen.fullScreen;
+		}
+		//switch to windowed and resize to 16:9 aspect resolution
+		if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			Screen.fullScreen = false;
+			int newHeight = Mathf.RoundToInt((float)Screen.width / (16f/9f));
+			Screen.SetResolution (Screen.width, newHeight, false);
+
+		}
+		//switch to windowed and resize to 32:9 aspect resolution
+		if (Input.GetKeyDown (KeyCode.Alpha7)) {
+			Screen.fullScreen = !Screen.fullScreen;
+			int newHeight = Mathf.RoundToInt((float)Screen.width / (32f/9f));
+			Screen.SetResolution (Screen.width, newHeight, false);
+		}
 	}
 
 
@@ -159,13 +177,8 @@ public class ScreenManager : MonoBehaviour {
 	}
 
 	public void ToggleAdmin(){
-		if (adminOn) {
-			admin.SetActive (false);
-			adminOn = false;
-		}else{
-			admin.SetActive (true);
-			adminOn = true;
-		}
+		admin.SetActive (!admin.activeSelf);
+		adminOn = !adminOn;
 	}
 
 	public void Log(string _txt){
