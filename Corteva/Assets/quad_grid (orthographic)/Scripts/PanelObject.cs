@@ -198,12 +198,13 @@ public class PanelObject : MonoBehaviour {
 				transform.parent = AssetManager.Instance.panels;
 				transform.localScale = Vector3.one;
 				Debug.Log ("panelID: " + this.panelID);
-				transform.position = new Vector3(GridManagerOrtho.Instance.gridPositions[panelID].center.x, GridManagerOrtho.Instance.gridPositions[panelID].center.y, 10);
+				Debug.Log ("\tgridPosID: " + GridManagerOrtho.Instance.gridPositions [this.panelID].id);
+				transform.position = new Vector3(GridManagerOrtho.Instance.gridPositions[this.panelID].center.x, GridManagerOrtho.Instance.gridPositions[this.panelID].center.y, 10);
 				EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 				ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 				Debug.Log ("panelGridPos: " + this.panelGridPos);
 				EventsManager.Instance.UserKioskRequest (this.panelGridPos, true, env);
-				StartCoroutine (MoveToKiosk (GridManagerOrtho.Instance.gridPositions [panelID].col-1));
+				StartCoroutine (MoveToKiosk ((int)this.panelGridPos.x));
 			} else {
 				//background/beauty panels are non interactable and should not remain when tapped
 				//Debug.Log("tapped at: "+tapGesture.ScreenPosition);

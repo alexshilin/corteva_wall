@@ -246,10 +246,16 @@ public class AssetManager : MonoBehaviour {
 
 		//file prefix
 		string f = "file://";
-
+		int offset = -2;
 		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
 		basePath = Application.dataPath;
-		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), -2));
+
+		ScreenManager.Instance.Log ("platform: "+Application.platform.ToString());
+		if (Application.platform == RuntimePlatform.WindowsPlayer) {
+			//offset = -1;
+			f = "";
+		}
+		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), offset));
 		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		//asset folder name
