@@ -63,6 +63,19 @@ public class IdleStateController : MonoBehaviour {
 	bool panelsInTransition = false;
 	IEnumerator mainLoop;
 
+	//Instance
+	private static IdleStateController _instance;
+	public static IdleStateController Instance { get { return _instance; } }
+	private void Awake()
+	{
+		if (_instance != null && _instance != this)
+		{
+			Destroy(this.gameObject);
+		} else {
+			_instance = this;
+		}
+	}
+
 	void Start(){
 		AM = AssetManager.Instance;
 		GM = GridManagerOrtho.Instance;
@@ -75,13 +88,30 @@ public class IdleStateController : MonoBehaviour {
 			kioskColumns = new[]{ 0, 0, 0 };
 		}
 
-		environments = new List<Environment>(AssetManager.Instance.environments);
+		environments = new List<Environment>(AM.environments);
 	}
 
 	//NOTE: consider putting kiosk activation logic in this class.
 
 	void OnDisable(){
 		EventsManager.Instance.OnUserKioskRequest -= updateFromKioskRequest;
+	}
+
+	public void Prepare(){
+		Debug.Log ("[Prepare] idle grid for " + GM.desiredGrid.x + " columns.");
+		if (GM.desiredGrid.x == 6) {
+			AM.bgPanel1.transform.localScale *= 2;
+			AM.bgPanel2.transform.localScale *= 2;
+			AM.bgPanel1.gameObject.SetActive (true);
+			AM.bgPanel1.SetAs329Video (true);
+			AM.bgPanel2.gameObject.SetActive (true);
+			AM.bgPanel2.SetAs329Video (false);
+		} else {
+			AM.bgPanel1.gameObject.SetActive (true);
+			AM.bgPanel1.SetAsVideo (true, true);
+			AM.bgPanel2.gameObject.SetActive (true);
+			AM.bgPanel2.SetAsVideo (true, false);
+		}
 	}
 
 	void Update(){
@@ -743,7 +773,12 @@ public class IdleStateController : MonoBehaviour {
 			readyBg = AM.bgPanel1;
 		}
 		readyBg.PlayVideo ();
-		Material bgMat = activeBg.frontFullPanelTexture329.GetComponent<Renderer> ().material;
+		Material bgMat;
+		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+			bgMat = activeBg.frontFullPanelTexture329.GetComponent<Renderer> ().material;
+		} else {
+			bgMat = activeBg.frontFullPanelTexture.GetComponent<Renderer> ().material;
+		}
 		Color32 toColor = bgMat.color;
 		toColor.a = 0;
 		//EaseCurve.Instance.Scl (AM.bgPanel2.transform, AM.bgPanel2.transform.localScale * 2, AM.bgPanel1.transform.localScale, 0.5f, 0, EaseCurve.Instance.linear);
@@ -770,10 +805,11 @@ public class IdleStateController : MonoBehaviour {
 		activeBg.transform.position = activePosition;
 		readyBg.transform.position = readyPosition;
 		readyBg.transform.localScale = baseScale;
-		readyBg.frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
 		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+			readyBg.frontFullPanelTexture329.GetComponent<Renderer> ().material.color = baseColor;
 			readyBg.SetAs329Video (false);
 		} else {
+			readyBg.frontFullPanelTexture.GetComponent<Renderer> ().material.color = baseColor;
 			readyBg.SetAsVideo (true, false);
 		}
 	}

@@ -17,60 +17,17 @@ public class GridManagerOrtho : MonoBehaviour {
 		public Vector2 bottomLeft;
 		public Vector2 bottomRight;
 	}
-
-	[System.Serializable]
-	public class ScreenOption{
-		public Vector2 resolutionPX;
-		public Vector2 aspectRatio;
-		public Vector2 gridType;
-	}
-
-	/*
-	[System.Serializable]
-	public class PanelAction{
-		public Vector3 fromPos;
-		public Vector3 toPos;
-		public Vector2 panelType;
-		public float distanceToOrigin;
-		public int row;
-		public int col;
-		public Vector3 direction;
-		public GameObject panel;
-		public GameObject cellCam;
-	}
-	*/
-
-//	public Camera mainCamera;
-//	public Camera userInitCamera;
-//	public Camera userPanelCamera;
-	/*
-	public GameObject panelPrefab;
-	public Transform panels;
-	public PanelObject bgPanel;
-	public GameObject panelMaskPrefab;
-	public Transform masks;
-	public GameObject cellCamera;
-	public Transform cams;
-	*/
-
-	public List<ScreenOption> screenOptions = new List<ScreenOption> ();
-	public bool splitDisplays = false;
-	//16:9	 5760 x 3240 px
-	//32:9	11520 x 3240 px
-	private Vector2 desiredFullScreenSizePx = new Vector2 (11520, 3240);
-	private Vector2 desiredFullScreenAspect = new Vector2 (32, 9);
+		
 	[HideInInspector]
 	public Vector2 desiredGrid = new Vector2 (6, 3);
-	private Vector2 desiredGridElementAspect = new Vector2 (16, 9); //static
+	[HideInInspector]
+	public List<GridItem> gridPositions = new List<GridItem>();
+
+	private Vector2 desiredFullScreenAspect = new Vector2 (32, 9);
+	private Vector2 desiredGridElementAspect = new Vector2 (16, 9);
 	private Vector2 calculatedGridElementSize;
 
-	private Vector2 currentFullScreenSizePx;
-	private float currentDPI;
 
-	public List<GridItem> gridPositions = new List<GridItem>();
-//	private List<PanelObject> gridPanels = new List<PanelObject> ();
-
-//	private float panelDepth = 50f;
 
 	//Instance
 	private static GridManagerOrtho _instance;
@@ -95,16 +52,11 @@ public class GridManagerOrtho : MonoBehaviour {
 	}
 
 	void Init(){
-		currentFullScreenSizePx = new Vector2 (Screen.width, Screen.height);
-		currentDPI = Screen.dpi;
-
 		AssetManager.Instance.mainCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
-
-		calculatedGridElementSize = desiredGridElementAspect / desiredGrid.y;
 
 		CalculateGridPositions ();
 
-		EventsManager.Instance.OnSceneFinishedLoading += sceneLoaded;
+		//EventsManager.Instance.OnSceneFinishedLoading += sceneLoaded;
 		//AssetManager.Instance.LoadScene("earth_bg");
 		//AssetManager.Instance.LoadScene("user_space");
 
@@ -119,26 +71,7 @@ public class GridManagerOrtho : MonoBehaviour {
 			desiredFullScreenAspect = new Vector2 (32, 9);
 		}
 
-		Debug.Log ("hi " + desiredGrid.x);
-		if (desiredGrid.x == 6) {
-			AssetManager.Instance.bgPanel1.transform.localScale *= 2;
-			AssetManager.Instance.bgPanel2.transform.localScale *= 2;
-			AssetManager.Instance.bgPanel1.gameObject.SetActive (true);
-			AssetManager.Instance.bgPanel1.SetAs329Video (true);
-			AssetManager.Instance.bgPanel2.gameObject.SetActive (true);
-			AssetManager.Instance.bgPanel2.SetAs329Video (false);
-		} else {
-			AssetManager.Instance.bgPanel1.gameObject.SetActive (true);
-			AssetManager.Instance.bgPanel1.SetAsVideo (true, true);
-			AssetManager.Instance.bgPanel2.gameObject.SetActive (true);
-			AssetManager.Instance.bgPanel2.SetAsVideo (true, false);
-		}
-
-
-	}
-
-	void SetScreenMode(){
-
+		IdleStateController.Instance.Prepare ();
 	}
 
 	void sceneLoaded(string _scene){
@@ -181,6 +114,7 @@ public class GridManagerOrtho : MonoBehaviour {
 		float totalPanels = desiredGrid.x * desiredGrid.y;
 		int xx = 0;
 		int yy = 0;
+		calculatedGridElementSize = desiredGridElementAspect / desiredGrid.y;
 		Vector3 startPos = new Vector3 (desiredFullScreenAspect.x*-0.5f, desiredFullScreenAspect.y*0.5f, 40);
 		Vector3 startSize = new Vector3 (calculatedGridElementSize.x, calculatedGridElementSize.y, 1);
 		for (int i = 0; i < totalPanels; i++) {

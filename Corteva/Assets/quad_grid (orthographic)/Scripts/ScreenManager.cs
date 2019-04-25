@@ -21,7 +21,7 @@ public class ScreenManager : MonoBehaviour {
 	public Vector3 screenCalcIn;
 	public float detectedDPI;
 	public enum Aspect{ is169, is329 }
-	public Aspect currAspect;
+	public Aspect currAspect = Aspect.is169;
 
 	private static ScreenManager _instance;
 	public static ScreenManager Instance { get { return _instance; } }
@@ -68,6 +68,7 @@ public class ScreenManager : MonoBehaviour {
 		Log ("current resolution: " + screenActualPx);
 
 		float camAspect = AssetManager.Instance.mainCamera.aspect;
+		Log ("cam aspect: " + camAspect);
 		if (camAspect > 1.7f && camAspect < 1.8f) {
 			currAspect = Aspect.is169;
 		}
