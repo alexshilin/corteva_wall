@@ -67,13 +67,18 @@ public class EaseCurve : MonoBehaviour
 		float rate = 1 / _duration;
 		yield return new WaitForSeconds (_delay);
 		while (t < 1) {
-			t += rate * Time.deltaTime;
-			if (_space == "local") {
-				_target.localPosition = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
+			if (_target != null) {
+				t += rate * Time.deltaTime;
+				if (_space == "local") {
+					_target.localPosition = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
+				} else {
+					_target.position = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
+				}
+				yield return null;
 			} else {
-				_target.position = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
+				Debug.LogWarning ("[EaseVec3] target object not found");
+				yield break;
 			}
-			yield return null;
 		}
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)

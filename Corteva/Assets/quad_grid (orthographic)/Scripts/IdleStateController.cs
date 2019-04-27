@@ -11,8 +11,9 @@ using UnityEngine;
 */
 public class IdleStateController : MonoBehaviour {
 
+
 	[System.Serializable]
-	public class PanelAction{
+	public class CellAction{
 		public int row;
 		public int col;
 		public string name;
@@ -33,38 +34,41 @@ public class IdleStateController : MonoBehaviour {
 
 
 	#region class vars
-	private float panelDepth = 50f;
 	int[][] layoutGrid;
-	float negSpacePercentage = 1;
-	string[] availableTypes = new string[]{"1x1","1x1","1x1","1x1","1x2","2x2"};
-	List<string> usedTypes = new List<string>();
-	public List<PanelAction> idleSequence = new List<PanelAction>();
-	private List<PanelAction> idleSequenceTmp = new List<PanelAction>();
-	Vector3 previousPanelPos = Vector3.zero;
+	public List<CellAction> idleSequence = new List<CellAction>();
+	int startColumn;
 	Vector2 startPanelPos;
-	int[] kioskColumns;
+	Vector3 previousPanelPos = Vector3.zero;
+
+
 	List<PanelObject> bgPanels = new List<PanelObject> ();
+	int currBg = 0;
 
-	float timeElapsedSinceLastTransition;
-	float timeToNextTransition = 10f;
-	bool activeTransitionLoop = false;
-	#endregion
-
+	public List<int> kioskColumns = new List<int> ();
 
 	List<Environment> environments;
 	int currEnv = -1;
-	int startColumn;
 
-	int currBg = 0;
+	string[] availableTypes = new string[]{"1x1","1x1","1x1","1x1","1x2","2x2"};
+	List<string> usedTypes = new List<string>();
 
 	Transform currTitleCam;
 	Transform currTitlePanel;
 
-	bool aKioskIsOpen = false;
-	bool panelsInTransition = false;
-	IEnumerator mainLoop;
 
-	//Instance
+	float timeElapsedSinceLastTransition;
+	float timeToNextTransition = 5f;
+	bool activeTransitionLoop = false;
+
+	bool panelsInTransition = false;
+
+	bool titleHidden = false;
+	bool hideTitleAfterInroTransition = false;
+
+	private float panelDepth = 50f;
+	#endregion
+
+	#region instance
 	private static IdleStateController _instance;
 	public static IdleStateController Instance { get { return _instance; } }
 	private void Awake()
@@ -76,31 +80,47 @@ public class IdleStateController : MonoBehaviour {
 			_instance = this;
 		}
 	}
+	#endregion
 
 	void Start(){
+		//get references to manager instances
 		AM = AssetManager.Instance;
 		GM = GridManagerOrtho.Instance;
 		SM = ScreenManager.Instance;
 
+		//get environemnts
 		environments = new List<Environment>(AM.environments);
 
+		//start event listenered
 		EventsManager.Instance.OnUserKioskRequest += updateFromKioskRequest;
-		EventsManager.Instance.OnClearEverything += clearEverything;
+		EventsManager.Instance.OnClearEverything += ClearEverything;
 	}
 
 	//NOTE: consider putting kiosk activation logic in this class.
 
 	void OnDisable(){
+		//stop event listeneres
 		EventsManager.Instance.OnUserKioskRequest -= updateFromKioskRequest;
-		EventsManager.Instance.OnClearEverything -= clearEverything;
+		EventsManager.Instance.OnClearEverything -= ClearEverything;
 	}
 
 	void Update(){
+		//idle loop timer
+		if (activeTransitionLoop && !panelsInTransition) {
+			SM.idleTimerText.text = Mathf.Round(timeToNextTransition - timeElapsedSinceLastTransition) + "\n" + (activeTransitionLoop?"looping":"static") + " + " + (panelsInTransition?"busy":"available");
+			timeElapsedSinceLastTransition += Time.deltaTime;
+			if (timeElapsedSinceLastTransition >= timeToNextTransition) {
+				UnPlaceCameras ();
+			}
+		} else {
+			SM.idleTimerText.text = (activeTransitionLoop?"looping":"static") + " + " + (panelsInTransition?"busy":"available");
+		}
+
+		//TEMP keyboard commands
 		if (Input.GetKeyDown (KeyCode.Alpha0)) {
 			PlanLayout ();
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha9)) {
-			//InvokeRepeating("UnPlaceCameras", 0f, 10f);
 			StartIdleLoop ();
 		}
 		if (Input.GetKeyDown (KeyCode.Backspace)) {
@@ -109,44 +129,27 @@ public class IdleStateController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha8)) {
 			ZoomBG ();
 		}
-		if (activeTransitionLoop && !panelsInTransition) {
-			timeElapsedSinceLastTransition += Time.deltaTime;
-			if (timeElapsedSinceLastTransition >= timeToNextTransition) {
-				UnPlaceCameras ();
-			}
-		}
+
 	}
 
 	public void Prepare(){
 		Debug.Log ("[Prepare] idle grid for " + GM.desiredGrid.x + " columns.");
-		if (GM.desiredGrid.x == 6) {
-			kioskColumns = new[]{ 0, 0, 0, 0, 0, 0 };
-		} else {
-			kioskColumns = new[]{ 0, 0, 0 };
-		}
 
-//		if (GM.desiredGrid.x == 6) {
-//			AM.bgPanel1.transform.localScale *= 2;
-//			AM.bgPanel2.transform.localScale *= 2;
-//			AM.bgPanel1.gameObject.SetActive (true);
-//			AM.bgPanel1.SetAs329Video (true);
-//			AM.bgPanel2.gameObject.SetActive (true);
-//			AM.bgPanel2.SetAs329Video (false);
-//		} else {
-//			AM.bgPanel1.gameObject.SetActive (true);
-//			AM.bgPanel1.SetAsVideo (false, true);
-//			AM.bgPanel2.gameObject.SetActive (true);
-//			AM.bgPanel2.SetAsVideo (false, false);
-//		}
+		ClearKiosks ();
+			
 		MakeBackgroundPanels();
 	}
 
+
+
 	void MakeBackgroundPanels(){
+		//get video files based on aspect ratio
 		List<string> bgVideos = new List<string> (SM.currAspect==ScreenManager.Aspect.is169 ? AM.videoFiles : AM.videoFiles329);
+		//preload all background videos
 		for (int i = 0; i < bgVideos.Count; i++) {
-			Debug.Log (i + " " + bgVideos [i]);
 			GameObject bgPanel = Instantiate (AM.panelPrefab);
 			bgPanel.SetActive (true);
+			//place all bg panels off-screen so they dont get rendered
 			bgPanel.transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
 			bgPanel.transform.localScale *= GM.desiredGrid.x;
 			if (SM.currAspect==ScreenManager.Aspect.is169) {
@@ -154,15 +157,100 @@ public class IdleStateController : MonoBehaviour {
 			} else {
 				bgPanel.GetComponent<PanelObject> ().SetAs329Video (i == 0);
 			}
+			bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Idle;
+			bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
+			//bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
 			bgPanels.Add (bgPanel.GetComponent<PanelObject> ());
-			//bgPanel.SetActive (i == 0);
 		}
 		currBg = 0;
 	}
 
-	void clearEverything(){
+	#region cleanup
+	private void ClearKiosks(){
+		Debug.Log ("[ClearKiosks]");
+		kioskColumns.Clear ();
+		for (int i = 0; i < GM.desiredGrid.x; i++) {
+			kioskColumns.Add (0);
+		}
+	}
+		
+	private void ClearCellCams(){
+		Debug.Log ("[ClearCellCams] " + AM.cams.childCount);
+		foreach (Transform child in AM.cams) {
+			if (currTitleCam != null) {
+				if (child != currTitleCam)
+					GameObject.Destroy (child.gameObject);
+			} else {
+				GameObject.Destroy (child.gameObject);
+			}
+		}
+		panelDepth = 50f;
+	}
+
+	private void ClearEverything(){
+		Debug.Log ("[ClearEverything]");
+		ClearKiosks ();
 		ClearCellCams ();
 		idleSequence.Clear ();
+	}
+	#endregion
+
+	#region event listener reactions
+	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen, Environment _env){
+		Debug.Log ("[updateFromKioskRequest] " + (_doOpen ? "open":"close") + " at col " +_gridPos.x);
+
+		Vector2 gridPos = _gridPos;
+		bool doOpen = _doOpen;
+
+		//is a kiosk being opened?
+		if (doOpen) {
+			//update which columns have kiosks
+			kioskColumns [(int)gridPos.x] = 1;
+			//do we have any panels open?
+			if (idleSequence.Count > 0) {
+				//is there an active title cellcam and panel?
+				if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
+					//hide it
+					HideTitlePanel ();
+				}
+			}
+		} else {
+			//a kiosk is being closed
+			Debug.Log ("close kiosk " + _gridPos.x);
+			//TODO
+			//animate kiosk out
+			//then animate replacement panel in
+			//update kiosk list
+			bool doResumeLoop = kioskColumns.Contains(0) ? false : true;
+			kioskColumns [(int)gridPos.x] = 0;
+			if (doResumeLoop) {
+				StartIdleLoop ();
+			}
+		}
+
+	}
+	#endregion
+
+
+
+	void HideTitlePanel(){
+		Debug.Log ("[HideTitlePanel] " + (titleHidden ? "hidden" : "visible") + " | " + (idleSequence [0].panel.GetComponent<PanelObject> ().panelState == PanelObject.PanelState.Animating ? "animating" : "static"));
+		//if (!panelsInTransition) {
+			//panelsInTransition = true;
+		if (!titleHidden) {
+			if (idleSequence [0].panel.GetComponent<PanelObject> ().panelState != PanelObject.PanelState.Animating) {
+				titleHidden = true;
+				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].panel.transform.localPosition, idleSequence [0].fromPos, 0.5f, 0.25f, EaseCurve.Instance.custom2, TitilePanelHidden, "local");
+			} else {
+				hideTitleAfterInroTransition = true;
+			}
+		}
+		//}
+	}
+	void TitilePanelHidden(){
+		//Destroy (idleSequence [0].cellCam);
+		//panelsInTransition = false;
+		//StartIdleLoop ();
 	}
 
 	void StartIdleLoop(){
@@ -170,63 +258,9 @@ public class IdleStateController : MonoBehaviour {
 		timeElapsedSinceLastTransition = timeToNextTransition;
 		panelsInTransition = false;
 		activeTransitionLoop = true;
-//		mainLoop = LoopIdle ();
-//		StartCoroutine(mainLoop);
-//		UnPlaceCameras ();
-	}
-//	IEnumerator LoopIdle(){
-//		while (true) {
-//			yield return new WaitForSeconds (5f + 8f);
-//		}
-//	}
-
-	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen, Environment _env){
-		aKioskIsOpen = true;
-		Vector2 gridPos = _gridPos;
-		bool doOpen = _doOpen;
-
-		//2 display
-//		if (gridPos.x > 2) {
-//			gridPos.x -= 3;
-//		}
-		//end
-		if (doOpen) {
-			kioskColumns [(int)gridPos.x] = 1;
-			Debug.Log (kioskColumns.Length + " " + (int)gridPos.x);
-			if (idleSequence.Count > 0) {
-				PanelAction pa = idleSequence.Find (x => x.row == gridPos.y && x.col == gridPos.x);
-				if (pa != null) {
-					pa.panel = null;
-					HideTitlePanel ();
-				} else {
-					if (idleSequence [0].panel != null) {
-						HideTitlePanel ();
-					} else {
-						StartIdleLoop ();
-					}
-				}
-			} else {
-				StartIdleLoop ();
-			}
-		} else {
-			Debug.Log ("close kiosk " + _gridPos.x);
-			//TODO
-			//animate kiosk out
-			//then animate replacement panel in
-			//update kiosk list
-			kioskColumns [(int)gridPos.x] = 0;
-		}
-//		if(mainLoop!=null)
-//			StopCoroutine (mainLoop);
-
 	}
 
-	void HideTitlePanel(){
-		if (!panelsInTransition) {
-			panelsInTransition = true;
-			EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].toPos, idleSequence [0].fromPos, 0.5f, 0.25f, EaseCurve.Instance.custom2, StartIdleLoop, "local");
-		}
-	}
+
 
 	void PlanLayout(){
 		Debug.Log ("[PlanLayout]");
@@ -245,17 +279,14 @@ public class IdleStateController : MonoBehaviour {
 			};
 		}
 
-		if (currEnv == -1) {
-			//wall is totally clear
-			currEnv = 0;
-			if (GM.desiredGrid.x == 6) {
-				startColumn = Random.Range (1, (int)GM.desiredGrid.x - 1);
-			} else {
-				startColumn = Random.Range (0, (int)GM.desiredGrid.x);
-			}
-		} else if (currEnv == environments.Count - 1) {
-			//we're at the last environment
-			//choose new start position
+		//reset vars
+		usedTypes.Clear ();
+		previousPanelPos = Vector3.zero;
+		idleSequence.Clear ();
+
+		//if wall is totally clear or were at the last environment
+		if (currEnv == -1 || currEnv == environments.Count - 1) {
+			//choose new start column
 			currEnv = 0;
 			if (GM.desiredGrid.x == 6) {
 				startColumn = Random.Range (1, (int)GM.desiredGrid.x - 1);
@@ -263,39 +294,31 @@ public class IdleStateController : MonoBehaviour {
 				startColumn = Random.Range (0, (int)GM.desiredGrid.x);
 			}
 		} else {
-			//we're still iterating through environments
-			//keep start position
+			//we're still iterating through environments, keep start position
 			currEnv++;
 		}
-		if (aKioskIsOpen) {
-			//if a kiosk is open, overwrite idle rules
-			//pick new start position each time, excluding in columns with kiosks
-
-			//Debug.Log("kiosk columns: "+System.String.Join("", new List<int>(kioskColumns).ConvertAll(i => i.ToString()).ToArray()));
+		//if a kiosk is open, overwrite previous rules
+		if (kioskColumns.Contains(1)) {
+			if(!kioskColumns.Contains(0)){
+				//all kiosks are open
+				Debug.Log("\tno columns left. ending idle loop.");
+				activeTransitionLoop = false;
+				return;
+			}
+			//create a new list of colmns which do not have a kiosk in them
 			List<int> kCols = new List<int> ();
-			for (int i = 0; i < kioskColumns.Length; i++) {
+			for (int i = 0; i < kioskColumns.Count; i++) {
 				if (kioskColumns [i] == 0) {
 					kCols.Add (i);
-				} else {
-//					Debug.Log ("EXcluding column " + i + " from start options");
 				}
 			}
-			//Debug.Log ("open columns: " + System.String.Join("", kCols.ConvertAll(i => i.ToString()).ToArray()));
+			//chose a random column from that list
 			startColumn = kCols[Random.Range (0, kCols.Count)];
 		}
 
 		Debug.Log ("\tENV (" + currEnv + " of "+environments.Count+"): " + environments [currEnv].envTitle);
 
-		//reset vars
-		usedTypes.Clear ();
-		previousPanelPos = Vector3.zero;
-//		if (idleSequence.Count > 0) {
-//			idleSequenceTmp = new List<PanelAction>(idleSequence);
-//		}
-		idleSequence.Clear ();
-
-		//pick random cell in top row
-		//int startColumn = Random.Range (1, (int)GM.desiredGrid.x-1);
+		//set starting panel position
 		startPanelPos = new Vector2 (0, startColumn);
 		Debug.Log ("\tSTARTING at column [" + startColumn+"]");
 
@@ -312,10 +335,15 @@ public class IdleStateController : MonoBehaviour {
 		StartCoroutine(PlaceCellCameras());
 	}
 
+
+
+	#region layout logic
 	void CheckLeft(int _row, int _col){
+//		Debug.Log ("\t[CheckLeft] from ["+_row+","+_col+"] (" + colsRemainL + " open)");
+
 		//how many cells remain open to the left of this cell
 		int colsRemainL = _col;
-//		Debug.Log ("\t[CheckLeft] from ["+_row+","+_col+"] (" + colsRemainL + " open)");
+
 		if (colsRemainL == 0) {
 			//end of row (screen)
 			//place something in bottom row?
@@ -324,51 +352,63 @@ public class IdleStateController : MonoBehaviour {
 				CheckDown (_row, _col);
 			return;
 		}
+
+		//decide allowed panel types based on remaining cells
 		int allowedTypes = colsRemainL == 1 ? 2 : 3;
-		if (aKioskIsOpen)
+		//if theres a kiosk open, ignore previous, only allow one type
+		if (kioskColumns.Contains(1))
 			allowedTypes = 1;
+		
 		//once cell remains, can place 1x1 or 1x2 panels only
 		//iterate to next cell
 		int nextCol = _col - 1;
-		//check which types of panels we have remaning in this environemnt
+		//check which types of panels we have remaning in this environemnt based on the type of panel allowed
 		string p = CheckAvailable (_row, nextCol, allowedTypes);
-		//check which of those can be used based on layout rules (TBD)
-		//TestFit ();
+
 		//place the chosen panel in adjacent cell
 		AllocatePanelPlacement (_row, nextCol, p, Vector3.left);
 
-		//if we happened to have placed a 2x2 cell, iterate one cell further than next
+		//if we happened to have placed a 2x2 cell, step one cell further
 		if (p == "2x2")
 			nextCol--;
+
 		//recur
 		CheckLeft (_row, nextCol);
 	}
 
 	void CheckRight(int _row, int _col){
+//		Debug.Log ("\t[CheckRight] from ["+_row+","+_col+"] (" + colsRemainR + " open)");
+
 		//same as CheckLeft but in the other direction
 		int colsRemainR = (int)GM.desiredGrid.x - (_col + 1);
-//		Debug.Log ("\t[CheckRight] from ["+_row+","+_col+"] (" + colsRemainR + " open)");
+
 		if (colsRemainR == 0) {
 			int r = Random.Range (0, 2);
 			if (r == 1)
 				CheckDown (_row, _col);
 			return;
 		}
+
 		int allowedTypes = colsRemainR == 1 ? 2 : 3;
-		if (aKioskIsOpen)
+		if (kioskColumns.Contains(1))
 			allowedTypes = 1;
+		
 		int nextCol = _col + 1; 
+
 		string p = CheckAvailable (_row, nextCol, allowedTypes);
-		//TestFit ();
+
 		AllocatePanelPlacement (_row, nextCol, p, Vector3.right);
+
 		if (p == "2x2")
 			nextCol++;
+
 		CheckRight (_row, nextCol);
 	}
 
 	void CheckDown(int _row, int _col){
 //		Debug.Log ("\t[CheckDown] from ["+_row+","+_col+"]");
-		if (!aKioskIsOpen) {
+
+		if (!kioskColumns.Contains(1)) {
 			int nextRow = _row + 1;
 			string p = CheckAvailable (nextRow, _col, 1); 
 			bool ok = TestFit (nextRow, _col, "1x1", Vector3.down); 
@@ -417,8 +457,9 @@ public class IdleStateController : MonoBehaviour {
 	}
 
 	bool TestFit(int _row, int _col, string _type, Vector3 _dir){
-		bool canPlace = true;
 //		Debug.Log("\t\t[TestFit] "+_type+" in cell ["+_row+","+_col+"]");
+
+		bool canPlace = true;
 
 		//rule 1: make sure cell isnt already occupied
 		if (layoutGrid [_row] [_col] != 0) {
@@ -443,12 +484,11 @@ public class IdleStateController : MonoBehaviour {
 		int id = _col + (int)GM.desiredGrid.x * _row;
 //		Debug.Log ("\t\t\t[PlacePanel] "+_type+" into " + _row + "," + _col + " [" + id + "]");
 
-
 		Vector2 gridPos = Vector3.zero;
 		Vector3 finalPos = Vector3.zero;
 
-		//set up panel action
-		PanelAction pa = new PanelAction();
+		//set up cell action
+		CellAction pa = new CellAction();
 
 		string panelName = _type+" @ ["+_row+","+_col+"]";
 
@@ -525,11 +565,13 @@ public class IdleStateController : MonoBehaviour {
 		CheckNegativeSpacePercentage ();
 	}
 
-	static int SortByDistanceFromOrigin(PanelAction pa1, PanelAction pa2)
+	static int SortByDistanceFromOrigin(CellAction pa1, CellAction pa2)
 	{
 		return pa1.distanceToOrigin.CompareTo(pa2.distanceToOrigin);
 	}
-		
+	#endregion
+
+
 
 	IEnumerator PlaceCellCameras(){
 		Debug.Log ("[PlaceCellCameras]");
@@ -538,8 +580,14 @@ public class IdleStateController : MonoBehaviour {
 		float layerDepth = 0;
 		float group = 2;
 		float titlePauseTime = 0;
+		int activePanels = 0;
 		int i = 0;
-		//for (int i = 0; i < idleSequence.Count; i++) {
+
+		panelsInTransition = true;
+
+
+
+		//instantiate new cell cams
 		while(i<idleSequence.Count){
 			GameObject ccGo;
 
@@ -547,7 +595,8 @@ public class IdleStateController : MonoBehaviour {
 				Debug.Log ("\twaited " + (Time.time - titlePauseTime) + " after title");
 			}
 
-			if ((i==0 && currEnv > 0) && !aKioskIsOpen) {
+
+			if ((i==0 && currEnv > 0) && !kioskColumns.Contains(1)) {
 				//this is the title panel
 //				Debug.Log (currEnv+"...adjusting current title panel in existing title cam");
 				currTitlePanel.position += Vector3.forward * 10;
@@ -558,12 +607,6 @@ public class IdleStateController : MonoBehaviour {
 				ccGo.SetActive (true);
 				Camera ccCam = ccGo.GetComponentInChildren<Camera> ();
 				ccCam.GetComponent<TouchScript.Layers.StandardLayer> ().Name = "CellCamera "+idleSequence[i].col+", "+idleSequence[i].row;
-				//two displays
-//				if (idleSequence [i].col > 2) {
-//					ccCam.targetDisplay = 1;
-//				} else {
-//					ccCam.targetDisplay = 0;
-//				}
 				Rect rec = CreateCameraCell (idleSequence[i].row, idleSequence[i].col, idleSequence[i].panelType, idleSequence[i].direction);
 				ccCam.rect = rec;
 				ccGo.transform.parent = AM.cams;
@@ -578,33 +621,39 @@ public class IdleStateController : MonoBehaviour {
 			panel.transform.localPosition = Vector3.Scale( -idleSequence [i].direction, new Vector3(6f, 3.5f, 0f));
 			Vector3 toPos = Vector3.zero;
 
-			panel.GetComponent<PanelObject>().panelID = idleSequence[i].col + (int)GM.desiredGrid.x * idleSequence[i].row;
-			panel.GetComponent<PanelObject> ().panelState = "Idle";
-			panel.GetComponent<PanelObject> ().panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
-			panel.GetComponent<PanelObject> ().env = environments [currEnv];
+			PanelObject po = panel.GetComponent<PanelObject> ();
+
+			po.panelID = idleSequence[i].col + (int)GM.desiredGrid.x * idleSequence[i].row;
+			po.panelContext = PanelObject.PanelContext.Idle;
+			po.panelState = PanelObject.PanelState.Animating;
+			po.panelMode = PanelObject.PanelMode.Front;
+			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
+			po.env = environments [currEnv];
 
 			panel.name = "Panel "+idleSequence [i].col+", "+idleSequence [i].row;
 
 			if(idleSequence [i].panelType != new Vector2 (1, 1)){
-				panel.GetComponent<PanelObject> ().canInteract = false;
+				po.canInteract = false;
 			}
 				
-			panel.GetComponent<PanelObject> ().SetPanelColors (environments [currEnv].envColor);
+			po.SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {
-				panel.GetComponent<PanelObject> ().SetAsTitle (environments [currEnv].envTitle);
+				po.SetAsTitle (environments [currEnv].envTitle);
+				po.panelMode = PanelObject.PanelMode.Background;
 			}else if (idleSequence[i].panelType == new Vector2(1,2)) {
-				panel.GetComponent<PanelObject> ().SetAsImage1x2 ();
+				po.SetAsImage1x2 ();
+				po.panelMode = PanelObject.PanelMode.Background;
 				//panel.GetComponent<PanelObject> ().SetAsNonInteractive ();
 				toPos.x += (5.33333f / 4f);
 			}else {
 				int r = Random.Range (0, 3);
 				if (r == 1) {
-					panel.GetComponent<PanelObject> ().SetAs3dViz ();
+					po.SetAs3dViz ();
 				} else if (r == 2) {
-					panel.GetComponent<PanelObject> ().SetAsVideo (false, true);
+					po.SetAsVideo (false, true);
 					//panel.GetComponent<PanelObject> ().SetAsImage ();
 				} else {
-					panel.GetComponent<PanelObject> ().SetAsImage ();
+					po.SetAsImage ();
 				}
 			}
 
@@ -617,6 +666,7 @@ public class IdleStateController : MonoBehaviour {
 				//theres a kiosk here, place the cell cam/panel without animating and disable
 				panel.transform.localPosition = toPos;
 				ccGo.SetActive (false);
+
 			} else {
 				//animate the panel
 				float speed = group * 0.5f;
@@ -625,8 +675,7 @@ public class IdleStateController : MonoBehaviour {
 					if (idleSequence [i + 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
 						group++;
 				}
-				//if (i == 0 && currEnv < environments.Count - 1) {
-				if ((i == 0 && currEnv < environments.Count - 1) && !aKioskIsOpen) {
+				if ((i == 0 && currEnv < environments.Count - 1) && !kioskColumns.Contains(1)) {
 //					Debug.Log (currEnv + "...saving current title cam");
 					//save current title panel for transitions
 					currTitleCam = ccGo.transform;
@@ -640,7 +689,15 @@ public class IdleStateController : MonoBehaviour {
 					titlePauseTime = Time.time;
 					yield return new WaitForSecondsRealtime (1f);
 				} else {
-					if (i < idleSequence.Count - 1) {
+					//get count of panels that will actually be active
+					activePanels = 0;
+					for(int n=0; n<idleSequence.Count; n++){
+						if(kioskColumns [idleSequence [n].col] == 0){
+							activePanels++;
+						}
+					}
+					Debug.Log (i + " < " + (activePanels - 1));
+					if (i < activePanels - 1) {
 						EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
 					} else {
 						EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, PlacingFinished, "local");
@@ -664,10 +721,24 @@ public class IdleStateController : MonoBehaviour {
 		yield return null;
 	}
 
+	void TitleDown(){
+		Debug.Log ("[TitleDown] title should hide " + hideTitleAfterInroTransition);
+		if (hideTitleAfterInroTransition) {
+			titleHidden = true;
+			hideTitleAfterInroTransition = false;
+			idleSequence [0].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Hidden;
+			EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].panel.transform.localPosition, idleSequence [0].fromPos, 2f*0.5f, 2f*0.1f, EaseCurve.Instance.custom, null, "local");
+		}
+	}
+
 	void PlacingFinished(){
 		Debug.Log ("[PlacingFinished]");
+		foreach (CellAction p in idleSequence) {
+			p.panel.GetComponent<PanelObject>().panelState = PanelObject.PanelState.Active;
+		}
 		timeElapsedSinceLastTransition = 0;
 		panelsInTransition = false;
+		titleHidden = false;
 	}
 
 	void UnPlaceCameras(){
@@ -676,78 +747,53 @@ public class IdleStateController : MonoBehaviour {
 		float zDepth = 50;
 		float layerDepth = 0;
 		float group = 2;
-		float speed = 0;
-		float wait = 0;
+		float duration = 0;
+		float delay = 0;
 
-		//yuck, fix this!
-		if (!aKioskIsOpen) {
+		if (idleSequence.Count > 0) {
 			for (int i = idleSequence.Count - 1; i > 0; i--) {
-				speed = group * 0.2f;
-				wait = group * 0.05f;
+				duration = group * 0.2f;
+				delay = group * 0.05f;
 				if (i > 1) {
 					if (idleSequence [i - 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
 						group++;
 				}
-				idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
-				if (idleSequence [i].panel != null) {
-					if (i == 1) {
-						EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, nextSequence, "local");
-					} else {
-				
-						EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
-					}
+
+				//if a panel was tapped on in the idle state, it gets moved to the kiosk
+				//since it no longer part of the idleSequence, we dont want to animate it
+				//but not animating <something> will throw off the timing of the remaining panels in the idleSequence
+				//in that case, we use the color quad as a stand-in for the panel object
+				Transform p = idleSequence [i].panel.transform;
+				if (p.parent.name != "Container") {
+					p = idleSequence [i].cellCam.transform.Find ("Container");
+				} else {
+					idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
+				}
+
+				idleSequence [i].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Animating;
+				if (i == 1) {
+					EaseCurve.Instance.Vec3 (p, idleSequence [i].toPos, idleSequence [i].fromPos, duration, delay, EaseCurve.Instance.custom2, nextSequence, "local");
+				} else {
+					EaseCurve.Instance.Vec3 (p, idleSequence [i].toPos, idleSequence [i].fromPos, duration, delay, EaseCurve.Instance.custom2, null, "local");
 				}
 			}
-			if (currEnv == environments.Count - 1) {
+
+			if ((currEnv == environments.Count - 1 || kioskColumns.Contains (1)) && !titleHidden) {
+				idleSequence [0].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Animating;
+				titleHidden = true;
 				idleSequence [0].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
-				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].toPos, idleSequence [0].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
+				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].toPos, idleSequence [0].fromPos, duration, delay+0.2f, EaseCurve.Instance.custom2, null, "local");
 			}
 		} else {
-			if (idleSequence.Count > 0) {
-				int alreadyRemoved = (idleSequence [0].panel.transform.localPosition != idleSequence [0].fromPos) ? 0 : 1;
-				for (int i = idleSequence.Count - 1; i >= alreadyRemoved; i--) {
-					if (idleSequence [i].cellCam.activeSelf) {
-						speed = group * 0.2f;
-						wait = group * 0.05f;
-						if (i > alreadyRemoved) {
-							if (idleSequence [i - 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
-								group++;
-						}
-						idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
-						if (idleSequence [i].panel != null) {
-							if (i == alreadyRemoved) {
-								EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, nextSequence, "local");
-							} else {
-								EaseCurve.Instance.Vec3 (idleSequence [i].panel.transform, idleSequence [i].toPos, idleSequence [i].fromPos, speed, wait, EaseCurve.Instance.custom2, null, "local");
-							}
-						}
-					}
-				}
-			} else {
-				nextSequence ();
-			}
+			nextSequence ();
 		}
 	}
 
 	public void nextSequence(){
+		Debug.Log ("[nextSequence]");
+		panelsInTransition = false;
 		ClearCellCams ();
 		PlanLayout ();
-	}
-
-
-
-	//clear all panels and reset depth
-	void ClearCellCams(){
-		Debug.Log ("[ClearCellCams] " + AM.cams.childCount);
-		foreach (Transform child in AM.cams) {
-			if (currTitleCam != null) {
-				if (child != currTitleCam)
-					GameObject.Destroy (child.gameObject);
-			} else {
-				GameObject.Destroy (child.gameObject);
-			}
-		}
-		panelDepth = 50f;
 	}
 
 	Rect CreateCameraCell(int _row, int _col, Vector2 _size, Vector3 _dir){
@@ -755,24 +801,6 @@ public class IdleStateController : MonoBehaviour {
 		int col = _col;
 		int row = _row;
 
-		/*
-		float cellW = 1f / 3f;
-		float cellH = 1f / GM.desiredGrid.y;
-		if (col > 2) {
-			col -= 3; //last 3 cols on second display, restart at 0
-		}
-		float x = cellW * col;
-		if (_size.x == 2 && _dir == Vector3.left)
-			x = cellW * (col - 1);
-		float y = cellH * ((GM.desiredGrid.y - 1) - row);
-		if (_size.x == 2)
-			y = cellH * ((GM.desiredGrid.y - 1) - (row + 1));
-		float w = cellW * _size.x;
-		float h = cellH * _size.y;
-		*/
-
-
-		//single 32:9 display
 		float cellW = 1f / GM.desiredGrid.x;
 		float cellH = 1f / GM.desiredGrid.y;
 		float x = cellW * _col;
@@ -789,21 +817,11 @@ public class IdleStateController : MonoBehaviour {
 	}
 		
 	void ZoomBG(){
-//		PanelObject activeBg;
-//		PanelObject readyBg;
-//
-//		if (currBg == 1) {
-//			activeBg = AM.bgPanel1;
-//			readyBg = AM.bgPanel2;
-//		} else {
-//			activeBg = AM.bgPanel2;
-//			readyBg = AM.bgPanel1;
-//		}
 		int nextBGi = currBg+1;
 		if (nextBGi == bgPanels.Count)
 			nextBGi = 0;
 		bgPanels [nextBGi].transform.position = nextPosition;
-		bgPanels[nextBGi].PlayVideo ();
+		bgPanels [nextBGi].PlayVideo ();
 		Material bgMat;
 		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
 			bgMat = bgPanels[currBg].frontFullPanelTexture329.GetComponent<Renderer> ().material;
@@ -814,16 +832,18 @@ public class IdleStateController : MonoBehaviour {
 		}
 		Color32 toColor = bgMat.color;
 		toColor.a = 0;
-		//EaseCurve.Instance.Scl (AM.bgPanel2.transform, AM.bgPanel2.transform.localScale * 2, AM.bgPanel1.transform.localScale, 0.5f, 0, EaseCurve.Instance.linear);
 		EaseCurve.Instance.Scl (bgPanels[currBg].transform, bgPanels[currBg].transform.localScale, bgPanels[currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG);
 		EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
-		//Invoke ("UpdateBG", 0.5f);
 	}
-	Vector3 baseScale;// = new Vector3 (GM.desiredGrid.x, GM.desiredGrid.x, GM.desiredGrid.x);
+
+
+	Vector3 baseScale;
 	Vector3 activePosition = new Vector3 (0, 0, 100);
 	Vector3 nextPosition = new Vector3 (0, 0, 105);
 	Vector3 readyPosition = new Vector3 (0, 100, 100);
 	Color32 baseColor = new Color32 (255, 255, 255, 255);
+
+
 	void UpdateBG(){
 //		PanelObject activeBg;
 //		PanelObject readyBg;

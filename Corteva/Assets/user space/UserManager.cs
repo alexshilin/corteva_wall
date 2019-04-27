@@ -102,7 +102,7 @@ public class UserManager : MonoBehaviour {
 
 	public void SetCam(float _totalColumns, float _userColumn){
 		float userColumn = _userColumn;
-		Debug.Log ("Placing user camera at col " + userColumn + " of " + _totalColumns);
+		Debug.Log ("[SetCam] at col " + userColumn + " of " + _totalColumns);
 //		if (userColumn > 2) {
 //			userColumn -= 3;
 //			userCam.targetDisplay = 1;

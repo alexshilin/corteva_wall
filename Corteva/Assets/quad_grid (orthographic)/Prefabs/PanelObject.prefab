@@ -163,7 +163,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4645490083035064}
   - component: {fileID: 33012420325862014}
-  - component: {fileID: 64029329477884820}
   - component: {fileID: 23460674431273520}
   - component: {fileID: 114054773896660308}
   - component: {fileID: 114083123308832524}
@@ -1211,20 +1210,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!64 &64029329477884820
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1460000718511374}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Convex: 1
-  m_CookingOptions: 14
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!64 &64143711990543728
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -1319,6 +1304,15 @@ MonoBehaviour:
   pivot: {fileID: 4049398641533840}
   viz: {fileID: 1333771221161128}
   currentColor: {r: 0, g: 0, b: 0, a: 1}
+  env:
+    envID: 0
+    envColor:
+      serializedVersion: 2
+      rgba: 0
+    envIcon: {fileID: 0}
+    envTitle: 
+    envSummary: 
+    envBackgroundVideos: []
   frontFullPanel329: {fileID: 4146445891698352}
   frontFullPanelTexture329: {fileID: 4645490083035064}
   videoPlayer329: {fileID: 114054773896660308}
@@ -1333,13 +1327,13 @@ MonoBehaviour:
   frontSplitPanelTexture: {fileID: 4485003220038760}
   backPanel: {fileID: 4062748462621334}
   backPanelColor: {fileID: 4525350809796666}
-  isUserActive: 0
-  panelID: 0
   colliders: {fileID: 4870401908237050}
-  canInteract: 1
   panelGridPos: {x: 0, y: 0}
   canBeMasked: 1
   panelState: 
+  isUserActive: 0
+  panelID: 0
+  canInteract: 1
 --- !u!114 &114054773896660308
 MonoBehaviour:
   m_ObjectHideFlags: 1

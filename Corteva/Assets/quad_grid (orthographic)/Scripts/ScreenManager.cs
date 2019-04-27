@@ -12,6 +12,7 @@ public class ScreenManager : MonoBehaviour {
 	public Text setSingleScreenheightText;
 	public Text setGridXText;
 	public Text setGridYText;
+	public Text idleTimerText;
 
 	public GameObject admin;
 	private bool adminOn = true;

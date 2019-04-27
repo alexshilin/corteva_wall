@@ -38,7 +38,7 @@ public class UserGrid : MonoBehaviour {
 			} else {
 				po.SetAsImage ();
 			}
-			po.panelState = "Thumbnail";
+			po.panelMode = PanelObject.PanelMode.Thumbnail;
 			panel.SetActive (true);
 
 		}
