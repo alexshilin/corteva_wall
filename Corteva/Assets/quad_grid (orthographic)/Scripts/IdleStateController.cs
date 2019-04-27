@@ -45,6 +45,7 @@ public class IdleStateController : MonoBehaviour {
 	int currBg = 0;
 
 	public List<int> kioskColumns = new List<int> ();
+	public List<int> kioskColumnsToClose = new List<int> ();
 
 	List<Environment> environments;
 	int currEnv = -1;
@@ -92,7 +93,8 @@ public class IdleStateController : MonoBehaviour {
 		environments = new List<Environment>(AM.environments);
 
 		//start event listenered
-		EventsManager.Instance.OnUserKioskRequest += updateFromKioskRequest;
+		EventsManager.Instance.OnUserKioskOpenRequest += KioskOpenResponse;
+		EventsManager.Instance.OnUserKioskCloseRequest += KioskCloseResponse;
 		EventsManager.Instance.OnClearEverything += ClearEverything;
 	}
 
@@ -100,7 +102,8 @@ public class IdleStateController : MonoBehaviour {
 
 	void OnDisable(){
 		//stop event listeneres
-		EventsManager.Instance.OnUserKioskRequest -= updateFromKioskRequest;
+		EventsManager.Instance.OnUserKioskOpenRequest -= KioskOpenResponse;
+		EventsManager.Instance.OnUserKioskCloseRequest += KioskCloseResponse;
 		EventsManager.Instance.OnClearEverything -= ClearEverything;
 	}
 
@@ -171,6 +174,7 @@ public class IdleStateController : MonoBehaviour {
 		kioskColumns.Clear ();
 		for (int i = 0; i < GM.desiredGrid.x; i++) {
 			kioskColumns.Add (0);
+			kioskColumnsToClose.Add (0);
 		}
 	}
 		
@@ -196,37 +200,32 @@ public class IdleStateController : MonoBehaviour {
 	#endregion
 
 	#region event listener reactions
-	void updateFromKioskRequest (Vector2 _gridPos, bool _doOpen, Environment _env){
-		Debug.Log ("[updateFromKioskRequest] " + (_doOpen ? "open":"close") + " at col " +_gridPos.x);
+	private void KioskOpenResponse (Vector2 _gridPos, Environment _env){
+		Debug.Log ("[KioskOpenResponse] at col " + _gridPos.x);
 
-		Vector2 gridPos = _gridPos;
-		bool doOpen = _doOpen;
-
-		//is a kiosk being opened?
-		if (doOpen) {
-			//update which columns have kiosks
-			kioskColumns [(int)gridPos.x] = 1;
-			//do we have any panels open?
-			if (idleSequence.Count > 0) {
-				//is there an active title cellcam and panel?
-				if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
-					//hide it
-					HideTitlePanel ();
-				}
-			}
-		} else {
-			//a kiosk is being closed
-			Debug.Log ("close kiosk " + _gridPos.x);
-			//TODO
-			//animate kiosk out
-			//then animate replacement panel in
-			//update kiosk list
-			bool doResumeLoop = kioskColumns.Contains(0) ? false : true;
-			kioskColumns [(int)gridPos.x] = 0;
-			if (doResumeLoop) {
-				StartIdleLoop ();
+		//update which columns have kiosks
+		kioskColumns [(int)_gridPos.x] = 1;
+		//do we have any panels open?
+		if (idleSequence.Count > 0) {
+			//is there an active title cellcam and panel?
+			if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
+				//hide it
+				HideTitlePanel ();
 			}
 		}
+	}
+	private void KioskCloseResponse(Vector2 _gridPos, bool _now){
+		Debug.Log ("[KioskCloseResponse] at col " + _gridPos.x + (_now ? "now" : "prepare"));
+		//a kiosk is being closed
+		if (_now) {
+			//do something after the kiosks have been closed
+		} else {
+			AddKioskToClose ((int)_gridPos.x);
+		}
+		//TODO
+		//animate kiosk out
+		//then animate replacement panel in
+		//update kiosk list
 
 	}
 	#endregion
@@ -251,6 +250,27 @@ public class IdleStateController : MonoBehaviour {
 		//Destroy (idleSequence [0].cellCam);
 		//panelsInTransition = false;
 		//StartIdleLoop ();
+	}
+
+
+	void AddKioskToClose(int _col){
+		if(kioskColumns[_col] == 1)
+			kioskColumnsToClose [_col] = 1;
+	}
+	void CloseKiosks (){
+		Debug.Log ("[CheckKiosksToClose]");
+		bool doResumeLoop = kioskColumns.Contains(0) ? false : true;
+		for (int i = 0; i < kioskColumns.Count; i++) {
+			if (kioskColumns [i] == 1 && kioskColumnsToClose [i] == 1) {
+				Debug.Log ("\tclosing kiosk at col " + i);
+				EventsManager.Instance.UserKioskCloseRequest (new Vector2(i,0), true);
+				kioskColumns [i] = 0;
+				kioskColumnsToClose [i] = 0;
+			}
+		}
+		if (doResumeLoop) {
+			StartIdleLoop ();
+		}
 	}
 
 	void StartIdleLoop(){
@@ -696,7 +716,7 @@ public class IdleStateController : MonoBehaviour {
 							activePanels++;
 						}
 					}
-					Debug.Log (i + " < " + (activePanels - 1));
+					//Debug.Log (i + " < " + (activePanels - 1));
 					if (i < activePanels - 1) {
 						EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
 					} else {
@@ -792,6 +812,7 @@ public class IdleStateController : MonoBehaviour {
 	public void nextSequence(){
 		Debug.Log ("[nextSequence]");
 		panelsInTransition = false;
+		CloseKiosks ();
 		ClearCellCams ();
 		PlanLayout ();
 	}

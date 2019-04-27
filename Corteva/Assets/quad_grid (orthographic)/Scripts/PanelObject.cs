@@ -204,7 +204,7 @@ public class PanelObject : MonoBehaviour {
 			EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 			ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
-			EventsManager.Instance.UserKioskRequest (this.panelGridPos, true, env);
+			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, env);
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
 		}
 
@@ -218,7 +218,7 @@ public class PanelObject : MonoBehaviour {
 				//Debug.Log ("from: " + );
 				//tapGesture
 				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-				EventsManager.Instance.UserKioskRequest (tappedGridPos, true);
+				EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
 		}
 	}
 
