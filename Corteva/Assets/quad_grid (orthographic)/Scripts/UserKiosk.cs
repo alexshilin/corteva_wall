@@ -1,22 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using TouchScript;
 
-public class UserManager : MonoBehaviour {
+public class UserKiosk : MonoBehaviour {
 
 	public Camera userCam;
-	public GameObject panelPrefab;
-	public GameObject navPrefab;
+	public GameObject nav;
 	public Transform userGrid;
 	public Transform menu;
+	public Transform closer;
 
-	public Texture2D bgTexture;
 	private GameObject bgPanel;
 	private GameObject headerPanel;
-
-	 float totalColumns = 6;
-	 float userColumn = 1;
 
 	private float camRectW;
 	private float camRectX;
@@ -36,78 +31,81 @@ public class UserManager : MonoBehaviour {
 	private Vector3 bgFinalPos;
 
 	public Environment env;
+	public int column;
 
-
-//	void OnEnable(){
-//		EventsManager.Instance.OnUserKioskRequest += openKiosk;
-//	}
-//	void OnDisable(){
-//		EventsManager.Instance.OnUserKioskRequest -= openKiosk;
-//	}
+	int timesIveBeenTapped;
 
 	// Use this for initialization
 	void Start () {
-
-		/*
-		SetCam (totalColumns, userColumn);
-
-		headerInitPos = panelPrefab.transform.localPosition + (Vector3.down * 3);
-		navInitPos = navPrefab.transform.localPosition + (Vector3.up * 6);
-		//gridInitPos = (userGrid.transform.localPosition + (Vector3.up * 6)) + (userGrid.transform.localPosition + (Vector3.left * 1.66f));
-		gridInitPos = new Vector3(1.7f, -1.9f, 50);
-		gridFinalPos = new Vector3(-0.3f, -1.9f, 50);
-		bgFinalPos = new Vector3(1f, 0, 60);
-		navPrefab.SetActive (false);
-		userGrid.gameObject.SetActive (false);
-
-
-		bgPanel = Instantiate (panelPrefab, transform);
-		bgPanel.name = "bgPanel";
-		//bgPanel.transform.localPosition = new Vector3 (-12, 0, 60);
-		bgPanel.transform.localPosition = new Vector3 (0, 0, 60);
-		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
-		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
-		//Renderer bgPanelRenderer = bgPanel.transform.Find("Panel").Find("Front").GetComponent<Renderer> ();
-		//bgPanelRenderer.material.mainTexture = bgTexture;
-		//bgPanelRenderer.material.color = new Color32 (70, 70, 70, 0);
-		bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
-		if(ScreenManager.Instance!=null)
-			ScreenManager.Instance.MoveToLayer (bgPanel.transform, LayerMask.NameToLayer ("User1"));
-		bgPanel.SetActive (false);
-
-		headerPanel = Instantiate (panelPrefab, transform);
-		headerPanel.name = "headerPanel";
-		headerPanel.transform.localPosition = new Vector3 (0, 6, 50);
-		//Renderer headerPanelRenderer = headerPanel.transform.Find ("Panel").Find ("Front").GetComponent<Renderer> ();
-		//headerPanelRenderer.material.color = Color.blue;
-		headerPanel.GetComponent<PanelObject> ().envHeadlineText.text = "Globe";
-		headerPanel.GetComponent<PanelObject> ().envSummaryText.text = "Today, food is gown and traded globally.<br>How does food flow globally from farms to your plate?";
-		headerPanel.GetComponent<PanelObject>().SetAsNonInteractive ();
-		if(ScreenManager.Instance!=null)
-			ScreenManager.Instance.MoveToLayer (headerPanel.transform, LayerMask.NameToLayer ("User1"));
-		headerPanel.SetActive (false);
-		*/
-
-//		Transform cube = GameObject.Find ("TestCube").transform;
-//		EaseCurve.Instance.Vec3(cube, cube.transform.position, cube.transform.position + Vector3.right * 3, 2f);
+		
 	}
 
 	void OnEnable(){
-		
+		timesIveBeenTapped = 0;
+
+		//EventsManager.Instance.OnUserKioskCloseRequest += kioskCloseRequestHandler;
+
+		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
+	}
+	void OnDisable(){
+		//EventsManager.Instance.OnUserKioskCloseRequest -= kioskCloseRequestHandler;
+
+		EventsManager.Instance.OnEnvironmentSwitch -= environmentSwitchHandler;
 	}
 
 	void Done(){
 		Debug.Log ("done");
 	}
 
+	private void environmentSwitchHandler(){
+		Debug.Log ("!![environmentSwitchHandler] col " + column + " ("+(timesIveBeenTapped>0?"active":"inactive")+")");
+		//environemnts are switching, has there been any user activity?
+		if (timesIveBeenTapped == 0) {
+			//no, is the keep alive timer showing?
+			Debug.Log("\t"+(closer.gameObject.activeSelf?"close":"show keep alive"));
+			if (!closer.gameObject.activeSelf) {
+				//no, show it
+				closer.gameObject.SetActive (true);
+			} else {
+				//yes, close kiosk
+				CloseKiosk();
+			}
+			//EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), false);
+		} else {
+			timesIveBeenTapped = 0;
+		}
+	}
+
+	private void kioskTapped(){
+		timesIveBeenTapped++;
+		Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
+		if (closer.gameObject.activeSelf) {
+			closer.gameObject.SetActive (false);
+		}
+	}
+
+	void kioskCloseRequestHandler(Vector2 _gridPos, bool _now){
+		if ((int)_gridPos.x == column && !_now) {
+			Debug.Log ("!![kioskCloseRequestHandler] at col " + _gridPos.x);
+			//show keep-alive message
+			closer.gameObject.SetActive(true);
+		}
+	}
+
+	public void CloseKiosk(){
+		Debug.Log ("[CloseKiosk] " + column);
+		//if (closer.gameObject.activeSelf) {
+			EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
+			Destroy (gameObject);
+//		} else {
+//			Debug.Log ("\tclose cancelled by user");
+//		}
+	}
+
 	public void SetCam(float _totalColumns, float _userColumn){
 		float userColumn = _userColumn;
 		Debug.Log ("[SetCam] at col " + userColumn + " of " + _totalColumns);
-//		if (userColumn > 2) {
-//			userColumn -= 3;
-//			userCam.targetDisplay = 1;
-//			Debug.Log ("\ton display 2");
-//		}
+
 		camRectW = 1f / _totalColumns;
 		camRectX = camRectW * userColumn;
 		float camRectXm = camRectX + (camRectW * 0.5f);
@@ -121,29 +119,33 @@ public class UserManager : MonoBehaviour {
 	void Init(){
 		bgPanel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 		bgPanel.name = "bgPanel";
-		bgPanel.transform.localPosition = new Vector3 (0, 0, 60);
+		bgPanel.transform.localPosition = new Vector3 (0, 0, 50);
 		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
 		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
 		bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
+		bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
+		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
 		bgFinalPos = new Vector3(1f, 0, 60);
 		bgPanel.SetActive (false);
 
 
 		headerPanel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 		headerPanel.name = "headerPanel";
-		headerPanel.transform.localPosition = new Vector3 (0, 6, 50);
+		headerPanel.transform.localPosition = new Vector3 (0, 6, 20);
 		if (env == null)
 			env = AssetManager.Instance.environments [Random.Range (0, AssetManager.Instance.environments.Count)];
 		headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
 		headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
+		headerPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
+		headerPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
 		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
 		headerPanel.SetActive (false);
 
 
-		navInitPos = navPrefab.transform.localPosition + (Vector3.up * 6);
+		navInitPos = nav.transform.localPosition + (Vector3.up * 6);
 
-		gridInitPos = new Vector3(1.7f, -1.9f, 50);
-		gridFinalPos = new Vector3(-0.3f, -1.9f, 50);
+		gridInitPos = new Vector3(1.7f, -1.9f, 0);
+		gridFinalPos = new Vector3(-0.3f, -1.9f, 0);
 		userGrid.gameObject.SetActive (false);
 	}
 
@@ -153,12 +155,12 @@ public class UserManager : MonoBehaviour {
 	}
 
 	void Next(){
-		navPrefab.SetActive (true);
+		nav.SetActive (true);
 		headerPanel.SetActive (true);
 		userGrid.gameObject.SetActive (true);
 		//bgPanel.SetActive (true);
 		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
-		EaseCurve.Instance.Vec3 (navPrefab.transform, navPrefab.transform.localPosition, navInitPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
+		EaseCurve.Instance.Vec3 (nav.transform, nav.transform.localPosition, navInitPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridInitPos, 1f, 0f, EaseCurve.Instance.easeOut, Next2, "local");
 	}
 
@@ -182,11 +184,10 @@ public class UserManager : MonoBehaviour {
 	private bool panelDoFollow = false;
 	// Update is called once per frame
 	void Update () {
-//		if (Input.GetKeyDown (KeyCode.Space)) {
-//			Open ();
-//		}
-
 		if (Input.GetMouseButtonDown (0)) {
+			if (userCam.pixelRect.Contains (Input.mousePosition)) {
+				kioskTapped ();
+			}
 			//make sure camera has a valied viewport (its collapsed on start)
 			if (userCam.rect.width > 0 && userCam.rect.height > 0) {
 				if (Physics.Raycast (userCam.ScreenPointToRay (Input.mousePosition), out hit)) {

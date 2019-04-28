@@ -39,6 +39,7 @@ public class UserGrid : MonoBehaviour {
 				po.SetAsImage ();
 			}
 			po.panelMode = PanelObject.PanelMode.Thumbnail;
+			po.panelContext = PanelObject.PanelContext.Kiosk;
 			panel.SetActive (true);
 
 		}

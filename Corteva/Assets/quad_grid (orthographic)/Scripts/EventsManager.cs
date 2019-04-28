@@ -37,6 +37,10 @@ public class EventsManager : MonoBehaviour {
 	public event UserKioskCloseRequestEvent OnUserKioskCloseRequest;
 	public void UserKioskCloseRequest(Vector2 _gridPos, bool _closeImmediately){ OnUserKioskCloseRequest (_gridPos, _closeImmediately); }
 
+	public delegate void EnvironmentSwitch();
+	public event EnvironmentSwitch OnEnvironmentSwitch;
+	public void EnvironmentSwitchRequest(){ OnEnvironmentSwitch (); }
+
 	public delegate void ClearEverything();
 	public event ClearEverything OnClearEverything;
 	public void ClearEverythingRequest(){ OnClearEverything (); }

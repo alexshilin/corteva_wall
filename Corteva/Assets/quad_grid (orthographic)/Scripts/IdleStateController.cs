@@ -58,7 +58,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 	float timeElapsedSinceLastTransition;
-	float timeToNextTransition = 5f;
+	float timeToNextTransition = 10f;
 	bool activeTransitionLoop = false;
 
 	bool panelsInTransition = false;
@@ -201,7 +201,7 @@ public class IdleStateController : MonoBehaviour {
 
 	#region event listener reactions
 	private void KioskOpenResponse (Vector2 _gridPos, Environment _env){
-		Debug.Log ("[KioskOpenResponse] at col " + _gridPos.x);
+		Debug.Log ("!![KioskOpenResponse] at col " + _gridPos.x);
 
 		//update which columns have kiosks
 		kioskColumns [(int)_gridPos.x] = 1;
@@ -215,12 +215,19 @@ public class IdleStateController : MonoBehaviour {
 		}
 	}
 	private void KioskCloseResponse(Vector2 _gridPos, bool _now){
-		Debug.Log ("[KioskCloseResponse] at col " + _gridPos.x + (_now ? "now" : "prepare"));
+		Debug.Log ("!![KioskCloseResponse] at col " + _gridPos.x + " " + (_now ? "now" : "prepare"));
 		//a kiosk is being closed
 		if (_now) {
 			//do something after the kiosks have been closed
+			for (int i = 0; i < kioskColumns.Count; i++) {
+				if (i==(int)_gridPos.x && kioskColumns [i] == 1){ //&& kioskColumnsToClose [i] == 1) {
+					Debug.Log ("\tclosing kiosk at col " + i);
+					kioskColumns [i] = 0;
+					//kioskColumnsToClose [i] = 0;
+				}
+			}
 		} else {
-			AddKioskToClose ((int)_gridPos.x);
+			//AddKioskToClose ((int)_gridPos.x);
 		}
 		//TODO
 		//animate kiosk out
@@ -600,12 +607,10 @@ public class IdleStateController : MonoBehaviour {
 		float layerDepth = 0;
 		float group = 2;
 		float titlePauseTime = 0;
-		int activePanels = 0;
+		//int activePanels = 0;
 		int i = 0;
 
 		panelsInTransition = true;
-
-
 
 		//instantiate new cell cams
 		while(i<idleSequence.Count){
@@ -615,8 +620,7 @@ public class IdleStateController : MonoBehaviour {
 				Debug.Log ("\twaited " + (Time.time - titlePauseTime) + " after title");
 			}
 
-
-			if ((i==0 && currEnv > 0) && !kioskColumns.Contains(1)) {
+			if ((i == 0 && currEnv > 0) && !kioskColumns.Contains(1) && currTitlePanel != null) {
 				//this is the title panel
 //				Debug.Log (currEnv+"...adjusting current title panel in existing title cam");
 				currTitlePanel.position += Vector3.forward * 10;
@@ -682,12 +686,12 @@ public class IdleStateController : MonoBehaviour {
 			idleSequence [i].panel = panel;
 			idleSequence [i].cellCam = ccGo;
 
-			if (kioskColumns [idleSequence [i].col] == 1) {
-				//theres a kiosk here, place the cell cam/panel without animating and disable
-				panel.transform.localPosition = toPos;
-				ccGo.SetActive (false);
-
-			} else {
+//			if (kioskColumns [idleSequence [i].col] == 1) {
+//				//theres a kiosk here, place the cell cam/panel without animating and disable
+//				panel.transform.localPosition = toPos;
+//				ccGo.SetActive (false);
+//
+//			} else {
 				//animate the panel
 				float speed = group * 0.5f;
 				float wait = group * 0.1f;
@@ -710,14 +714,14 @@ public class IdleStateController : MonoBehaviour {
 					yield return new WaitForSecondsRealtime (1f);
 				} else {
 					//get count of panels that will actually be active
-					activePanels = 0;
-					for(int n=0; n<idleSequence.Count; n++){
-						if(kioskColumns [idleSequence [n].col] == 0){
-							activePanels++;
-						}
-					}
-					//Debug.Log (i + " < " + (activePanels - 1));
-					if (i < activePanels - 1) {
+//					activePanels = 0;
+//					for(int n=0; n<idleSequence.Count; n++){
+//						if(kioskColumns [idleSequence [n].col] == 0){
+//							activePanels++;
+//						}
+//					}
+					Debug.Log (i + " < " + (idleSequence.Count - 1));
+					if (i < idleSequence.Count - 1) {
 						EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
 					} else {
 						EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, PlacingFinished, "local");
@@ -730,10 +734,10 @@ public class IdleStateController : MonoBehaviour {
 					toCol.a = 175;
 					EaseCurve.Instance.MatColor (mat, fromColor, toCol, speed, wait, EaseCurve.Instance.custom);
 				}
-			}
+//			}
 			i++;
 		}
-		if(currEnv == environments.Count - 1){
+		if(currEnv == environments.Count - 1 || kioskColumns.Contains(1)){
 //			Debug.Log (currEnv+"...UNsaving current title cam");
 			currTitleCam = null;
 			currTitlePanel = null;
@@ -812,7 +816,11 @@ public class IdleStateController : MonoBehaviour {
 	public void nextSequence(){
 		Debug.Log ("[nextSequence]");
 		panelsInTransition = false;
-		CloseKiosks ();
+		if (kioskColumns.Contains (1)) {
+			//displatch event that we've switched environments
+			EventsManager.Instance.EnvironmentSwitchRequest ();
+		}
+		//CloseKiosks ();
 		ClearCellCams ();
 		PlanLayout ();
 	}

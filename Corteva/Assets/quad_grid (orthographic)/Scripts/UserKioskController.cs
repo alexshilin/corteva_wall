@@ -12,6 +12,8 @@ public class UserKioskController : MonoBehaviour {
 
 	List<UserKioskObject> kiosks = new List<UserKioskObject>();
 
+
+
 	void Start(){
 		EventsManager.Instance.OnUserKioskOpenRequest += tryOpenKiosk;
 		EventsManager.Instance.OnUserKioskCloseRequest += tryCloseKiosk;
@@ -33,13 +35,15 @@ public class UserKioskController : MonoBehaviour {
 	*/
 
 	private void tryOpenKiosk(Vector2 _gridPos, Environment _env){
+		Debug.Log ("!![tryOpenKiosk] at col "+_gridPos.x);
 		Vector2 gridPos = _gridPos;
 		GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
 		uK.name = "UserKiosk_" + _gridPos.x;
 		uK.transform.parent = AssetManager.Instance.kiosks;
 		uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
-		uK.GetComponent<UserManager> ().env = _env;
-		uK.GetComponent<UserManager> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
+		uK.GetComponent<UserKiosk> ().env = _env;
+		uK.GetComponent<UserKiosk> ().column = (int)_gridPos.x;
+		uK.GetComponent<UserKiosk> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;
 		UserKioskObject uKo = new UserKioskObject ();
@@ -48,18 +52,28 @@ public class UserKioskController : MonoBehaviour {
 		kiosks.Add (uKo);
 	}
 
+
+	//TEMP for manual testing
 	private void KioskWantsToClose(int _col){
 		Debug.Log ("[KioskWantsToClose] " + _col);
-		EventsManager.Instance.UserKioskCloseRequest (new Vector2(_col, 0), false);
+		//EventsManager.Instance.UserKioskCloseRequest (new Vector2(_col, 0), false);
+		UserKioskObject uKo = kiosks.Find (x => x.col == _col);
+		if (uKo != null) {
+			//Destroy (uKo.kioskGO);
+			//kiosks.Remove (uKo);
+			kiosks.Remove (uKo);
+			uKo.kioskGO.GetComponent<UserKiosk> ().CloseKiosk ();
+		}
 	}
 
 	private void tryCloseKiosk(Vector2 _gridPos, bool _now){
 		if (_now) {
-			Debug.Log ("[tryCloseKiosk] " + _gridPos.x);
+			Debug.Log ("!![tryCloseKiosk] " + _gridPos.x);
 			UserKioskObject uKo = kiosks.Find (x => x.col == (int)_gridPos.x);
 			if (uKo != null) {
-				Destroy (uKo.kioskGO);
+				//Destroy (uKo.kioskGO);
 				kiosks.Remove (uKo);
+				//uKo.kioskGO.GetComponent<UserKiosk> ().CloseKiosk ();
 			}
 		} else {
 			//wait

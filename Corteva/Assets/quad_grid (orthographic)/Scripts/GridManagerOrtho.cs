@@ -61,6 +61,7 @@ public class GridManagerOrtho : MonoBehaviour {
 	}
 
 	void Init(){
+		Debug.Log ("[Init]");
 		AssetManager.Instance.mainCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 		AssetManager.Instance.userInitCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 

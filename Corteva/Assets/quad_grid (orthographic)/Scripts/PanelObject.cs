@@ -270,8 +270,9 @@ public class PanelObject : MonoBehaviour {
 		Debug.Log ("[MovePanelToKiosk] UserKiosk_" + _col);
 		GameObject kiosk = GameObject.Find ("/Kiosks/UserKiosk_" + _col);
 		transform.parent = kiosk.transform;
-		transform.localPosition = Vector3.zero + Vector3.forward * 10f;
+		transform.localPosition = Vector3.zero + Vector3.forward * 25f;
 		ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("Default"));
+		panelContext = PanelContext.Kiosk;
 		//kiosk.GetComponent<UserManager> ().activePanel = transform;
 	}
 
@@ -283,16 +284,16 @@ public class PanelObject : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e)
 	{
-		//Debug.Log (transform.name+" transformedHandler "+transformGesture.DeltaPosition);
-		//if (isUserActive) {
-			transform.position += transformGesture.DeltaPosition;
+		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
+			return;
 
-			transform.localScale *= transformGesture.DeltaScale;
-			if (transform.localScale.x > 1)
-				transform.localScale = Vector3.one;
-			if (transform.localScale.x < 0.5f)
-				transform.localScale = Vector3.one * 0.5f;
-		//}
+		transform.position += transformGesture.DeltaPosition;
+
+		transform.localScale *= transformGesture.DeltaScale;
+		if (transform.localScale.x > 1)
+			transform.localScale = Vector3.one;
+		if (transform.localScale.x < 0.5f)
+			transform.localScale = Vector3.one * 0.5f;
 	}
 
 	private void transformCompletedHandler(object sender, EventArgs e)
