@@ -87,6 +87,28 @@ public class EaseCurve : MonoBehaviour
 
 
 
+	public void Rot(Transform _target, Quaternion _start, float _rotDegrees, Vector3 _axis, float _duration, float _delay, AnimationCurve _curve){
+		StartCoroutine (EaseRot (_target, _start, _rotDegrees, _axis, _duration, _delay, _curve, null));
+	}
+	public void Rot(Transform _target, Quaternion _start, float _rotDegrees, Vector3 _axis, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		StartCoroutine (EaseRot (_target, _start, _rotDegrees, _axis, _duration, _delay, _curve, _callback));
+	}
+	private IEnumerator EaseRot(Transform _target, Quaternion _start, float _rotDegrees, Vector3 _axis, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			t += rate * Time.deltaTime;
+			_target.localRotation = _start * Quaternion.AngleAxis(_curve.Evaluate (t) * _rotDegrees, _axis);
+			yield return null;
+		} 
+		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
+		if(_callback!=null)
+			_callback ();
+	}
+
+
+
 	public void Scl(Transform _target, Vector3 _start, Vector3 _end, float _duration, float _delay, AnimationCurve _curve){
 		StartCoroutine (EaseScl (_target, _start, _end, _duration, _delay, _curve, null));
 	}

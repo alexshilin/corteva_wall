@@ -17,9 +17,13 @@ public class EventsManager : MonoBehaviour {
 		}
 	}
 
-	//subscribe/unsibscript to events
-	//EventsManager.Instance.OnAssetsFinishedLoading += assetsLoaded;
-	//EventsManager.Instance.OnAssetsFinishedLoading -= assetsLoaded;
+	//subscribe/unsibscribe to events
+	//EventsManager.Instance.OnAssetsFinishedLoading += assetsLoadedHandler;
+	//EventsManager.Instance.OnAssetsFinishedLoading -= assetsLoadedHandler;
+	//assetsLoadedHandler(){}
+
+	//dispatch event
+	//EventsManager.Instance.AssetsFinishedLoading();
 
 	public delegate void AssetsFinishedLoadingEvent();
 	public event AssetsFinishedLoadingEvent OnAssetsFinishedLoading;

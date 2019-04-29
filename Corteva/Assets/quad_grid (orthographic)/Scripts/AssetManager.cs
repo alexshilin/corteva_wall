@@ -49,6 +49,22 @@ public class Environment
 	public string envSummary;
 	public List<string> envBackgroundVideos;
 }
+public class PanelItem
+{
+	//each panel has a front and back
+		//the front and back can be populated with various modules
+	//depending on 
+
+	//thumnail option
+		//image
+		//video
+		//image + text
+		//video + text
+	//front option
+		//image
+		//video
+		//
+}
 
 public class AssetManager : MonoBehaviour {
 	#region class variables

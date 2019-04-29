@@ -33,7 +33,11 @@ public class UserKiosk : MonoBehaviour {
 	public Environment env;
 	public int column;
 
-	int timesIveBeenTapped;
+	private int timesIveBeenTapped;
+
+	public Transform activePanel;
+	public bool menuFollowPanel = false;
+	public bool panelFollowMenu = false;
 
 	// Use this for initialization
 	void Start () {
@@ -42,19 +46,10 @@ public class UserKiosk : MonoBehaviour {
 
 	void OnEnable(){
 		timesIveBeenTapped = 0;
-
-		//EventsManager.Instance.OnUserKioskCloseRequest += kioskCloseRequestHandler;
-
 		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
 	}
 	void OnDisable(){
-		//EventsManager.Instance.OnUserKioskCloseRequest -= kioskCloseRequestHandler;
-
 		EventsManager.Instance.OnEnvironmentSwitch -= environmentSwitchHandler;
-	}
-
-	void Done(){
-		Debug.Log ("done");
 	}
 
 	private void environmentSwitchHandler(){
@@ -84,22 +79,10 @@ public class UserKiosk : MonoBehaviour {
 		}
 	}
 
-	void kioskCloseRequestHandler(Vector2 _gridPos, bool _now){
-		if ((int)_gridPos.x == column && !_now) {
-			Debug.Log ("!![kioskCloseRequestHandler] at col " + _gridPos.x);
-			//show keep-alive message
-			closer.gameObject.SetActive(true);
-		}
-	}
-
 	public void CloseKiosk(){
 		Debug.Log ("[CloseKiosk] " + column);
-		//if (closer.gameObject.activeSelf) {
-			EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
-			Destroy (gameObject);
-//		} else {
-//			Debug.Log ("\tclose cancelled by user");
-//		}
+		EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
+		Destroy (gameObject);
 	}
 
 	public void SetCam(float _totalColumns, float _userColumn){
@@ -122,7 +105,6 @@ public class UserKiosk : MonoBehaviour {
 		bgPanel.transform.localPosition = new Vector3 (0, 0, 50);
 		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
 		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
-		bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
 		bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
 		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
 		bgFinalPos = new Vector3(1f, 0, 60);
@@ -176,8 +158,8 @@ public class UserKiosk : MonoBehaviour {
 	private Vector3 menuObjectStart;
 	private float distanceMovedY = 0f;
 	private float distanceMovedX = 0f;
-	[HideInInspector]
-	public PanelObject activePanel;
+	//[HideInInspector]
+	//public PanelObject activePanel;
 	private Vector3 activePanelStart;
 
 	private Vector3 panelTouchStart;
@@ -198,6 +180,15 @@ public class UserKiosk : MonoBehaviour {
 				}
 			}
 		}
+		if (menuFollowPanel) {
+			Vector3 menuGoTo = activePanel.localPosition;
+			menuGoTo.z = menu.localPosition.z;
+			menuGoTo.x = menu.localPosition.x;
+			menu.localPosition = Vector3.Lerp (menu.localPosition, menuGoTo, 2f * Time.deltaTime);
+		}
+
+
+
 		if (Input.GetMouseButtonUp (0)) {
 			navDoFollow = false;
 			panelDoFollow = false;

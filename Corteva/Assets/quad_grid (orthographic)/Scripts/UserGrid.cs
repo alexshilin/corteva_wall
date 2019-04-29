@@ -14,13 +14,11 @@ public class UserGrid : MonoBehaviour {
 	private int currRow = 1;
 	private int currPanelsInColumn = 0;
 
-	// Use this for initialization
 	void Start () {
 		for (int i = 1; i <= panels; i++) {
 			GameObject panel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 			panel.transform.localPosition = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
-//			if(ScreenManager.Instance!=null)
-//				ScreenManager.Instance.MoveToLayer (panel.transform, LayerMask.NameToLayer ("User1"));
+
 			currPanelsInColumn++;
 			currRow++;
 			if (currPanelsInColumn == maxPanelsPerColumn) {
@@ -28,26 +26,24 @@ public class UserGrid : MonoBehaviour {
 				currRow = 1;
 				currColumn++;
 			}
+
 			PanelObject po = panel.GetComponent<PanelObject> ();
 			int r = Random.Range (0, 3);
 			if (r == 1) {
-				po.SetAs3dViz ();
+				//po.SetAs3dViz ();
+				po.SetAsImage ();
 			} else if (r == 2) {
 				po.SetAsVideo (false, false);
 				//panel.GetComponent<PanelObject> ().SetAsImage ();
 			} else {
 				po.SetAsImage ();
 			}
+			po.SetAsThumbnail ();
 			po.panelMode = PanelObject.PanelMode.Thumbnail;
 			po.panelContext = PanelObject.PanelContext.Kiosk;
+			panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
 			panel.SetActive (true);
 
 		}
-		//this.gameObject.SetActive (false);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

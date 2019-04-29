@@ -7,36 +7,6 @@ using TMPro;
 using TouchScript.Gestures;
 using TouchScript.Gestures.TransformGestures;
 using RenderHeads.Media.AVProVideo;
-	
-//PANELS
-/*
-	environment
-		environmentColor
-	panel
-		panelType
-
-
-	panelTypes
-		envHeaderPanel -the one at the top of a column
-		envAttractPanel	-the one just below envHeaderPanel
-		beautyImgPanel -idle state only
-		beautyVidPanel -idle state only
-		imagePanel
-		videoPanel
-		vizPanel
-
-	panelElements
-		bgColor (based on env)
-		img (optional)
-		vid (optional)
-		txt
-			envHeadline
-			envSummary
-			pnlHeadline
-			pnlSummary
-			pnlBody
-			pnlMessageType
-*/
 
 public class PanelObject : MonoBehaviour {
 
@@ -72,16 +42,26 @@ public class PanelObject : MonoBehaviour {
 	[Header("Back Panel")]
 	public Transform backPanel;
 	public Transform backPanelColor;
+	public Transform backPanelTexture;
 
 
 	//gesture vars
+	[HideInInspector]
 	public Transform colliders;
+
 	private TapGesture tapGesture;
 	private TransformGesture transformGesture;
 
 	[Header("--")]
 	public Vector2 panelGridPos;
 	public bool canBeMasked = true;
+
+	public enum PanelContext
+	{
+		None,
+		Idle,
+		Kiosk
+	}
 	public enum PanelState
 	{
 		Ready,
@@ -98,33 +78,21 @@ public class PanelObject : MonoBehaviour {
 		Back
 
 	}
-	public enum PanelContext
-	{
-		None,
-		Idle,
-		Kiosk
-	}
+
 	public PanelState panelState;
 	public PanelContext panelContext = PanelContext.None;
 	public PanelMode panelMode = PanelMode.Blank;
-	public bool isUserActive = false;
+	public UserKiosk myKiosk;
 
 	private Vector3 baseScale;
 	private Vector3 basePos;
 
 	public int panelID;
 
-	public bool canInteract = true;
-
-	// GET module and POPULATE its content
-	// @ grid position DO something
-
-	public void SetAsNonInteractive(){
-		canInteract = false;
-		OnDisable ();
-	}
-
 	void Awake(){
+		foreach(TextMeshPro tmp in transform.GetComponentsInChildren<TextMeshPro>()){
+			tmp.enableCulling = true;
+		}
 		foreach (Transform child in transform) {
 			if(child != colliders)
 				child.gameObject.SetActive (false);
@@ -137,26 +105,6 @@ public class PanelObject : MonoBehaviour {
 		//frontPanelTexture.gameObject.SetActive (false);
 	}
 
-	public void PlayVideo(){
-		if (using329video) {
-			videoPlayer329.Control.Play ();
-		} else {
-			if (videoPlayer.isPrepared && !videoPlayer.isPlaying)
-				videoPlayer.Play ();
-		}
-	}
-
-	public void PauseVideo(){
-		if (using329video) {
-			videoPlayer329.Control.Pause ();
-		} else {
-			if (videoPlayer.isPrepared && !videoPlayer.isPlaying)
-				videoPlayer.Pause ();
-		}
-	}
-
-
-	#region touch
 	private void OnEnable()
 	{
 		tapGesture = GetComponent<TapGesture> ();
@@ -185,13 +133,20 @@ public class PanelObject : MonoBehaviour {
 		//}
 	}
 
+
+	#region assemble panel
+
+	#endregion
+
+
+	#region touch handlers
 	private void tappedHandler(object sender, EventArgs e)
 	{
 		Debug.Log ("[tappedHandler] "+ tapGesture.ScreenPosition+ " "+ transform.name);
 		Debug.Log ("\t" + panelState + " | " + panelContext);
 
 
-		//panels in the Idle state can only be tapped, and should only activate user kiosks
+		//panels in the Idle context can only be tapped, and should only activate user kiosks
 		if (panelContext == PanelContext.Idle 
 			&& panelMode == PanelMode.Front 
 			&& panelState == PanelState.Active) 
@@ -209,20 +164,70 @@ public class PanelObject : MonoBehaviour {
 		}
 
 
-
+		//panel in idle context that is background or is animating should activate blank kiosk
 		if (panelContext == PanelContext.Idle 
 			&& (panelMode == PanelMode.Background || panelState == PanelState.Animating)) 
 		{
-				//background/beauty panels are non interactable and should not remain when tapped
-				//Debug.Log("tapped at: "+tapGesture.ScreenPosition);
-				//Debug.Log ("from: " + );
-				//tapGesture
-				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-				EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
+			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
+			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
+		}
+
+
+		//
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
+			Debug.Log ("\trotate 360 ");
+			SetAsThumbnail (); //this should happen elsewhere
+			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.linear);
+			//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
+			//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 1f, 0f, EaseCurve.Instance.linear);
+		}
+
+		//panel in kiosk context that is background should close active kiosk
+		if (panelContext == PanelContext.Kiosk && panelMode == PanelMode.Background) {
+
+		}
+
+		//panel in kiosk context that is a thumbnail should activate
+		if (panelContext == PanelContext.Kiosk && panelMode == PanelMode.Thumbnail) {
+			//first check if another panel is active, and hide that one
 		}
 	}
 
+	private void transformStartedHandler(object sender, EventArgs e)
+	{
+		//Debug.Log (transform.name+" transformStartedHandler");
 
+	}
+
+	private void transformedHandler(object sender, EventArgs e)
+	{
+		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
+			return;
+
+		transform.position += transformGesture.DeltaPosition;
+		myKiosk.menuFollowPanel = true;
+
+		transform.localScale *= transformGesture.DeltaScale;
+		if (transform.localScale.x > 1)
+			transform.localScale = Vector3.one;
+		if (transform.localScale.x < 0.5f)
+			transform.localScale = Vector3.one * 0.5f;
+	}
+
+	private void transformCompletedHandler(object sender, EventArgs e)
+	{
+		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
+			return;
+
+		if (myKiosk != null) {
+			myKiosk.menuFollowPanel = false;
+		}
+	}
+	#endregion
+
+
+
+	#region video handlers
 	private Queue<string> _eventLog = new Queue<string>(8);
 	private float _eventTimer = 1f;
 	public void OnMediaPlayerEvent(MediaPlayer mp, MediaPlayerEvent.EventType et, ErrorCode errorCode)
@@ -264,6 +269,25 @@ public class PanelObject : MonoBehaviour {
 	{
 		return (mp != null && mp.TextureProducer != null && mp.TextureProducer.GetTextureFrameCount() <= 0);
 	}
+	public void PlayVideo(){
+		if (using329video) {
+			videoPlayer329.Control.Play ();
+		} else {
+			if (videoPlayer.isPrepared && !videoPlayer.isPlaying)
+				videoPlayer.Play ();
+		}
+	}
+	public void PauseVideo(){
+		if (using329video) {
+			videoPlayer329.Control.Pause ();
+		} else {
+			if (videoPlayer.isPrepared && !videoPlayer.isPlaying)
+				videoPlayer.Pause ();
+		}
+	}
+	#endregion
+
+
 
 	IEnumerator MovePanelToKiosk(int _col){
 		yield return new WaitForSeconds (1f);
@@ -273,35 +297,10 @@ public class PanelObject : MonoBehaviour {
 		transform.localPosition = Vector3.zero + Vector3.forward * 25f;
 		ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("Default"));
 		panelContext = PanelContext.Kiosk;
-		//kiosk.GetComponent<UserManager> ().activePanel = transform;
+		panelState = PanelState.Active;
+		myKiosk = kiosk.GetComponent<UserKiosk> ();
+		myKiosk.activePanel = transform;
 	}
-
-	private void transformStartedHandler(object sender, EventArgs e)
-	{
-		//Debug.Log (transform.name+" transformStartedHandler");
-
-	}
-
-	private void transformedHandler(object sender, EventArgs e)
-	{
-		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
-			return;
-
-		transform.position += transformGesture.DeltaPosition;
-
-		transform.localScale *= transformGesture.DeltaScale;
-		if (transform.localScale.x > 1)
-			transform.localScale = Vector3.one;
-		if (transform.localScale.x < 0.5f)
-			transform.localScale = Vector3.one * 0.5f;
-	}
-
-	private void transformCompletedHandler(object sender, EventArgs e)
-	{
-		//Debug.Log (transform.name+" transformCompletedHandler");
-	}
-	#endregion
-
 
 
 
@@ -382,6 +381,23 @@ public class PanelObject : MonoBehaviour {
 		frontFullPanelColor.gameObject.SetActive (true);
 		frontFullPanel.gameObject.SetActive (true);
 	}
+
+
+	public void SetAsThumbnail(){
+		Renderer panelRenderer = backPanelTexture.GetComponent<Renderer> ();
+		panelRenderer.material.mainTexture = AssetManager.Instance.GetRandomTexture ();
+		backPanelTexture.gameObject.SetActive (true);
+		backPanelColor.gameObject.SetActive (false);
+		backPanel.gameObject.SetActive (true);
+	}
+
+//	public void SetAsThumbnail(){
+//		Renderer panelRenderer = backPanelTexture.GetComponent<Renderer> ();
+//		panelRenderer.material.mainTexture = AssetManager.Instance.GetRandomTexture ();
+//		backPanelTexture.gameObject.SetActive (true);
+//		backPanelColor.gameObject.SetActive (false);
+//		backPanel.gameObject.SetActive (true);
+//	}
 	#endregion
 
 
