@@ -46,7 +46,6 @@ public class PanelObject : MonoBehaviour {
 
 
 	//gesture vars
-	[HideInInspector]
 	public Transform colliders;
 
 	private TapGesture tapGesture;
@@ -69,7 +68,7 @@ public class PanelObject : MonoBehaviour {
 		Active,
 		Hidden
 	}
-	public enum PanelMode
+	public enum PanelView
 	{
 		Blank,
 		Background,
@@ -81,7 +80,7 @@ public class PanelObject : MonoBehaviour {
 
 	public PanelState panelState;
 	public PanelContext panelContext = PanelContext.None;
-	public PanelMode panelMode = PanelMode.Blank;
+	public PanelView panelMode = PanelView.Blank;
 	public UserKiosk myKiosk;
 
 	private Vector3 baseScale;
@@ -148,7 +147,7 @@ public class PanelObject : MonoBehaviour {
 
 		//panels in the Idle context can only be tapped, and should only activate user kiosks
 		if (panelContext == PanelContext.Idle 
-			&& panelMode == PanelMode.Front 
+			&& panelMode == PanelView.Front 
 			&& panelState == PanelState.Active) 
 		{
 			//content panels are interactable, and should remain when tapped
@@ -166,7 +165,7 @@ public class PanelObject : MonoBehaviour {
 
 		//panel in idle context that is background or is animating should activate blank kiosk
 		if (panelContext == PanelContext.Idle 
-			&& (panelMode == PanelMode.Background || panelState == PanelState.Animating)) 
+			&& (panelMode == PanelView.Background || panelState == PanelState.Animating)) 
 		{
 			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
 			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
@@ -183,12 +182,12 @@ public class PanelObject : MonoBehaviour {
 		}
 
 		//panel in kiosk context that is background should close active kiosk
-		if (panelContext == PanelContext.Kiosk && panelMode == PanelMode.Background) {
+		if (panelContext == PanelContext.Kiosk && panelMode == PanelView.Background) {
 
 		}
 
 		//panel in kiosk context that is a thumbnail should activate
-		if (panelContext == PanelContext.Kiosk && panelMode == PanelMode.Thumbnail) {
+		if (panelContext == PanelContext.Kiosk && panelMode == PanelView.Thumbnail) {
 			//first check if another panel is active, and hide that one
 		}
 	}
@@ -201,7 +200,7 @@ public class PanelObject : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e)
 	{
-		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
+		if (panelMode == PanelView.Background || panelContext == PanelContext.Idle)
 			return;
 
 		transform.position += transformGesture.DeltaPosition;
@@ -216,7 +215,7 @@ public class PanelObject : MonoBehaviour {
 
 	private void transformCompletedHandler(object sender, EventArgs e)
 	{
-		if (panelMode == PanelMode.Background || panelContext == PanelContext.Idle)
+		if (panelMode == PanelView.Background || panelContext == PanelContext.Idle)
 			return;
 
 		if (myKiosk != null) {

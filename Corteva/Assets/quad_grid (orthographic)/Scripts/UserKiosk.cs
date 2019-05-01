@@ -106,7 +106,7 @@ public class UserKiosk : MonoBehaviour {
 		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
 		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
 		bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
-		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
+		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
 		bgFinalPos = new Vector3(1f, 0, 60);
 		bgPanel.SetActive (false);
 
@@ -119,7 +119,7 @@ public class UserKiosk : MonoBehaviour {
 		headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
 		headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
 		headerPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
-		headerPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
+		headerPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
 		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
 		headerPanel.SetActive (false);
 

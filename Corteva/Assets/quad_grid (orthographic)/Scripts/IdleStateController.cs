@@ -161,7 +161,7 @@ public class IdleStateController : MonoBehaviour {
 				bgPanel.GetComponent<PanelObject> ().SetAs329Video (i == 0);
 			}
 			bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Idle;
-			bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelMode.Background;
+			bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
 			//bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
 			bgPanels.Add (bgPanel.GetComponent<PanelObject> ());
 		}
@@ -635,7 +635,7 @@ public class IdleStateController : MonoBehaviour {
 			po.panelID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
 			po.panelContext = PanelObject.PanelContext.Idle;
 			po.panelState = PanelObject.PanelState.Animating;
-			po.panelMode = PanelObject.PanelMode.Front;
+			po.panelMode = PanelObject.PanelView.Front;
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.env = environments [currEnv];
 
@@ -644,10 +644,10 @@ public class IdleStateController : MonoBehaviour {
 			po.SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {
 				po.SetAsTitle (environments [currEnv].envTitle);
-				po.panelMode = PanelObject.PanelMode.Background;
+				po.panelMode = PanelObject.PanelView.Background;
 			} else if (idleSequence [i].panelType == new Vector2 (1, 2)) {
 				po.SetAsImage1x2 ();
-				po.panelMode = PanelObject.PanelMode.Background;
+				po.panelMode = PanelObject.PanelView.Background;
 				//panel.GetComponent<PanelObject> ().SetAsNonInteractive ();
 				toPos.x += (5.33333f / 4f);
 			} else {

@@ -48,22 +48,54 @@ public class Environment
 	public string envTitle;
 	public string envSummary;
 	public List<string> envBackgroundVideos;
+	public List<PanelItem> envPanels;
 }
 public class PanelItem
 {
+	
 	//each panel has a front and back
 		//the front and back can be populated with various modules
-	//depending on 
+	//panels content will dictate which modules to load
 
-	//thumnail option
-		//image
-		//video
-		//image + text
-		//video + text
-	//front option
-		//image
-		//video
-		//
+	//panel module types
+		//textured quad for images
+			//width builtin methods for slideshow?
+		//textured quad for video 
+			//with built seek bar
+			//with builtin methods for slideshow
+		//color quad
+		
+		//custom interactive
+
+		//close/more/back buttons layer
+		
+		//front standard text template layer
+		//back standard text template layer
+		//back thumb text template layer
+
+	//font (main)
+		
+	//back (more)
+
+	//back (thumb)
+
+
+	/*
+		thumb
+			image_path
+			video_path
+			thumb_txt (optional)
+		front
+			image_path
+			video_path
+			category_text
+			header_text
+			body_text
+		back
+			image_path
+			video_path
+			
+	*/
 }
 
 public class AssetManager : MonoBehaviour {
@@ -142,6 +174,7 @@ public class AssetManager : MonoBehaviour {
 		Environment e = new Environment ();
 		e.envTitle = "Globe";
 		e.envColor = new Color32 (0, 114, 206, 255);
+
 		environments.Add (e);
 		e = new Environment ();
 		e.envTitle = "Farm";
@@ -167,6 +200,11 @@ public class AssetManager : MonoBehaviour {
 
 	public void LoadScene(string _scene){
 		StartCoroutine (LoadNewScene (_scene));
+	}
+
+	public Texture GetTexture(string _name){
+		int i = filesToLoad1x1.FindIndex (x => x.Contains (_name));
+		return loadedTextures1x1 [i];
 	}
 
 	public Texture GetRandomTexture(){

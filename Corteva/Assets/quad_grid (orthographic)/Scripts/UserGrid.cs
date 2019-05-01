@@ -15,6 +15,10 @@ public class UserGrid : MonoBehaviour {
 	private int currPanelsInColumn = 0;
 
 	void Start () {
+		MakeGrid ();
+	}
+
+	public void MakeGrid(){
 		for (int i = 1; i <= panels; i++) {
 			GameObject panel = Instantiate (AssetManager.Instance.panelPrefab, transform);
 			panel.transform.localPosition = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
@@ -39,7 +43,7 @@ public class UserGrid : MonoBehaviour {
 				po.SetAsImage ();
 			}
 			po.SetAsThumbnail ();
-			po.panelMode = PanelObject.PanelMode.Thumbnail;
+			po.panelMode = PanelObject.PanelView.Thumbnail;
 			po.panelContext = PanelObject.PanelContext.Kiosk;
 			panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
 			panel.SetActive (true);

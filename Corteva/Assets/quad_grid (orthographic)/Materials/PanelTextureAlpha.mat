@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: PanelTexture
-  m_Shader: {fileID: 4800000, guid: 277ee44d6b1da47cca032e113d7cb97c, type: 3}
+  m_Name: PanelTextureAlpha
+  m_Shader: {fileID: 4800000, guid: 463dfdb59739641faa179faff15233d4, type: 3}
   m_ShaderKeywords: STEREO_NONE _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
