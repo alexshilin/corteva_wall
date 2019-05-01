@@ -14,6 +14,8 @@ public class UserGrid : MonoBehaviour {
 	private int currRow = 1;
 	private int currPanelsInColumn = 0;
 
+	public Vector3 emptySpot;
+
 	void Start () {
 		MakeGrid ();
 	}
@@ -29,6 +31,11 @@ public class UserGrid : MonoBehaviour {
 				currPanelsInColumn = 0;
 				currRow = 1;
 				currColumn++;
+			}
+
+			if (i == 2) {
+				emptySpot = panel.transform.localPosition;
+				continue;
 			}
 
 			PanelObject po = panel.GetComponent<PanelObject> ();

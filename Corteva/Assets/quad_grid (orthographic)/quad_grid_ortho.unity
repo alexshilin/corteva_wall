@@ -414,6 +414,8 @@ MonoBehaviour:
   bgPanel2: {fileID: 0}
   panelPrefab: {fileID: 1776407961959296, guid: 1455857e875e74c949183a9827cd5549,
     type: 2}
+  NEWpanelPrefab: {fileID: 1452841905065622, guid: 98668a67feacd46fb8beac49c82b2fed,
+    type: 2}
   cellCameraPrefab: {fileID: 1935752253958362, guid: 17b12d419390b4346b7c8b74fc79f8af,
     type: 2}
   userKioskPrefab: {fileID: 1091292406517696, guid: 52922933ad9614f5a934d19a4df1123a,
@@ -2641,76 +2643,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[1].time
-      value: 0.5143837
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[2].time
-      value: 0.6178081
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[3].time
-      value: 0.6406678
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[4].time
-      value: 0.6597655
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[5].time
-      value: 0.76761514
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[6].time
-      value: 0.9271202
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[1].value
-      value: 0.13129592
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[2].value
-      value: 0.33970776
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[3].value
-      value: 0.57971025
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[4].value
-      value: 0.71302605
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[5].value
-      value: 0.93969417
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[6].value
-      value: 0.99472046
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[2].inSlope
-      value: 4.55146
-      objectReference: {fileID: 0}
-    - target: {fileID: 114762268093990254, guid: fa2222de265cd4edbb4569d0e759e848,
-        type: 2}
-      propertyPath: custom2.m_Curve.Array.data[2].outSlope
-      value: 4.55146
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa2222de265cd4edbb4569d0e759e848, type: 2}
   m_IsPrefabParent: 0
@@ -2855,6 +2787,14 @@ Prefab:
     - target: {fileID: 4493320020242100, guid: 98668a67feacd46fb8beac49c82b2fed, type: 2}
       propertyPath: m_RootOrder
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1452841905065622, guid: 98668a67feacd46fb8beac49c82b2fed, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245797161249812, guid: 98668a67feacd46fb8beac49c82b2fed, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 98668a67feacd46fb8beac49c82b2fed, type: 2}
@@ -3831,6 +3771,8 @@ MonoBehaviour:
     prefab: {fileID: 1840487997274300, guid: c86dbcfcee6b94b98a6ae9b20a40211f, type: 2}
   - name: 2x1_txt_layout_r
     prefab: {fileID: 1648051169405394, guid: 49f04a5f2d89d4113a3d2abf45e473eb, type: 2}
+  - name: 1x1_txt_layout_02
+    prefab: {fileID: 1911294450542466, guid: 601c7fa1565f74394ab28f0e0f997ca4, type: 2}
   recycler: []
 --- !u!4 &2115049105
 Transform:

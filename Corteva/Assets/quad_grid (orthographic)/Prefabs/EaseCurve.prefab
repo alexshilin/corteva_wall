@@ -165,6 +165,60 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  easeOutBack:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 3.0604632
+      outSlope: 3.0604632
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.33210847
+      value: 0.8946457
+      inSlope: 1.918608
+      outSlope: 1.918608
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: -1.2073278
+      outSlope: -1.2073278
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  easeInOutBack:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: -2.050254
+      outSlope: -2.050254
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.47684878
+      value: 0.39753145
+      inSlope: 4.2956133
+      outSlope: 4.2956133
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5232398
+      value: 0.5968956
+      inSlope: 4.372875
+      outSlope: 4.372875
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: -2.167413
+      outSlope: -2.167413
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   custom:
     serializedVersion: 2
     m_Curve:
@@ -229,38 +283,38 @@ MonoBehaviour:
       outSlope: 0.041276295
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.2828176
-      value: 0.054849975
+      time: 0.5143837
+      value: 0.13129592
       inSlope: 0.6978844
       outSlope: 0.6978844
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.4058409
-      value: 0.18975757
-      inSlope: 1.7688566
-      outSlope: 1.7688566
+      time: 0.6178081
+      value: 0.33970776
+      inSlope: 4.55146
+      outSlope: 4.55146
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.48402366
-      value: 0.55718046
+      time: 0.6406678
+      value: 0.57971025
       inSlope: 10.15905
       outSlope: 10.15905
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.5031214
-      value: 0.6904963
+      time: 0.6597655
+      value: 0.71302605
       inSlope: 4.4427114
       outSlope: 4.4427114
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.6228729
-      value: 0.9171644
+      time: 0.76761514
+      value: 0.93969417
       inSlope: 0.6977008
       outSlope: 0.6977008
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.7704761
-      value: 0.97219074
+      time: 0.9271202
+      value: 0.99472046
       inSlope: 0.24286214
       outSlope: 0.24286214
       tangentMode: 0

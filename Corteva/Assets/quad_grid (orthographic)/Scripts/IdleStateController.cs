@@ -232,9 +232,9 @@ public class IdleStateController : MonoBehaviour {
 
 
 	void HideTitlePanel(){
-		Debug.Log ("[HideTitlePanel] " + (titleHidden ? "hidden" : "visible") + " | " + (idleSequence [0].panel.GetComponent<PanelObject> ().panelState == PanelObject.PanelState.Animating ? "animating" : "static"));
+		Debug.Log ("[HideTitlePanel] " + (titleHidden ? "hidden" : "visible") + " | " + (idleSequence [0].panel.GetComponent<PanelBase> ().panelState == PanelBase.PanelState.Animating ? "animating" : "static"));
 		if (!titleHidden) {
-			if (idleSequence [0].panel.GetComponent<PanelObject> ().panelState != PanelObject.PanelState.Animating) {
+			if (idleSequence [0].panel.GetComponent<PanelBase> ().panelState != PanelBase.PanelState.Animating) {
 				titleHidden = true;
 				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].panel.transform.localPosition, idleSequence [0].fromPos, 0.5f, 0.25f, EaseCurve.Instance.custom2, null, "local");
 			} else {
@@ -622,7 +622,7 @@ public class IdleStateController : MonoBehaviour {
 				ccGo.transform.localPosition = new Vector3 (ccGo.transform.position.x + (idleSequence [i].col * 40f), ccGo.transform.position.y - (idleSequence [i].row * 20), 0);
 				ccGo.name = idleSequence [i].col + ", " + idleSequence [i].row;
 			}
-			GameObject panel = Instantiate (AM.panelPrefab);
+			GameObject panel = Instantiate (AM.NEWpanelPrefab);
 
 			panel.transform.parent = ccGo.transform.Find ("Container");
 			panel.transform.localPosition = Vector3.zero;
@@ -630,18 +630,18 @@ public class IdleStateController : MonoBehaviour {
 			panel.transform.localPosition = Vector3.Scale (-idleSequence [i].direction, new Vector3 (6f, 3.5f, 0f));
 			Vector3 toPos = Vector3.zero;
 
-			PanelObject po = panel.GetComponent<PanelObject> ();
+			PanelBase po = panel.GetComponent<PanelBase> ();
 
 			po.panelID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
-			po.panelContext = PanelObject.PanelContext.Idle;
-			po.panelState = PanelObject.PanelState.Animating;
-			po.panelMode = PanelObject.PanelView.Front;
+			po.panelContext = PanelBase.PanelContext.Idle;
+			po.panelState = PanelBase.PanelState.Animating;
+			po.panelView = PanelBase.PanelView.Front;
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
-			po.env = environments [currEnv];
+			po.environment = environments [currEnv];
 
 			panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
 				
-			po.SetPanelColors (environments [currEnv].envColor);
+			/*po.SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {
 				po.SetAsTitle (environments [currEnv].envTitle);
 				po.panelMode = PanelObject.PanelView.Background;
@@ -660,7 +660,7 @@ public class IdleStateController : MonoBehaviour {
 				} else {
 					po.SetAsImage ();
 				}
-			}
+			}*/
 
 			idleSequence [i].fromPos = panel.transform.localPosition;
 			idleSequence [i].toPos = toPos;
@@ -689,7 +689,7 @@ public class IdleStateController : MonoBehaviour {
 				titlePauseTime = Time.time;
 				yield return new WaitForSecondsRealtime (1f);
 			} else {
-				Debug.Log (i + " < " + (idleSequence.Count - 1));
+				//Debug.Log (i + " < " + (idleSequence.Count - 1));
 				if (i < idleSequence.Count - 1) {
 					EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
 				} else {
@@ -718,7 +718,7 @@ public class IdleStateController : MonoBehaviour {
 		if (hideTitleAfterInroTransition) {
 			titleHidden = true;
 			hideTitleAfterInroTransition = false;
-			idleSequence [0].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Hidden;
+			idleSequence [0].panel.GetComponent<PanelBase> ().panelState = PanelBase.PanelState.Hidden;
 			EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].panel.transform.localPosition, idleSequence [0].fromPos, 2f*0.5f, 2f*0.1f, EaseCurve.Instance.custom, null, "local");
 		}
 	}
@@ -726,7 +726,7 @@ public class IdleStateController : MonoBehaviour {
 	void PlacingFinished(){
 		Debug.Log ("[PlacingFinished]");
 		foreach (CellAction p in idleSequence) {
-			p.panel.GetComponent<PanelObject>().panelState = PanelObject.PanelState.Active;
+			p.panel.GetComponent<PanelBase>().panelState = PanelBase.PanelState.Active;
 		}
 		timeElapsedSinceLastTransition = 0;
 		panelsInTransition = false;
@@ -760,7 +760,7 @@ public class IdleStateController : MonoBehaviour {
 					p = idleSequence [i].cellCam.transform.Find ("Container");
 				} else {
 					idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
-					idleSequence [i].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Animating;
+					idleSequence [i].panel.GetComponent<PanelBase> ().panelState = PanelBase.PanelState.Animating;
 				}
 
 				if (i == 1) {

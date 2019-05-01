@@ -9,29 +9,48 @@ using System.IO;
 	"environment": {
 		"title": "Global",
 		"summary": "Global Summary",
+		"color": "",
+		"icon": "file_path",
 		"backgrounds": [
+			//each background needs a 16:9 and a 32:9 version
 			{
-				"type": "image", 
-				"path": "file_path"
-			},
-		],
-		"beauty_panels": [
-			{
+				"format": "16:9",
 				"type": "video", 
 				"path": "file_path"
 			},
+			{
+				"format": "32:9",
+				"type": "video", 
+				"path": "file_path"
+			}
+		],
+		"beauty_panels": [
+			{
+				"format": "1x1",
+				"type": "video",
+				"path": "file_path"
+			},
+			{
+				"format": "2x1", //2x1 is a tall image equal to two 1x1's stacked on top of each other
+				"type": "image",
+				"path": "file_path"
+			}
 		],
 		"content_panels":[
 			{
-				"type": "",
-				"asset_path": "file_path",
-				"message": "",
-				"headline": "",
-				"body": "", 
-				"data": {
-					"data_point_a": ,
-					"data_point_b": 
-				}
+				"font": //front is required for all
+				{
+					"template": "template_id", //each template will have its own content options
+					"idle_ok": true, //should this view be considered as an option to display on the idle screen
+					"content" {
+						"bg_type": "image",
+						"bg_path": "file_path",
+						"title": "",
+						"body": ""
+					}
+				},
+				"back":{}, //back is optional
+				"thumbnail": {}	//thumbnails are required for all (so it can be displayed in kiosk grid)
 			},
 		]
 	}
@@ -53,49 +72,6 @@ public class Environment
 public class PanelItem
 {
 	
-	//each panel has a front and back
-		//the front and back can be populated with various modules
-	//panels content will dictate which modules to load
-
-	//panel module types
-		//textured quad for images
-			//width builtin methods for slideshow?
-		//textured quad for video 
-			//with built seek bar
-			//with builtin methods for slideshow
-		//color quad
-		
-		//custom interactive
-
-		//close/more/back buttons layer
-		
-		//front standard text template layer
-		//back standard text template layer
-		//back thumb text template layer
-
-	//font (main)
-		
-	//back (more)
-
-	//back (thumb)
-
-
-	/*
-		thumb
-			image_path
-			video_path
-			thumb_txt (optional)
-		front
-			image_path
-			video_path
-			category_text
-			header_text
-			body_text
-		back
-			image_path
-			video_path
-			
-	*/
 }
 
 public class AssetManager : MonoBehaviour {
@@ -136,6 +112,7 @@ public class AssetManager : MonoBehaviour {
 	#region prefabs
 	[Header("Prefabs")]
 	public GameObject panelPrefab;
+	public GameObject NEWpanelPrefab;
 	public GameObject cellCameraPrefab;
 	public GameObject userKioskPrefab;
 	public List<GameObject> panelPool = new List<GameObject> ();

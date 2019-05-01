@@ -84,14 +84,14 @@ public class PanelBase : MonoBehaviour {
 
 	void Start(){
 		PMP = PanelModulePool.Instance;
-		//AssemblePanel ();
+		AssemblePanel ("");
 	}
 
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.A)) {
 			panelState = PanelState.Active;
 			panelContext = PanelContext.Kiosk;
-			AssemblePanel ();
+			AssemblePanel ("");
 		}
 
 
@@ -119,19 +119,41 @@ public class PanelBase : MonoBehaviour {
 	}
 
 	#region module assembly
-	public void AssemblePanel()//(Environment _environment, int _id)
+	public void AssemblePanel(string _template)//(Environment _environment, int _id)
 	{
 //		environment = _environment;
 //		panelID = _id;
 		Debug.Log("[AssemblePanel]");
-		LoadModule ("1x1_texture_color", PanelView.Thumbnail, "test_thumbnail");
-		LoadModule ("1x1_texture_color", PanelView.Front, "test_front");
-		LoadModule ("1x1_texture_color", PanelView.Back, "test_back");
+//		string _template = "01";
+		GameObject t;
+		Renderer panelRenderer;
+		if (_template == "329bg") {
+			t = LoadModule ("1x2_texture", PanelView.Front);
+			//populate the module
+			//panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			//panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_img);
+			ActivateView (PanelView.Front, true);
+			return;
+		}
 
-		ActivateView (PanelView.Thumbnail, false);
-		ActivateView (PanelView.Front, true);
+
+		t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
+		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
+
+		t = LoadModule ("1x1_texture_color", PanelView.Front);
+		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_front");
+
+		t = LoadModule ("1x1_texture_color", PanelView.Back);
+		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_back");
+
+		bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+		ActivateView (PanelView.Thumbnail, flip);
+		ActivateView (PanelView.Front, !flip);
 	}
-	public void LoadModule(string _type, PanelView _view, string _img)
+	private GameObject LoadModule(string _type, PanelView _view)
 	{
 		Debug.Log("\t[LoadModule] '"+_type+"' into "+_view);
 
@@ -143,10 +165,7 @@ public class PanelBase : MonoBehaviour {
 
 		//instantiate module
 		GameObject module = Instantiate (PMP.modules.Find (x => x.name == _type).prefab, viewParent);
-
-		//populate the module
-		Renderer panelRenderer = module.transform.Find("TextureQuad").GetComponent<Renderer> ();
-		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_img);
+		return module;
 	}
 	public void ActivateView(PanelView _viewToShow, bool _faceAway)
 	{
@@ -167,6 +186,7 @@ public class PanelBase : MonoBehaviour {
 			viewToShow.transform.localEulerAngles = forwardRot;
 			viewToShow.gameObject.SetActive (true);
 			currViewFacingForward = _viewToShow;
+			panelView = _viewToShow;
 		}
 
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front)
@@ -183,7 +203,7 @@ public class PanelBase : MonoBehaviour {
 		currViewFacingForward = prevViewFacingAway;
 		currViewFacingAway = prevViewFacingFront;
 
-		if (Mathf.RoundToInt(transform.localEulerAngles.y) == 180) {
+		if (Mathf.Abs(Mathf.RoundToInt(transform.localEulerAngles.y)) == 180) {
 			awayPos = new Vector3 (0, 0, -0.01f);
 			awayRot = new Vector3 (0, 0, 0);
 			forwardPos = new Vector3 (0, 0, 0.01f);
@@ -195,6 +215,7 @@ public class PanelBase : MonoBehaviour {
 			awayRot = new Vector3 (0, 180, 0);;
 		}
 
+		panelView = currViewFacingForward;
 		panelState = PanelState.Active;
 		Debug.Log ("[PanelFlipped] " + prevViewFacingFront + " | " + prevViewFacingAway + " >> " + currViewFacingForward + " | " + currViewFacingAway);
 	}
@@ -204,12 +225,25 @@ public class PanelBase : MonoBehaviour {
 	private void tappedHandler(object sender, EventArgs e)
 	{
 		Debug.Log ("[tappedHandler] "+ tapGesture.ScreenPosition+ " "+ transform.name);
-		Debug.Log ("\t" + panelState + " | " + panelContext);
+		Debug.Log ("\t" + panelContext + " | " + panelView + " | " + panelState);
 
+		//panel in idle context that is background or is animating should activate blank kiosk
+		if (panelContext == PanelContext.Idle 
+			&& (panelView == PanelView.Background || panelState == PanelState.Animating)) 
+		{
+			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
+			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
+		}
+
+		//if the panel is animating, dont execute following
+		if (panelState == PanelState.Animating) 
+		{
+			return;
+		}
 
 		//panels in the Idle context can only be tapped, and should only activate user kiosks
 		if (panelContext == PanelContext.Idle 
-			&& panelView == PanelView.Front 
+			&& (panelView == PanelView.Front || panelView == PanelView.Thumbnail)
 			&& panelState == PanelState.Active) 
 		{
 			//content panels are interactable, and should remain when tapped
@@ -224,24 +258,10 @@ public class PanelBase : MonoBehaviour {
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
 		}
 
-
-		//panel in idle context that is background or is animating should activate blank kiosk
-		if (panelContext == PanelContext.Idle 
-			&& (panelView == PanelView.Background || panelState == PanelState.Animating)) 
-		{
-			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
-		}
-
-
 		//
 		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
-			Debug.Log ("\trotate 360 ");
-			panelState = PanelState.Animating;
-			//SetAsThumbnail (); //this should happen elsewhere
-			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.linear, PanelFlipped);
-			//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
-			//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 1f, 0f, EaseCurve.Instance.linear);
+			//FlipAround ();
+			BackToGrid();
 		}
 
 		//panel in kiosk context that is background should close active kiosk
@@ -252,6 +272,29 @@ public class PanelBase : MonoBehaviour {
 		//panel in kiosk context that is a thumbnail should activate
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Thumbnail) {
 			//first check if another panel is active, and hide that one
+		}
+	}
+
+	private void FlipAround()
+	{
+		Debug.Log ("\t[FlipAround]");
+		panelState = PanelState.Animating;
+		//SetAsThumbnail (); //this should happen elsewhere
+		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.linear, PanelFlipped);
+		//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
+		//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 1f, 0f, EaseCurve.Instance.linear);
+	}
+
+	private void BackToGrid()
+	{
+		if (currViewFacingForward != PanelView.Thumbnail) 
+		{
+			ActivateView (PanelView.Thumbnail, true);
+			panelState = PanelState.Animating;
+			Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
+			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.7f, 0, EaseCurve.Instance.easeOut);
+			EaseCurve.Instance.Rot (transform, transform.localRotation, -180f, transform.up, 1f, 0f, EaseCurve.Instance.easeOutBack, PanelFlipped);
+			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 1f, 0f, EaseCurve.Instance.easeOutBack);
 		}
 	}
 
@@ -299,7 +342,28 @@ public class PanelBase : MonoBehaviour {
 		panelState = PanelState.Active;
 		myKiosk = kiosk.GetComponent<UserKiosk> ();
 		myKiosk.activePanel = transform;
+		if (panelView == PanelView.Thumbnail) {
+			ActivateView (PanelView.Front, true);
+			FlipAround ();
+		}
 	}
+
+	public void SetAs329Video(bool _playWhenReady = false){
+		AssemblePanel ("329bg");
+	}
+
+//	public void SetAs329Video(bool _playWhenReady = false){
+//		frontFullPanelTexture329.gameObject.SetActive (true);
+//		frontFullPanel329.gameObject.SetActive (true);
+//
+//		LoadVideo(AssetManager.Instance.GetRandom329Video(), _playWhenReady);
+//		videoPlayer329.Control.MuteAudio (true);
+//		videoPlayer329.enabled = true;
+//
+//		using329video = true;
+//		if(_playWhenReady)
+//			videoPlayer329.Control.Play ();
+//	}
 
 
 }

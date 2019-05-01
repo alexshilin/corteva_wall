@@ -9,6 +9,8 @@ public class EaseCurve : MonoBehaviour
 	public AnimationCurve easeIn;
 	public AnimationCurve easeOut;
 	public AnimationCurve easeInOut;
+	public AnimationCurve easeOutBack;
+	public AnimationCurve easeInOutBack;
 	public AnimationCurve custom;
 	public AnimationCurve custom2;
 
@@ -80,6 +82,11 @@ public class EaseCurve : MonoBehaviour
 				yield break;
 			}
 		}
+		if (_space == "local") {
+			_target.localPosition = _end;
+		} else {
+			_target.position = _end;
+		}
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();
@@ -101,7 +108,8 @@ public class EaseCurve : MonoBehaviour
 			t += rate * Time.deltaTime;
 			_target.localRotation = _start * Quaternion.AngleAxis(_curve.Evaluate (t) * _rotDegrees, _axis);
 			yield return null;
-		} 
+		}
+		_target.localRotation = _start * Quaternion.AngleAxis(_rotDegrees, _axis);
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();
@@ -124,6 +132,7 @@ public class EaseCurve : MonoBehaviour
 			_target.localScale = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
 			yield return null;
 		}
+		_target.localScale = _end;
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();
