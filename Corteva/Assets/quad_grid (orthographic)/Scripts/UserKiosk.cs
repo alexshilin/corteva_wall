@@ -36,6 +36,8 @@ public class UserKiosk : MonoBehaviour {
 	private int timesIveBeenTapped;
 
 	public Transform activePanel;
+	public bool somePanelIsAnimating = false;
+
 	public bool menuFollowPanel = false;
 	public bool panelFollowMenu = false;
 
@@ -47,9 +49,11 @@ public class UserKiosk : MonoBehaviour {
 	void OnEnable(){
 		timesIveBeenTapped = 0;
 		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
+		EventsManager.Instance.OnUserKioskActivatePanelInGrid += userKioskActivatePanelInGridHandler;
 	}
 	void OnDisable(){
 		EventsManager.Instance.OnEnvironmentSwitch -= environmentSwitchHandler;
+		EventsManager.Instance.OnUserKioskActivatePanelInGrid -= userKioskActivatePanelInGridHandler;
 	}
 
 	private void environmentSwitchHandler(){
@@ -68,6 +72,12 @@ public class UserKiosk : MonoBehaviour {
 			//EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), false);
 		} else {
 			timesIveBeenTapped = 0;
+		}
+	}
+
+	private void userKioskActivatePanelInGridHandler(){
+		if (activePanel != null) {
+			activePanel.GetComponent<PanelBase> ().BackToGrid ();
 		}
 	}
 

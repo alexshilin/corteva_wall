@@ -328,6 +328,7 @@ public class IdleStateController : MonoBehaviour {
 			startColumn = kCols[Random.Range (0, kCols.Count)];
 		}
 
+		Debug.Log (environments.Count);
 		Debug.Log ("\tENV (" + currEnv + " of "+environments.Count+"): " + environments [currEnv].envTitle);
 
 		//set starting panel position
@@ -639,8 +640,12 @@ public class IdleStateController : MonoBehaviour {
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.environment = environments [currEnv];
 
+			bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+			po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
+			po.ActivateView (PanelBase.PanelView.Front, !flip);
+
 			panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
-				
+
 			/*po.SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {
 				po.SetAsTitle (environments [currEnv].envTitle);

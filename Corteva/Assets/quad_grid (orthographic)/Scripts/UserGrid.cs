@@ -22,8 +22,7 @@ public class UserGrid : MonoBehaviour {
 
 	public void MakeGrid(){
 		for (int i = 1; i <= panels; i++) {
-			GameObject panel = Instantiate (AssetManager.Instance.panelPrefab, transform);
-			panel.transform.localPosition = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
+			Vector3 panelPostion = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
 
 			currPanelsInColumn++;
 			currRow++;
@@ -33,12 +32,17 @@ public class UserGrid : MonoBehaviour {
 				currColumn++;
 			}
 
+			//if (transform.GetComponentInParent<UserKiosk>().activePanel != null && i == 2) {
 			if (i == 2) {
-				emptySpot = panel.transform.localPosition;
+				emptySpot = panelPostion;
 				continue;
 			}
 
-			PanelObject po = panel.GetComponent<PanelObject> ();
+			GameObject panel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);
+			panel.transform.localPosition = panelPostion;
+
+			PanelBase po = panel.GetComponent<PanelBase> ();
+			/*
 			int r = Random.Range (0, 3);
 			if (r == 1) {
 				//po.SetAs3dViz ();
@@ -50,10 +54,15 @@ public class UserGrid : MonoBehaviour {
 				po.SetAsImage ();
 			}
 			po.SetAsThumbnail ();
-			po.panelMode = PanelObject.PanelView.Thumbnail;
-			po.panelContext = PanelObject.PanelContext.Kiosk;
-			panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
-			panel.SetActive (true);
+			*/
+			po.panelView = PanelBase.PanelView.Thumbnail;
+			po.panelContext = PanelBase.PanelContext.Kiosk;
+			po.panelState = PanelBase.PanelState.Ready;
+			po.myKiosk = transform.GetComponentInParent<UserKiosk>(); //TMP, change this
+			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
+			po.ActivateView (PanelBase.PanelView.Front, true);
+			//panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
+			//panel.SetActive (true);
 
 		}
 	}

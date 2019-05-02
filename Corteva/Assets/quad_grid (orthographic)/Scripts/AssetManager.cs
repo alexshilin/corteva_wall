@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.IO;
+using SimpleJSON;
+
 /*
-{
+	{
 	"environment": {
 		"title": "Global",
 		"summary": "Global Summary",
@@ -54,9 +56,8 @@ using System.IO;
 			},
 		]
 	}
-}
+} 
 */
-
 
 [System.Serializable]
 public class Environment
@@ -147,11 +148,17 @@ public class AssetManager : MonoBehaviour {
 		//load new assets if needed
 
 	void Start(){
+		
+		string dataAsJson = File.ReadAllText("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/data.json");
+		var N = JSON.Parse(dataAsJson);
+		Debug.Log (N.Count);
+		Debug.Log (N["environments"].Count);
+
+
 		//TEMP
 		Environment e = new Environment ();
 		e.envTitle = "Globe";
 		e.envColor = new Color32 (0, 114, 206, 255);
-
 		environments.Add (e);
 		e = new Environment ();
 		e.envTitle = "Farm";

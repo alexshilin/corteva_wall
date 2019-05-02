@@ -1,0 +1,58 @@
+{
+	"last_update": "",
+	"location": "",
+	"environments":
+	[{
+		"environment": 
+		{
+			"title": "Global",
+			"summary": "Global Summary",
+			"color": "",
+			"icon": "file_path",
+			"backgrounds": 
+			[{
+				"format": "16:9",
+				"type": "video", 
+				"path": "file_path"
+			},
+			{
+				"format": "32:9",
+				"type": "video", 
+				"path": "file_path"
+			}],
+			"beauty_panels": 
+			[{
+				"format": "1x1",
+				"type": "video",
+				"path": "file_path"
+			},
+			{
+				"format": "2x1", 
+				"type": "image",
+				"path": "file_path"
+			}],
+			"content_panels":
+			[{
+				"front":
+				{
+					"template": "template_id", 
+					"showOnIdle": true, 
+					"content":
+					{
+						"bg_type": "image",
+						"bg_path": "file_path",
+						"title": "",
+						"body": ""
+					}
+				},
+				"back": {},
+				"thumbnail": {}	
+			},
+			{
+				"front": {},
+				"back": {},
+				"thumbnail": {}
+			}]
+		}
+	}]
+}

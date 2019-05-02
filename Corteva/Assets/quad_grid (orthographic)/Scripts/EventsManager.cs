@@ -41,6 +41,10 @@ public class EventsManager : MonoBehaviour {
 	public event UserKioskCloseRequestEvent OnUserKioskCloseRequest;
 	public void UserKioskCloseRequest(Vector2 _gridPos, bool _closeImmediately){ OnUserKioskCloseRequest (_gridPos, _closeImmediately); }
 
+	public delegate void UserKioskActivatePanelInGrid();
+	public event UserKioskActivatePanelInGrid OnUserKioskActivatePanelInGrid;
+	public void UserKioskActivatePanelInGridRequest(){ OnUserKioskActivatePanelInGrid (); }
+
 	public delegate void EnvironmentSwitch();
 	public event EnvironmentSwitch OnEnvironmentSwitch;
 	public void EnvironmentSwitchRequest(){ OnEnvironmentSwitch (); }
