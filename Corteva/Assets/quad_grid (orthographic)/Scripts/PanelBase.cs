@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 using TouchScript.Gestures;
 using TouchScript.Gestures.TransformGestures;
-
+using TMPro;
 
 
 public class PanelBase : MonoBehaviour {
@@ -72,6 +73,10 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.TransformStarted += transformStartedHandler;
 		transformGesture.Transformed += transformedHandler;
 		transformGesture.TransformCompleted += transformCompletedHandler;
+
+		PMP = PanelModulePool.Instance;
+		string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+		AssemblePanel (temp);
 	}
 
 	private void OnDisable()
@@ -83,8 +88,7 @@ public class PanelBase : MonoBehaviour {
 	}
 
 	void Start(){
-		PMP = PanelModulePool.Instance;
-		AssemblePanel ("");
+		
 	}
 
 	void Update(){
@@ -127,6 +131,10 @@ public class PanelBase : MonoBehaviour {
 //		string _template = "01";
 		GameObject t;
 		Renderer panelRenderer;
+		TextMeshPro text;
+
+
+
 		if (_template == "329bg") {
 			t = LoadModule ("1x2_texture", PanelView.Front);
 			//populate the module
@@ -135,6 +143,82 @@ public class PanelBase : MonoBehaviour {
 			ActivateView (PanelView.Front, true);
 			return;
 		}
+
+
+
+
+		if (_template == "template_01") {
+			//THUMBNAIL
+			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
+
+			//FRONT
+			t = LoadModule ("1x1_texture_color", PanelView.Front);
+
+			bool isVideo = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetRandomVideo ();
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("sample_07");
+			}
+
+			t = LoadModule ("1x1_txt_layout_02", PanelView.Front);
+			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
+			text.text = "Front";
+			t.transform.Find ("Body").gameObject.SetActive (false);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			//BACK
+			t = LoadModule ("1x1_texture_color", PanelView.Back);
+			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
+
+			t = LoadModule ("1x1_txt_layout_02", PanelView.Back);
+			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
+			text.text = "Back";
+			t.transform.Find ("Body").gameObject.SetActive (false);
+			t.transform.localPosition += transform.forward * -0.01f;
+			return;
+		}
+
+		if (_template == "template_02") {
+			//THUMBNAIL
+			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
+
+			//FRONT
+			t = LoadModule ("1x1_texture_color", PanelView.Front);
+			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
+
+			t = LoadModule ("1x1_viz_earth", PanelView.Front);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			t = LoadModule ("1x1_txt_layout_02", PanelView.Front);
+			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
+			text.text = "Front";
+			t.transform.Find ("Body").gameObject.SetActive (false);
+			t.transform.localPosition += transform.forward * -0.02f;
+
+			//BACK
+			t = LoadModule ("1x1_texture_color", PanelView.Back);
+			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
+
+			t = LoadModule ("1x1_txt_layout_02", PanelView.Back);
+			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
+			text.text = "Back";
+			t.transform.Find ("Body").gameObject.SetActive (false);
+			t.transform.localPosition += transform.forward * -0.01f;
+			return;
+		}
+
+
+
 
 
 		t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
@@ -179,22 +263,36 @@ public class PanelBase : MonoBehaviour {
 		if (_faceAway) {
 			viewToShow.transform.localPosition = awayPos;
 			viewToShow.transform.localEulerAngles = awayRot;
-			viewToShow.gameObject.SetActive (true);
+			//viewToShow.gameObject.SetActive (true);
+			SetRender(viewToShow, true);
 			currViewFacingAway = _viewToShow;
 		} else {
 			viewToShow.transform.localPosition = forwardPos;
 			viewToShow.transform.localEulerAngles = forwardRot;
-			viewToShow.gameObject.SetActive (true);
+			//viewToShow.gameObject.SetActive (true);
+			SetRender(viewToShow, true);
 			currViewFacingForward = _viewToShow;
 			panelView = _viewToShow;
 		}
 
-		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front)
-			front.gameObject.SetActive (false);
-		if (currViewFacingAway != PanelView.Back && currViewFacingForward != PanelView.Back)
-			back.gameObject.SetActive (false);
-		if (currViewFacingAway != PanelView.Thumbnail && currViewFacingForward != PanelView.Thumbnail)
-			thumbnail.gameObject.SetActive (false);
+		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
+			//front.gameObject.SetActive (false);
+			SetRender(front, false);
+		}
+		if (currViewFacingAway != PanelView.Back && currViewFacingForward != PanelView.Back) {
+			//back.gameObject.SetActive (false);
+			SetRender(back, false);
+		}
+		if (currViewFacingAway != PanelView.Thumbnail && currViewFacingForward != PanelView.Thumbnail) {
+			//thumbnail.gameObject.SetActive (false);
+			SetRender(thumbnail, false);
+		}
+	}
+
+	void SetRender(Transform _go, bool _enable){
+		foreach (Renderer r in _go.GetComponentsInChildren<Renderer>()) {
+			r.enabled = _enable;
+		}
 	}
 
 	void PanelFlipped(){
@@ -204,15 +302,14 @@ public class PanelBase : MonoBehaviour {
 	}
 	void PanelMovedToUserGrid(){
 		UpdatePanelView ();
-		myKiosk.activePanel = null;
 		transform.parent = myKiosk.userGrid;
 		transform.localScale = Vector3.one;
 		myKiosk.somePanelIsAnimating = false;
+		myKiosk.activePanel = null;
 		panelState = PanelState.Ready;
 	}
 	void PanelMovedToUserKiosk(){
 		UpdatePanelView ();
-		myKiosk.activePanel = transform;
 		myKiosk.somePanelIsAnimating = false;
 		panelState = PanelState.Active;
 	}
@@ -232,6 +329,20 @@ public class PanelBase : MonoBehaviour {
 			forwardRot = new Vector3 (0, 0, 0);
 			awayPos = new Vector3 (0, 0, 0.01f);
 			awayRot = new Vector3 (0, 180, 0);;
+		}
+
+		//hide away view
+		if (currViewFacingAway == PanelView.Front) {
+			//front.gameObject.SetActive (false);
+			SetRender(front, false);
+		}
+		if (currViewFacingAway == PanelView.Back) {
+			//back.gameObject.SetActive (false);
+			SetRender(back, false);
+		}
+		if (currViewFacingAway == PanelView.Thumbnail) {
+			//thumbnail.gameObject.SetActive (false);
+			SetRender(thumbnail, false);
 		}
 
 		panelView = currViewFacingForward;
@@ -256,6 +367,7 @@ public class PanelBase : MonoBehaviour {
 		//if the panel is animating, dont execute following
 		if (panelState == PanelState.Animating) 
 		{
+			Debug.Log ("\t panel is animating [end]");
 			return;
 		}
 
@@ -278,6 +390,7 @@ public class PanelBase : MonoBehaviour {
 
 		if(panelContext == PanelContext.Kiosk && myKiosk.somePanelIsAnimating)
 		{
+			Debug.Log ("\t kiosk is animating [end]");
 			return;
 		}
 			
@@ -285,11 +398,11 @@ public class PanelBase : MonoBehaviour {
 		//
 		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
 			//FlipAround ();
-			if (currViewFacingForward == PanelView.Front && currViewFacingAway != PanelView.Back) 
+			if (currViewFacingForward == PanelView.Front) 
 			{
 				ActivateView (PanelView.Back, true);
 			}
-			if (currViewFacingForward == PanelView.Back && currViewFacingAway != PanelView.Front) 
+			if (currViewFacingForward == PanelView.Back) 
 			{
 				ActivateView (PanelView.Front, true);
 			}
@@ -306,11 +419,12 @@ public class PanelBase : MonoBehaviour {
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Thumbnail && panelState == PanelState.Ready) {
 			//first check if another panel is active, and hide that one
 			//EventsManager.Instance.UserKioskActivatePanelInGridRequest();
-			if (myKiosk.activePanel != null) {
+			if (myKiosk.activePanel) {
+				Debug.Log("\t has active panel, closing that panel first");
 				myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
-				myKiosk.activePanel = null;
-				ActivateFromGrid (true);
+				//ActivateFromGrid (true);
 			} else {
+				Debug.Log("\t no active panel, opening thumbnail");
 				ActivateFromGrid (false);
 			}
 
@@ -323,38 +437,42 @@ public class PanelBase : MonoBehaviour {
 		panelState = PanelState.Animating;
 		myKiosk.somePanelIsAnimating = true;
 		//SetAsThumbnail (); //this should happen elsewhere
-		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.linear, PanelFlipped);
+		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.easeOut, PanelFlipped);
 		//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
 		//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 1f, 0f, EaseCurve.Instance.linear);
 	}
 
 	public void BackToGrid()
 	{
-		if (currViewFacingForward != PanelView.Thumbnail) 
-		{
-			ActivateView (PanelView.Thumbnail, true);
+		
+			Debug.Log ("[BackToGrid] " + name);
+			if (currViewFacingForward != PanelView.Thumbnail) 
+			{
+				ActivateView (PanelView.Thumbnail, true);
+			}
 			panelState = PanelState.Animating;
 			myKiosk.somePanelIsAnimating = true;
 			Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
-			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.7f, 0, EaseCurve.Instance.easeOut);
-			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 1f, 0f, EaseCurve.Instance.easeOutBack);
-			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 1f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
-		}
+			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
+			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
+			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
 	}
 
 	private void ActivateFromGrid(bool _waitForActiveToClose){
+		Debug.Log ("[ActivateFromGrid] " + name);
 		float delay = 0f;
 		if (_waitForActiveToClose)
-			delay = 0.3f;
+			delay = 0.6f;
 		ActivateView (PanelView.Front, true);
 		panelState = PanelState.Animating;
 		myKiosk.somePanelIsAnimating = true;
+		myKiosk.activePanel = transform;
 		myKiosk.userGrid.GetComponent<UserGrid> ().emptySpot = transform.localPosition;
-		Vector3 goTo = Vector3.zero + Vector3.forward * 25f;
+		Vector3 goTo = Vector3.forward * 25f;
 		transform.parent = myKiosk.transform;
-		EaseCurve.Instance.Vec3 (transform, transform.localPosition, goTo, 0.7f, delay, EaseCurve.Instance.easeOut, null, "local");
-		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 1f, delay, EaseCurve.Instance.easeOutBack);
-		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * 0.9f, 1f, delay, EaseCurve.Instance.easeOutBack, PanelMovedToUserKiosk);
+		EaseCurve.Instance.Vec3 (transform, transform.localPosition, goTo, 0.5f, delay, EaseCurve.Instance.easeOut, null, "local");
+		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, delay, EaseCurve.Instance.easeOut);
+		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * 0.9f, 0.6f, delay, EaseCurve.Instance.easeOut, PanelMovedToUserKiosk);
 	}
 
 	private void transformStartedHandler(object sender, EventArgs e)
@@ -365,8 +483,12 @@ public class PanelBase : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e)
 	{
-		if (panelView == PanelView.Background || panelContext == PanelContext.Idle)
+		if (panelView == PanelView.Background
+		    || panelContext == PanelContext.Idle
+		    || (panelContext == PanelContext.Kiosk && panelState == PanelState.Ready))
+		{
 			return;
+		}
 
 		transform.position += transformGesture.DeltaPosition;
 		myKiosk.menuFollowPanel = true;

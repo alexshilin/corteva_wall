@@ -41,7 +41,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1329543483567750
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +56,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1452841905065622
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,7 +89,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4129215700384326
 Transform:
   m_ObjectHideFlags: 1
@@ -235,6 +235,12 @@ MonoBehaviour:
   front: {fileID: 4255852751102080}
   back: {fileID: 4664057513898534}
   thumbnail: {fileID: 4509939764676954}
+  forwardPos: {x: 0, y: 0, z: -0.01}
+  forwardRot: {x: 0, y: 0, z: 0}
+  awayPos: {x: 0, y: 0, z: 0.01}
+  awayRot: {x: 0, y: 180, z: 0}
+  currViewFacingForward: 0
+  currViewFacingAway: 0
   panelState: 0
   panelContext: 0
   panelView: 0

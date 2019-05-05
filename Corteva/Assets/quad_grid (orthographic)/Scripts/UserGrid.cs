@@ -40,6 +40,7 @@ public class UserGrid : MonoBehaviour {
 
 			GameObject panel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);
 			panel.transform.localPosition = panelPostion;
+			panel.name = "p"+i;
 
 			PanelBase po = panel.GetComponent<PanelBase> ();
 			/*

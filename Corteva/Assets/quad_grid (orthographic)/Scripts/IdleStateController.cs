@@ -640,6 +640,7 @@ public class IdleStateController : MonoBehaviour {
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.environment = environments [currEnv];
 
+			//TEMP
 			bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
 			po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
 			po.ActivateView (PanelBase.PanelView.Front, !flip);
@@ -776,7 +777,7 @@ public class IdleStateController : MonoBehaviour {
 			}
 
 			if ((currEnv == environments.Count - 1 || kioskColumns.Contains (1)) && !titleHidden) {
-				idleSequence [0].panel.GetComponent<PanelObject> ().panelState = PanelObject.PanelState.Animating;
+				idleSequence [0].panel.GetComponent<PanelBase> ().panelState = PanelBase.PanelState.Animating;
 				titleHidden = true;
 				idleSequence [0].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
 				EaseCurve.Instance.Vec3 (idleSequence [0].panel.transform, idleSequence [0].toPos, idleSequence [0].fromPos, duration, delay+0.2f, EaseCurve.Instance.custom2, null, "local");

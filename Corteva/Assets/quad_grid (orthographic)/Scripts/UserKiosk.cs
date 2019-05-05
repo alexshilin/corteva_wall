@@ -83,7 +83,7 @@ public class UserKiosk : MonoBehaviour {
 
 	private void kioskTapped(){
 		timesIveBeenTapped++;
-		Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
+		//Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
 		if (closer.gameObject.activeSelf) {
 			closer.gameObject.SetActive (false);
 		}
