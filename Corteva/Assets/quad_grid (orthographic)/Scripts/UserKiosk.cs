@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TouchScript.Gestures;
+using System;
 
 public class UserKiosk : MonoBehaviour {
 
@@ -41,19 +43,39 @@ public class UserKiosk : MonoBehaviour {
 	public bool menuFollowPanel = false;
 	public bool panelFollowMenu = false;
 
+	private PressGesture pressGesture;
+
 	// Use this for initialization
 	void Start () {
 		
 	}
 
 	void OnEnable(){
+		pressGesture = GetComponent<PressGesture> ();
+
+		pressGesture.Pressed += pressedHandler;
+
 		timesIveBeenTapped = 0;
 		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
-		EventsManager.Instance.OnUserKioskActivatePanelInGrid += userKioskActivatePanelInGridHandler;
+		//EventsManager.Instance.OnUserKioskActivatePanelInGrid += userKioskActivatePanelInGridHandler;
 	}
 	void OnDisable(){
+		pressGesture.Pressed -= pressedHandler;
+
 		EventsManager.Instance.OnEnvironmentSwitch -= environmentSwitchHandler;
-		EventsManager.Instance.OnUserKioskActivatePanelInGrid -= userKioskActivatePanelInGridHandler;
+		//EventsManager.Instance.OnUserKioskActivatePanelInGrid -= userKioskActivatePanelInGridHandler;
+	}
+
+	void pressedHandler(object sender, EventArgs e){
+		Debug.Log ("[pressedHandler] "+name);
+		kioskTapped ();
+	}
+	public void kioskTapped(){
+		timesIveBeenTapped++;
+		//Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
+		if (closer.gameObject.activeSelf) {
+			closer.gameObject.SetActive (false);
+		}
 	}
 
 	private void environmentSwitchHandler(){
@@ -75,24 +97,19 @@ public class UserKiosk : MonoBehaviour {
 		}
 	}
 
-	private void userKioskActivatePanelInGridHandler(){
-		if (activePanel != null) {
-			activePanel.GetComponent<PanelBase> ().BackToGrid ();
-		}
-	}
+//	private void userKioskActivatePanelInGridHandler(){
+//		if (activePanel != null) {
+//			activePanel.GetComponent<PanelBase> ().BackToGrid ();
+//		}
+//	}
 
-	private void kioskTapped(){
-		timesIveBeenTapped++;
-		//Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
-		if (closer.gameObject.activeSelf) {
-			closer.gameObject.SetActive (false);
-		}
-	}
+
 
 	public void CloseKiosk(){
 		Debug.Log ("[CloseKiosk] " + column);
 		EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
-		Destroy (gameObject);
+		//Destroy (gameObject);
+		Close();
 	}
 
 	public void SetCam(float _totalColumns, float _userColumn){
@@ -125,7 +142,7 @@ public class UserKiosk : MonoBehaviour {
 		headerPanel.name = "headerPanel";
 		headerPanel.transform.localPosition = new Vector3 (0, 6, 20);
 		if (env == null)
-			env = AssetManager.Instance.environments [Random.Range (0, AssetManager.Instance.environments.Count)];
+			env = AssetManager.Instance.environments [UnityEngine.Random.Range (0, AssetManager.Instance.environments.Count)];
 		headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
 		headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
 		headerPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
@@ -162,6 +179,15 @@ public class UserKiosk : MonoBehaviour {
 		//PixelsToUnits ();
 	}
 
+	public void Close(){
+		//bgPanel.SetActive (true);
+		EaseCurve.Instance.CamRect (userCam, camOpenedRect, camClosedRect, 0.5f, EaseCurve.Instance.easeIn, CleanUp);
+	}
+
+	private void CleanUp(){
+		Destroy (gameObject);
+	}
+
 	RaycastHit hit;
 	private bool navDoFollow = false;
 	private Vector3 navTouchStart;
@@ -176,6 +202,7 @@ public class UserKiosk : MonoBehaviour {
 	private bool panelDoFollow = false;
 	// Update is called once per frame
 	void Update () {
+		/*
 		if (Input.GetMouseButtonDown (0)) {
 			if (userCam.pixelRect.Contains (Input.mousePosition)) {
 				kioskTapped ();
@@ -190,6 +217,7 @@ public class UserKiosk : MonoBehaviour {
 				}
 			}
 		}
+		*/
 		if (menuFollowPanel) {
 			Vector3 menuGoTo = activePanel.localPosition;
 			menuGoTo.z = menu.localPosition.z;

@@ -439,7 +439,7 @@ public class PanelBase : MonoBehaviour {
 		//SetAsThumbnail (); //this should happen elsewhere
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.easeOut, PanelFlipped);
 		//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
-		//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 1f, 0f, EaseCurve.Instance.linear);
+		//EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale*0.5f, 0.4f, 0f, EaseCurve.Instance.easeBack);
 	}
 
 	public void BackToGrid()

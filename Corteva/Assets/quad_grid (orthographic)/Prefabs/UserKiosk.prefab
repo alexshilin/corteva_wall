@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 124201824888303212}
   - component: {fileID: 92140068136241560}
   - component: {fileID: 114431283671140796}
+  - component: {fileID: 114526948811208224}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -39,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4534955460404488}
   - component: {fileID: 114011449947804456}
+  - component: {fileID: 114151569005489000}
   m_Layer: 0
   m_Name: UserKiosk
   m_TagString: Untagged
@@ -543,6 +545,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelPrefab: {fileID: 0}
   emptySpot: {x: 0, y: 0, z: 0}
+--- !u!114 &114151569005489000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1091292406517696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6be551879cd14d739b0188844ef2c60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnPress:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  ignoreChildren: 0
 --- !u!114 &114341351606125732
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -668,7 +705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: UserCam
-  basicEditor: 1
+  basicEditor: 0
   advancedProps: 0
   hitProps: 0
   hit3DObjects: 1
@@ -679,6 +716,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 67108095
   useHitFilters: 0
+--- !u!114 &114526948811208224
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1002508013211598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc7fd33c57d694994b0ab9f33fcdcbea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fullscreen @ Camera
+  type: 1
+  _camera: {fileID: 20695944576802614}
 --- !u!114 &114913263446109468
 MonoBehaviour:
   m_ObjectHideFlags: 1

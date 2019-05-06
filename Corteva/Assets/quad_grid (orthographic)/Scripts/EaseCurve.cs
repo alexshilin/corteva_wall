@@ -11,6 +11,7 @@ public class EaseCurve : MonoBehaviour
 	public AnimationCurve easeInOut;
 	public AnimationCurve easeOutBack;
 	public AnimationCurve easeInOutBack;
+	public AnimationCurve easeBack;
 	public AnimationCurve custom;
 	public AnimationCurve custom2;
 

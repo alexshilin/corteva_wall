@@ -275,7 +275,7 @@ public class IdleStateController : MonoBehaviour {
 
 	void PlanLayout(){
 		Debug.Log ("----------------------------------------------------------");
-		Debug.Log ("[PlanLayout]");
+		Debug.Log ("[PlanLayout] with " + kioskColumns.Count + "/" + GM.desiredGrid.x + " kiosks active");
 		//generate blank layout grids
 		if (GM.desiredGrid.x == 6) {
 			layoutGrid = new int[][] {
@@ -310,13 +310,14 @@ public class IdleStateController : MonoBehaviour {
 			currEnv++;
 		}
 		//if a kiosk is open, overwrite previous rules
-		if (kioskColumns.Contains(1)) {
-			if(!kioskColumns.Contains(0)){
+		if (kioskColumns.Contains(1) && kioskColumns.Contains(0)) {
+			//if(!kioskColumns.Contains(0)){
 				//all kiosks are open
-				Debug.Log("\tno columns left. ending idle loop.");
-				activeTransitionLoop = false;
-				return;
-			}
+				//Debug.Log("\tno columns left. ending idle loop.");
+				//activeTransitionLoop = false;
+				//return;
+			//}
+
 			//create a new list of colmns which do not have a kiosk in them
 			List<int> kCols = new List<int> ();
 			for (int i = 0; i < kioskColumns.Count; i++) {
