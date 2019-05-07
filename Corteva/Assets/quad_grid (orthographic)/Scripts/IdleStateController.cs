@@ -48,7 +48,7 @@ public class IdleStateController : MonoBehaviour {
 	public List<int> kioskColumnsToClose = new List<int> ();
 
 	List<Environment> environments;
-	int currEnv = -1;
+	public int currEnv = -1;
 
 	string[] availableTypes = new string[]{"1x1","1x1","1x1","1x1","1x2","2x2"};
 	List<string> usedTypes = new List<string>();
@@ -88,9 +88,6 @@ public class IdleStateController : MonoBehaviour {
 		AM = AssetManager.Instance;
 		GM = GridManagerOrtho.Instance;
 		SM = ScreenManager.Instance;
-
-		//get environemnts
-		environments = new List<Environment>(AM.environments);
 
 		//start event listenered
 		EventsManager.Instance.OnUserKioskOpenRequest += KioskOpenResponse;
@@ -135,8 +132,11 @@ public class IdleStateController : MonoBehaviour {
 
 	}
 
-	public void Prepare(){
-		Debug.Log ("[Prepare] idle grid for " + GM.desiredGrid.x + " columns.");
+	public void Init(){
+		Debug.Log ("IdleStateController [Init] idle grid for " + GM.desiredGrid.x + " columns.");
+
+		//get environemnts
+		environments = new List<Environment>(AM.environments);
 
 		ClearKiosks ();
 			
@@ -274,6 +274,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 	void PlanLayout(){
+
 		Debug.Log ("----------------------------------------------------------");
 		Debug.Log ("[PlanLayout] with " + kioskColumns.Count + "/" + GM.desiredGrid.x + " kiosks active");
 		//generate blank layout grids
@@ -634,19 +635,34 @@ public class IdleStateController : MonoBehaviour {
 
 			PanelBase po = panel.GetComponent<PanelBase> ();
 
-			po.panelID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
+			po.gridID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
 			po.panelContext = PanelBase.PanelContext.Idle;
 			po.panelState = PanelBase.PanelState.Animating;
 			po.panelView = PanelBase.PanelView.Front;
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.environment = environments [currEnv];
 
-			//TEMP
-			bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-			po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
-			po.ActivateView (PanelBase.PanelView.Front, !flip);
+			if (i == 0) {
+				po.AssemblePanel ("title_idle");
+				po.ActivateView (PanelBase.PanelView.Front, false);
+
+			} else {
+				string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+				po.AssemblePanel (temp);
+
+				//TEMP
+				bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+				po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
+				po.ActivateView (PanelBase.PanelView.Front, !flip);
+			}
+
+
 
 			panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
+
+			if (idleSequence [i].panelType == new Vector2 (1, 2) || idleSequence [i].panelType == new Vector2 (2, 2)) {
+				po.panelView = PanelBase.PanelView.Background;
+			}
 
 			/*po.SetPanelColors (environments [currEnv].envColor);
 			if (i == 0) {

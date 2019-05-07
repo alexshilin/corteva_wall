@@ -53,15 +53,15 @@ public class GridManagerOrtho : MonoBehaviour {
 
 	void assetsLoaded(){
 		EventsManager.Instance.OnAssetsFinishedLoading -= assetsLoaded;
-		Init ();
+		//Init ();
 	}
 
 	void recalculateGrid(){
 		//Init ();
 	}
 
-	void Init(){
-		Debug.Log ("[Init]");
+	public void Init(){
+		Debug.Log ("GridManagerOrtho [Init]");
 		AssetManager.Instance.mainCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 		AssetManager.Instance.userInitCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 
@@ -82,7 +82,8 @@ public class GridManagerOrtho : MonoBehaviour {
 
 		CalculateGridPositions ();
 
-		IdleStateController.Instance.Prepare ();
+		AssetManager.Instance.Init ();
+		//IdleStateController.Instance.Init ();
 	}
 
 	void sceneLoaded(string _scene){

@@ -41,6 +41,9 @@ public class UserKioskController : MonoBehaviour {
 		uK.name = "UserKiosk_" + _gridPos.x;
 		uK.transform.parent = AssetManager.Instance.kiosks;
 		uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
+		if (_env == null) {
+			_env = AssetManager.Instance.environments [IdleStateController.Instance.currEnv];
+		}
 		uK.GetComponent<UserKiosk> ().env = _env;
 		uK.GetComponent<UserKiosk> ().column = (int)_gridPos.x;
 		uK.GetComponent<UserKiosk> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);

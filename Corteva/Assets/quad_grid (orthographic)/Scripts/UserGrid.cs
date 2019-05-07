@@ -43,6 +43,9 @@ public class UserGrid : MonoBehaviour {
 			panel.name = "p"+i;
 
 			PanelBase po = panel.GetComponent<PanelBase> ();
+
+			string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+			po.AssemblePanel (temp);
 			/*
 			int r = Random.Range (0, 3);
 			if (r == 1) {

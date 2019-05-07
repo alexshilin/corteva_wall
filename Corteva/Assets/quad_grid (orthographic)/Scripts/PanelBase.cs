@@ -6,6 +6,7 @@ using UnityEngine.Video;
 using TouchScript.Gestures;
 using TouchScript.Gestures.TransformGestures;
 using TMPro;
+using SimpleJSON;
 
 
 public class PanelBase : MonoBehaviour {
@@ -51,7 +52,8 @@ public class PanelBase : MonoBehaviour {
 	public PanelView panelView = PanelView.Blank;
 
 	public Environment environment{ get; set; }
-	public int panelID;
+	public string panelID;
+	public int gridID;
 	public UserKiosk myKiosk;
 	public Vector2 panelGridPos;
 
@@ -75,8 +77,8 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.TransformCompleted += transformCompletedHandler;
 
 		PMP = PanelModulePool.Instance;
-		string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
-		AssemblePanel (temp);
+		//string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+		//AssemblePanel (temp);
 	}
 
 	private void OnDisable()
@@ -92,33 +94,127 @@ public class PanelBase : MonoBehaviour {
 	}
 
 	void Update(){
-		if (Input.GetKeyDown (KeyCode.A)) {
-			panelState = PanelState.Active;
-			panelContext = PanelContext.Kiosk;
-			AssemblePanel ("");
+
+	}
+
+	public void Assemble(JSONNode _panelData)
+	{
+		if (_panelData ["front"].Count > 0) {
+			AssembleView (_panelData ["front"], PanelView.Front);
+		}
+		if (_panelData ["back"].Count > 0) {
+			AssembleView (_panelData ["back"], PanelView.Back);
+		}
+		if (_panelData ["thumbnail"].Count > 0) {
+			AssembleView (_panelData ["thumbnail"], PanelView.Thumbnail);
 		}
 
+		ActivateView (PanelView.Thumbnail, false);
+		ActivateView (PanelView.Front, true);
+	}
+
+	void AssembleView(JSONNode _templateData, PanelView _view)
+	{
+		GameObject t;
+		Renderer panelRenderer;
+		TextMeshPro text;
+
+		string template = _templateData ["template"];
+
+		if (template == "title_idle") {
+			//FRONT
+			t = LoadModule ("1x1_texture_color_02", _view);
+			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
+			return;
+		}
+
+		//bg	video OR image OR color
+		if (template == "template_00") {
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
+				if (isImage) {
+					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				} else {
+					if (_templateData ["content"] ["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					} else {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+					}
+				}
+			}
+			return;
+		}
+
+		//bg	video OR image OR color
+		//txt	title AND/OR body
+		if (template == "template_01") {
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
+				if (isImage) {
+					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				} else {
+					if (_templateData ["content"] ["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					} else {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+					}
+				}
+			}
 
 
-		if (Input.GetKeyDown (KeyCode.S)) {
-			ActivateView (PanelView.Front, false);
-		}
-		if (Input.GetKeyDown (KeyCode.X)) {
-			ActivateView (PanelView.Front, true);
+			t = LoadModule ("1x1_txt_layout_02", _view);
+
+			if (_templateData ["content"] ["title"] != "") {
+				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
+			} else {
+				t.transform.Find ("Title").gameObject.SetActive (false);
+			}
+
+
+			if (_templateData ["content"] ["body"] != "") {
+				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			} else {
+				t.transform.Find ("Body").gameObject.SetActive (false);
+			}
+
+			t.transform.localPosition += transform.forward * -0.01f;
+			return;
 		}
 
-		if (Input.GetKeyDown (KeyCode.D)) {
-			ActivateView (PanelView.Back, false);
-		}
-		if (Input.GetKeyDown (KeyCode.C)) {
-			ActivateView (PanelView.Back, true);
-		}
+		if (template == "template_03") {
+			t = LoadModule ("1x1_texture_color", _view);
+			if (_templateData ["content"] ["bg_color"].Count == 3) {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+			} else {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			}
 
-		if (Input.GetKeyDown (KeyCode.F)) {
-			ActivateView (PanelView.Thumbnail, false);
-		}
-		if (Input.GetKeyDown (KeyCode.V)) {
-			ActivateView (PanelView.Thumbnail, true);
+			t = LoadModule ("1x1_txt_layout_03", _view);
+			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
+			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			return;
 		}
 	}
 
@@ -144,9 +240,19 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
+		//bg	colorBG AND imgFG w/alpha
+		if (_template == "title_idle") {
+			//FRONT
+			t = LoadModule ("1x1_texture_color_02", PanelView.Front);
+			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
+			return;
+		}
 
 
 
+		//sample video/image template
 		if (_template == "template_01") {
 			//THUMBNAIL
 			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
@@ -186,6 +292,8 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
+
+		//sample visualization template
 		if (_template == "template_02") {
 			//THUMBNAIL
 			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
@@ -219,8 +327,6 @@ public class PanelBase : MonoBehaviour {
 
 
 
-
-
 		t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
 		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
 		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
@@ -248,7 +354,12 @@ public class PanelBase : MonoBehaviour {
 		if (_view == PanelView.Thumbnail) viewParent = thumbnail;
 
 		//instantiate module
-		GameObject module = Instantiate (PMP.modules.Find (x => x.name == _type).prefab, viewParent);
+		GameObject module = null;
+		try{
+		 	module = Instantiate (PMP.modules.Find (x => x.name == _type).prefab, viewParent);
+		}catch(System.NullReferenceException e){
+			throw new NullReferenceException ("You might be missing a reference to a \"panel module\" prefab in the PanelModulePool.");
+		}
 		return module;
 	}
 	public void ActivateView(PanelView _viewToShow, bool _faceAway)
@@ -379,8 +490,8 @@ public class PanelBase : MonoBehaviour {
 			//content panels are interactable, and should remain when tapped
 			transform.parent = AssetManager.Instance.panels;
 			transform.localScale = Vector3.one;
-			Debug.Log ("\tpanelID: " + this.panelID + " | gridPosID: " + GridManagerOrtho.Instance.gridPositions [this.panelID].id);
-			transform.position = new Vector3 (GridManagerOrtho.Instance.gridPositions [this.panelID].center.x, GridManagerOrtho.Instance.gridPositions [this.panelID].center.y, 10);
+			Debug.Log ("\tgridCell: " + this.gridID + " | gridPosID: " + GridManagerOrtho.Instance.gridPositions [this.gridID].id);
+			transform.position = new Vector3 (GridManagerOrtho.Instance.gridPositions [this.gridID].center.x, GridManagerOrtho.Instance.gridPositions [this.gridID].center.y, 10);
 			EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 			ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);

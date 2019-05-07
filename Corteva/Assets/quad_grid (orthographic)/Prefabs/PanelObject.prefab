@@ -1397,7 +1397,7 @@ MonoBehaviour:
     envColor:
       serializedVersion: 2
       rgba: 0
-    envIcon: {fileID: 0}
+    envIconPath: 
     envTitle: 
     envSummary: 
     envBackgroundVideos: []
@@ -1437,9 +1437,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_VideoLocation: 2
   m_VideoPath: 
-  m_AutoOpen: 1
-  m_AutoStart: 1
-  m_Loop: 0
+  m_AutoOpen: 0
+  m_AutoStart: 0
+  m_Loop: 1
   m_Volume: 1
   m_Balance: 0
   m_Muted: 0

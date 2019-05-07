@@ -37,34 +37,7 @@ public class ScreenManager : MonoBehaviour {
 	}
 
 	void Start () {
-//		Resolution[] resolutions = Screen.resolutions;
-//		Log ("available resolutions: ");
-//		foreach (var res in resolutions){
-//			Log("  "+res.width + "x" + res.height + " : " + res.refreshRate+"hz");
-//			hasAspect(new Vector2((float)res.width, (float)res.height), new Vector2(16f, 9f));
-//		}
-//		if (Display.displays.Length > 1) {
-//			Log("Multiple displays detected ["+Display.displays.Length+"]");
-//			Vector2 multiDisplayRes = Vector2.zero;
-//			for(int i=0; i<Display.displays.Length; i++) {
-//				Display.displays[i].Activate ();
-//				multiDisplayRes.x += (float)Display.displays[i].renderingWidth;
-//				multiDisplayRes.y += (float)Display.displays[i].renderingHeight;
-//				Log("\tDisplay "+i+" ["+Display.displays[i].renderingWidth+" x "+Display.displays[i].renderingHeight+"] "+getAspect (new Vector2 ((float)Display.displays[i].renderingWidth, (float)Display.displays[i].renderingHeight)));
-//			}
-//			Log("\t\tTotal ["+multiDisplayRes.x+" x "+multiDisplayRes.y+"] "+getAspect (new Vector2 (multiDisplayRes.x, multiDisplayRes.y)));
-//			screenActualPx = multiDisplayRes;
-//			if (dualDisplayMode) {
-//				Log ("Dual display mode actve");
-//				screenActualPx = multiDisplayRes;
-//			} else {
-//				Log ("Dual display mode inactve, must be turned on manually.");
-//			}
-//		} else {
-//			Log ("Single display");
-//			screenActualPx = new Vector2 ((float)Screen.width, (float)Screen.height);
-//		}
-//		Log("\tTotal resolution ["+screenActualPx.x+" x "+screenActualPx.y+"] "+getAspect (new Vector2 (screenActualPx.x, screenActualPx.y)));
+		Debug.Log ("ScreenManager [Start]");
 		screenActualPx = new Vector2 ((float)Screen.width, (float)Screen.height);
 		Log ("current resolution: " + screenActualPx);
 
@@ -80,6 +53,7 @@ public class ScreenManager : MonoBehaviour {
 
 		detectedDPI = Screen.dpi;
 		Log ("DPI: " + detectedDPI);
+
 		//QualitySettings.vSyncCount = 0;
 		Log ("vSync: " + QualitySettings.vSyncCount);
 
@@ -87,29 +61,7 @@ public class ScreenManager : MonoBehaviour {
 		Log ("graphicsDeviceName: " + SystemInfo.graphicsDeviceName);
 		Log ("graphicsDeviceID: " + SystemInfo.graphicsDeviceID);
 
-//		Log ("displays detected: " + Display.displays.Length);
-//		foreach (Display d in Display.displays) {
-//				d.Activate ();
-//				Log ("\t"+ d.systemWidth + ", " + d.systemHeight + " | " + d.renderingWidth + ", " + d.renderingHeight);
-//		}
-
-
-		AssetManager.Instance.LoadAssets ();
-
-		//logText.text = "...";
-
-		//ToggleAdmin ();
-
-		//move user cameras to top touch layers
-		//		int currentLayer = 0;
-		//		foreach (TouchScript.Layers.TouchLayer l in TouchScript.LayerManager.Instance.Layers) {
-		//			Debug.Log ("layer: " + l.Name);
-		//			if (l.Name == "UserCam") {
-		//				Debug.Log ("moving " + l.Name + "from layer: " + currentLayer + " to " + 0);
-//						TouchScript.LayerManager.Instance.ChangeLayerIndex (currentLayer, 0);
-		//			}
-		//			currentLayer++;
-		//		}
+		GridManagerOrtho.Instance.Init ();
 	}
 
 	string getAspect (Vector2 _resolution){
@@ -135,10 +87,12 @@ public class ScreenManager : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.M)) {
 			ToggleAdmin ();
 		}
+
 		//toggle fullscreen
 		if (Input.GetKeyDown (KeyCode.F)) {
 			Screen.fullScreen = !Screen.fullScreen;
 		}
+
 		//switch to windowed and resize to 16:9 aspect resolution
 		if (Input.GetKeyDown (KeyCode.Alpha6)) {
 			Screen.fullScreen = false;
@@ -151,6 +105,7 @@ public class ScreenManager : MonoBehaviour {
 			}
 
 		}
+
 		//switch to windowed and resize to 32:9 aspect resolution
 		if (Input.GetKeyDown (KeyCode.Alpha7)) {
 			Screen.fullScreen = !Screen.fullScreen;

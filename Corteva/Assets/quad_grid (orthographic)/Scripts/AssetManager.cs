@@ -6,79 +6,26 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using SimpleJSON;
 
-/*
-	{
-	"environment": {
-		"title": "Global",
-		"summary": "Global Summary",
-		"color": "",
-		"icon": "file_path",
-		"backgrounds": [
-			//each background needs a 16:9 and a 32:9 version
-			{
-				"format": "16:9",
-				"type": "video", 
-				"path": "file_path"
-			},
-			{
-				"format": "32:9",
-				"type": "video", 
-				"path": "file_path"
-			}
-		],
-		"beauty_panels": [
-			{
-				"format": "1x1",
-				"type": "video",
-				"path": "file_path"
-			},
-			{
-				"format": "2x1", //2x1 is a tall image equal to two 1x1's stacked on top of each other
-				"type": "image",
-				"path": "file_path"
-			}
-		],
-		"content_panels":[
-			{
-				"font": //front is required for all
-				{
-					"template": "template_id", //each template will have its own content options
-					"idle_ok": true, //should this view be considered as an option to display on the idle screen
-					"content" {
-						"bg_type": "image",
-						"bg_path": "file_path",
-						"title": "",
-						"body": ""
-					}
-				},
-				"back":{}, //back is optional
-				"thumbnail": {}	//thumbnails are required for all (so it can be displayed in kiosk grid)
-			},
-		]
-	}
-} 
-*/
-
 [System.Serializable]
 public class Environment
 {
 	public int envID;
 	public Color32 envColor;
-	public Texture2D envIcon;
+	public string envIconPath;
 	public string envTitle;
 	public string envSummary;
 	public List<string> envBackgroundVideos;
-	public List<PanelItem> envPanels;
-}
-public class PanelItem
-{
-	
+	public List<GameObject> envPanels = new List<GameObject>();
 }
 
 public class AssetManager : MonoBehaviour {
 	#region class variables
-	[HideInInspector]
-	public string basePath;
+	private string basePath;
+	private string filePrefix;
+	private int relativeFolderOffset;
+	private string assetsFolder;
+
+
 	private List<string> filesToLoad1x1 = new List<string>();
 	private List<string> filesToLoad1x2 = new List<string>();
 	[HideInInspector]
@@ -141,40 +88,73 @@ public class AssetManager : MonoBehaviour {
 		}
 	}
 
-	//TODO
-	//read the initializing JSON file
-	//preload all assets
-	//poll JSON file for new changes
-		//load new assets if needed
-
 	void Start(){
 		
-		string dataAsJson = File.ReadAllText("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/data.json");
-		var N = JSON.Parse(dataAsJson);
-		Debug.Log (N.Count);
-		Debug.Log (N["environments"].Count);
-
-
-		//TEMP
-		Environment e = new Environment ();
-		e.envTitle = "Globe";
-		e.envColor = new Color32 (0, 114, 206, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.envTitle = "Farm";
-		e.envColor = new Color32 (0, 191, 111, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.envTitle = "Plant";
-		e.envColor = new Color32 (252, 76, 2, 255);
-		environments.Add (e);
-		e = new Environment ();
-		e.envTitle = "Seed";
-		e.envColor = new Color32 (32, 32, 32, 255);
-		environments.Add (e);
 	}
 
+	public void Init(){
+		Debug.Log ("AssetManager [Init]");
+		SetUpAssetPaths ();
+		LoadAssets ();
+		//ParseAppData ();
+	}
 
+	private void SetUpAssetPaths(){
+		//file prefix
+		filePrefix = "file://";
+		relativeFolderOffset = -2;
+		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
+		basePath = Application.dataPath;
+
+		ScreenManager.Instance.Log ("platform: "+Application.platform.ToString());
+		if (Application.platform == RuntimePlatform.WindowsPlayer) {
+			//offset = -1;
+			filePrefix = "";
+		}
+		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), relativeFolderOffset));
+		ScreenManager.Instance.Log("app path: " + Application.dataPath);
+
+		//asset folder name
+		assetsFolder = basePath + "/assets/";
+		if (Application.isEditor) {
+			assetsFolder = basePath + "/_builds/assets/";
+		}
+		ScreenManager.Instance.Log("assets path: "+assetsFolder);
+	}
+
+	private void ParseAppData(){
+		string dataAsJson = File.ReadAllText("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/data.json");
+		var N = JSON.Parse(dataAsJson);
+
+		string assetPath = N ["asset_path_mac"];
+
+		Debug.Log ("Total Environemtns: "+N["environments"].Count);
+
+		Environment e;
+		for (int i = 0; i < N ["environments"].Count; i++) {
+			Debug.Log("\t"+N ["environments"] [i] ["title"]);
+			e = new Environment ();
+			e.envID = i;
+			e.envTitle = N ["environments"] [i] ["title"];
+			e.envSummary = N ["environments"] [i] ["summary"];
+			e.envColor = new Color32 ((byte)N ["environments"] [i] ["colorRGB"][0].AsInt, (byte)N ["environments"] [i] ["colorRGB"][1].AsInt, (byte)N ["environments"] [i] ["colorRGB"][2].AsInt, 255);
+			e.envIconPath = assetPath + N ["environments"] [i] ["iconPath"];
+
+			for (int a = 0; a < N ["environments"] [i] ["content_panels"].Count; a++) {
+				var panelData = N ["environments"] [i] ["content_panels"] [a];
+				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, transform);
+				PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
+				panelBase.panelID = N ["environments"] [i] ["content_panels"] [a] ["panelID"];
+				panelBaseGO.name = e.envTitle + "_" + panelBase.panelID;
+				panelBase.environment = e;
+				panelBase.Assemble (panelData);
+				e.envPanels.Add(panelBaseGO);
+			}
+			environments.Add (e);
+		}
+
+		IdleStateController.Instance.Init ();
+	}
 
 
 	#region PUBLIC methods
@@ -189,6 +169,11 @@ public class AssetManager : MonoBehaviour {
 	public Texture GetTexture(string _name){
 		int i = filesToLoad1x1.FindIndex (x => x.Contains (_name));
 		return loadedTextures1x1 [i];
+	}
+
+	public string GetVideo(string _name){
+		int i = videoFiles.FindIndex (x => x.Contains (_name));
+		return videoFiles [i];
 	}
 
 	public Texture GetRandomTexture(){
@@ -272,6 +257,7 @@ public class AssetManager : MonoBehaviour {
 
 
 	#region PRIVATE methods
+
 	private IEnumerator LoadImages () {
 		//check which platform we're on
 		//Application.platform
@@ -282,26 +268,6 @@ public class AssetManager : MonoBehaviour {
 		//will return root user folder on mac
 		//System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments)
 
-		//file prefix
-		string f = "file://";
-		int offset = -2;
-		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
-		basePath = Application.dataPath;
-
-		ScreenManager.Instance.Log ("platform: "+Application.platform.ToString());
-		if (Application.platform == RuntimePlatform.WindowsPlayer) {
-			//offset = -1;
-			f = "";
-		}
-		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), offset));
-		ScreenManager.Instance.Log("app path: " + Application.dataPath);
-
-		//asset folder name
-		string assetsFolder = basePath + "/assets/";
-		if (Application.isEditor) {
-			assetsFolder = basePath + "/_builds/assets/";
-		}
-		ScreenManager.Instance.Log("assets path: "+assetsFolder);
 
 		Debug.Log ("system memory size: " + SystemInfo.systemMemorySize+"MB");
 		Debug.Log ("graphics memory size: " + SystemInfo.graphicsMemorySize+"MB");
@@ -313,31 +279,37 @@ public class AssetManager : MonoBehaviour {
 		DirectoryInfo dir = new DirectoryInfo(assetsFolder+"images_1x1/");
 		FileInfo[] info = dir.GetFiles("*.jpg");
 		foreach (FileInfo fi in info){
-			filesToLoad1x1.Add (f + fi.FullName);
+			filesToLoad1x1.Add (filePrefix + fi.FullName);
+		}
+
+		dir = new DirectoryInfo(assetsFolder+"misc/");
+		info = dir.GetFiles("*.png");
+		foreach (FileInfo fi in info){
+			filesToLoad1x1.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"images_1x2/");
 		info = dir.GetFiles("*.jpg");
 		foreach (FileInfo fi in info){
-			filesToLoad1x2.Add (f + fi.FullName);
+			filesToLoad1x2.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			videoFiles.Add (f + fi.FullName);
+			videoFiles.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos_HD/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			hdVideoFiles.Add (f + fi.FullName);
+			hdVideoFiles.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos_HD_329/");
 		info = dir.GetFiles("*.mp4");
 		foreach (FileInfo fi in info){
-			videoFiles329.Add (f + fi.FullName);
+			videoFiles329.Add (filePrefix + fi.FullName);
 		}
 
 
@@ -372,7 +344,9 @@ public class AssetManager : MonoBehaviour {
 		ScreenManager.Instance.Log(" texture loading DONE"); 
 		ScreenManager.Instance.ToggleAdmin ();
 
-		EventsManager.Instance.AssetsFinishedLoading();
+		ParseAppData ();
+
+		//EventsManager.Instance.AssetsFinishedLoading();
 
 		yield return null;
 	}

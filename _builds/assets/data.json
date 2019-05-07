@@ -1,58 +1,317 @@
 {
 	"last_update": "",
 	"location": "",
+	"asset_path_mac": "/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/",
+	"asset_path_win": "",
 	"environments":
-	[{
-		"environment": 
+	[
 		{
-			"title": "Global",
-			"summary": "Global Summary",
-			"color": "",
-			"icon": "file_path",
-			"backgrounds": 
-			[{
+			"title": "Globe",
+			"summary": "Globe Summary",
+			"colorRGB": [0, 114, 206],
+			"iconPath": "misc/globe_title.png",
+			"backgrounds": [
+			{
 				"format": "16:9",
 				"type": "video", 
-				"path": "file_path"
+				"path": "videos/Sunset - 1280x720.mp4"
 			},
 			{
 				"format": "32:9",
 				"type": "video", 
-				"path": "file_path"
-			}],
-			"beauty_panels": 
-			[{
+				"path": "videos_HD_329/FogCrop.mp4"
+			}
+			],
+			"beauty_panels": [
+			{
 				"format": "1x1",
 				"type": "video",
-				"path": "file_path"
+				"path": "videos/Sunset - 1280x720.mp4"
 			},
 			{
-				"format": "2x1", 
+				"format": "1x2", 
 				"type": "image",
-				"path": "file_path"
-			}],
-			"content_panels":
-			[{
-				"front":
+				"path": "images_1x2/sample_1x2.jpg"
+			}
+			],
+			"content_panels":[
 				{
-					"template": "template_id", 
-					"showOnIdle": true, 
-					"content":
+					"panelID": "0101",
+					"front":
 					{
-						"bg_type": "image",
-						"bg_path": "file_path",
-						"title": "",
-						"body": ""
-					}
-				},
-				"back": {},
-				"thumbnail": {}	
+						"template": "template_01", 
+						"content":
+						{
+							"bg_type": "video",
+							"bg_color": [],
+							"bg_path": "Sunset - 1280x720.mp4",
+							"txt_color": [],
+							"category": "",
+							"title": "Globe Title 01",
+							"body": ""
+						}
+					},
+					"back": 
+					{
+						"template": "template_03",
+						"content":
+						{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail": 
+					{
+						"template": "template_01",
+						"content":
+						{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_03.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Thumnbail 01",
+							"body": ""
+						}
+					}	
+				}
+			]
+		},
+		{
+			"title": "Farm",
+			"summary": "Farm Summary",
+			"colorRGB": [0, 191, 111],
+			"iconPath": "misc/farm_title.png",
+			"backgrounds": [
+			{
+				"format": "16:9",
+				"type": "video", 
+				"path": "videos/Cornfield - 1280x720.mp4"
 			},
 			{
-				"front": {},
-				"back": {},
-				"thumbnail": {}
-			}]
+				"format": "32:9",
+				"type": "video", 
+				"path": "videos_HD_329/SunsetCrop.mp4"
+			}
+			],
+			"beauty_panels": [
+			{
+				"format": "1x1",
+				"type": "image",
+				"path": "images_1x1/sample_05.jpg"
+			},
+			{
+				"format": "1x2", 
+				"type": "image",
+				"path": "images_1x2/sample_1x2.jpg"
+			}
+			],
+			"content_panels": [
+				{
+					"panelID": "0201",
+					"front":
+					{
+						"template": "template_01", 
+						"content":
+						{
+							"bg_type": "video",
+							"bg_color": [],
+							"bg_path": "Sunset - 1280x720.mp4",
+							"txt_color": [],
+							"category": "",
+							"title": "Globe Title 01",
+							"body": ""
+						}
+					},
+					"back": 
+					{
+						"template": "template_03",
+						"content":
+						{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail": 
+					{
+						"template": "template_01",
+						"content":
+						{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_03.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Thumnbail 01",
+							"body": ""
+						}
+					}
+				}
+			]
+		},
+		{
+			"title": "Plant",
+			"summary": "Plant Summary",
+			"colorRGB": [252, 76, 2],
+			"iconPath": "misc/plant_title.png",
+			"backgrounds": [
+			{
+				"format": "16:9",
+				"type": "video", 
+				"path": "videos/Autumn - 1280x720.mp4"
+			},
+			{
+				"format": "32:9",
+				"type": "video", 
+				"path": "videos_HD_329/ForestCrop.mp4"
+			}
+			],
+			"beauty_panels": [
+			{
+				"format": "1x1",
+				"type": "image",
+				"path": "images_1x1/sample_06.jpg"
+			},
+			{
+				"format": "1x2", 
+				"type": "image",
+				"path": "images_1x2/sample_1x2.jpg"
+			}
+			],
+			"content_panels": [
+				{
+					"panelID": "0301",
+					"front":
+					{
+						"template": "template_01", 
+						"content":
+						{
+							"bg_type": "video",
+							"bg_color": [],
+							"bg_path": "Sunset - 1280x720.mp4",
+							"txt_color": [],
+							"category": "",
+							"title": "Globe Title 01",
+							"body": ""
+						}
+					},
+					"back": 
+					{
+						"template": "template_03",
+						"content":
+						{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail": 
+					{
+						"template": "template_01",
+						"content":
+						{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_03.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Thumnbail 01",
+							"body": ""
+						}
+					}
+				}
+			]
+		},
+		{
+			"title": "Seed",
+			"summary": "Seed Summary",
+			"colorRGB": [26, 26, 26],
+			"iconPath": "misc/seed_title.png",
+			"backgrounds": [
+			{
+				"format": "16:9",
+				"type": "video", 
+				"path": "videos/Cornfield - 1280x720.mp4"
+			},
+			{
+				"format": "32:9",
+				"type": "video", 
+				"path": "videos_HD_329/SnowCrop.mp4"
+			}
+			],
+			"beauty_panels": [
+			{
+				"format": "1x1",
+				"type": "video",
+				"path": "videos/Autumn - 1280x720.mp4"
+			},
+			{
+				"format": "1x2", 
+				"type": "image",
+				"path": "images_1x2/sample_1x2.jpg"
+			}
+			],
+			"content_panels": [
+				{
+					"panelID": "0401",
+					"front":
+					{
+						"template": "template_01", 
+						"content":
+						{
+							"bg_type": "video",
+							"bg_color": [],
+							"bg_path": "Sunset - 1280x720.mp4",
+							"txt_color": [],
+							"category": "",
+							"title": "Globe Title 01",
+							"body": ""
+						}
+					},
+					"back": 
+					{
+						"template": "template_03",
+						"content":
+						{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail": 
+					{
+						"template": "template_01",
+						"content":
+						{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_03.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Thumnbail 01",
+							"body": ""
+						}
+					}
+				}
+			]
 		}
-	}]
+	]
 }
