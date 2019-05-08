@@ -20,15 +20,9 @@ public class UserKiosk : MonoBehaviour {
 	private Rect camClosedRect;
 	private Rect camOpenedRect;
 
-	private bool userOpened = false;
-	private bool openCamera = false;
-	private bool cameraOpened = false;
-	private bool menuOpened = false;
 	private Rect camRect;
 
 	private Vector3 headerInitPos;
-	private Vector3 navInitPos;
-	private Vector3 gridInitPos;
 	private Vector3 gridFinalPos;
 	private Vector3 bgFinalPos;
 
@@ -42,11 +36,12 @@ public class UserKiosk : MonoBehaviour {
 	public bool somePanelIsAnimating = false;
 
 	public bool menuFollowPanel = false;
-	public bool panelFollowMenu = false;
+
+	public bool dragGrid = false;
+	public Vector3 dragDelta;
 
 	private PressGesture pressGesture;
 
-	// Use this for initialization
 	void Start () {
 		
 	}
@@ -58,14 +53,12 @@ public class UserKiosk : MonoBehaviour {
 
 		timesIveBeenTapped = 0;
 		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
-		//EventsManager.Instance.OnUserKioskActivatePanelInGrid += userKioskActivatePanelInGridHandler;
 	}
 
 	void OnDisable(){
 		pressGesture.Pressed -= pressedHandler;
 
 		EventsManager.Instance.OnEnvironmentSwitch -= environmentSwitchHandler;
-		//EventsManager.Instance.OnUserKioskActivatePanelInGrid -= userKioskActivatePanelInGridHandler;
 	}
 
 	void pressedHandler(object sender, EventArgs e){
@@ -93,24 +86,16 @@ public class UserKiosk : MonoBehaviour {
 				//yes, close kiosk
 				CloseKiosk();
 			}
-			//EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), false);
 		} else {
 			timesIveBeenTapped = 0;
 		}
 	}
-
-//	private void userKioskActivatePanelInGridHandler(){
-//		if (activePanel != null) {
-//			activePanel.GetComponent<PanelBase> ().BackToGrid ();
-//		}
-//	}
 
 
 
 	public void CloseKiosk(){
 		Debug.Log ("[CloseKiosk] " + column);
 		EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
-		//Destroy (gameObject);
 		Close();
 	}
 
@@ -124,6 +109,7 @@ public class UserKiosk : MonoBehaviour {
 		camClosedRect = new Rect (camRectXm, 0, 0, 1);
 		camOpenedRect = new Rect (camRectX, 0, camRectW, 1);
 		userCam.rect = camClosedRect;
+
 		Init ();
 		Open ();
 	}
@@ -152,11 +138,6 @@ public class UserKiosk : MonoBehaviour {
 		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
 		headerPanel.SetActive (false);
 
-
-		navInitPos = nav.transform.localPosition + (Vector3.up * 6);
-
-		gridInitPos = new Vector3(1.7f, -1.85f, 0);
-		gridFinalPos = new Vector3(-0.3f, -1.85f, 0);
 		userGrid.gameObject.SetActive (false);
 	}
 
@@ -171,72 +152,47 @@ public class UserKiosk : MonoBehaviour {
 		userGrid.gameObject.SetActive (true);
 
 		Vector3 tapOffset = userCam.ScreenToViewportPoint (tapScreenPos);
-		if (tapOffset.y < 0.5f)
-			gridInitPos.y += (0.5f - tapOffset.y) * -10f;
-		if(gridInitPos.y < -4.85f)
-			gridInitPos.y = -4.85f;
-		Debug.Log ("\tgridInitPos: " + gridInitPos);
+		Vector3 menuFinalPos = Vector3.zero + Vector3.forward * 30f;
+		if (tapOffset.y < 0.5f) {
+			menuFinalPos.y += (0.5f - tapOffset.y) * -10f;
+		}
+		if (menuFinalPos.y < -3) {
+			menuFinalPos.y = -3f;
+		}
 
 		if (activePanel) {
 			Vector3 panelInitPos = activePanel.transform.localPosition;
-			if (tapOffset.y < 0.5f)
-				panelInitPos.y += (0.5f - tapOffset.y) * -10f;
-			if (panelInitPos.y < -3f)
+			//Debug.Log ("++++++++ " + panelInitPos + " " + tapOffset.y);
+			if (tapOffset.y < 0.5f) {
+				panelInitPos.y = (0.5f - tapOffset.y) * -10f;
+				//Debug.Log ("\t++++++++ " + panelInitPos);
+			}
+			if (panelInitPos.y < -3f){
 				panelInitPos.y = -3f;
+			}
 			EaseCurve.Instance.Vec3 (activePanel.transform, activePanel.transform.localPosition, panelInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
 		}
 
 		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
-		EaseCurve.Instance.Vec3 (nav.transform, nav.transform.localPosition, navInitPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
-		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridInitPos, 1f, 0f, EaseCurve.Instance.easeOut, Next2, "local");
+		EaseCurve.Instance.Vec3 (menu.transform, menu.transform.localPosition, menuFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, Next2, "local");
 	}
 
 	void Next2(){
-		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.5f;
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.25f;
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 1f, 0f, EaseCurve.Instance.easeIn, null, "local");
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeIn, null, "local");
-		//PixelsToUnits ();
 	}
 
 	public void Close(){
-		//bgPanel.SetActive (true);
 		EaseCurve.Instance.CamRect (userCam, camOpenedRect, camClosedRect, 0.5f, EaseCurve.Instance.easeIn, CleanUp);
 	}
 
 	private void CleanUp(){
 		Destroy (gameObject);
 	}
-
-	RaycastHit hit;
-	private bool navDoFollow = false;
-	private Vector3 navTouchStart;
-	private Vector3 menuObjectStart;
-	private float distanceMovedY = 0f;
-	private float distanceMovedX = 0f;
-	//[HideInInspector]
-	//public PanelObject activePanel;
-	private Vector3 activePanelStart;
-
-	private Vector3 panelTouchStart;
-	private bool panelDoFollow = false;
-	// Update is called once per frame
+		
 	void Update () {
-		/*
-		if (Input.GetMouseButtonDown (0)) {
-			if (userCam.pixelRect.Contains (Input.mousePosition)) {
-				kioskTapped ();
-			}
-			//make sure camera has a valied viewport (its collapsed on start)
-			if (userCam.rect.width > 0 && userCam.rect.height > 0) {
-				if (Physics.Raycast (userCam.ScreenPointToRay (Input.mousePosition), out hit)) {
-					if (hit.transform.name == "Nav") {
-						//nav follow mouse
-						//setNavFollow (Input.mousePosition);
-					}
-				}
-			}
-		}
-		*/
+
 		if (menuFollowPanel) {
 			Vector3 menuGoTo = activePanel.localPosition;
 			menuGoTo.z = menu.localPosition.z;
@@ -244,88 +200,18 @@ public class UserKiosk : MonoBehaviour {
 			menu.localPosition = Vector3.Lerp (menu.localPosition, menuGoTo, 2f * Time.deltaTime);
 		}
 
+		if (dragGrid) {
+			Vector3 gridGoTo = userGrid.localPosition;
+			gridGoTo.x += dragDelta.x;
+			userGrid.localPosition = gridGoTo;
 
+			Vector3 menuGoTo = menu.localPosition;
+			menuGoTo.y += dragDelta.y;
+			menu.localPosition = menuGoTo;
 
-		if (Input.GetMouseButtonUp (0)) {
-			navDoFollow = false;
-			panelDoFollow = false;
-		}
-
-		if (navDoFollow) {
-			float distanceMovedPx = navTouchStart.y - Input.mousePosition.y;
-			distanceMovedY = distanceMovedPx / WorldToPixelAmount.y;
-			Vector3 moveMenuTo = menuObjectStart + Vector3.up * -distanceMovedY;
-			menu.localPosition = Vector3.Lerp (menu.localPosition, moveMenuTo, 4f * Time.deltaTime);
-			if (activePanel != null) {
-				Vector3 activePanelMoveTo = activePanelStart + Vector3.up * -distanceMovedY;
-				activePanel.transform.localPosition = Vector3.Lerp (activePanel.transform.localPosition, activePanelMoveTo, 2f * Time.deltaTime);
-			}
-		}
-
-		if (panelDoFollow) {
-			float distanceMovedPxY = panelTouchStart.y - Input.mousePosition.y;
-			float distanceMovedPxX = panelTouchStart.x - Input.mousePosition.x;
-			distanceMovedY = distanceMovedPxY / WorldToPixelAmount.y;
-			distanceMovedX = distanceMovedPxX / WorldToPixelAmount.x;
-			Vector3 moveMenuTo = menuObjectStart + Vector3.up * -distanceMovedY;
-			menu.localPosition = Vector3.Lerp (menu.localPosition, moveMenuTo, 2f * Time.deltaTime);
-			Vector3 activePanelMoveTo = activePanelStart + (Vector3.up * -distanceMovedY) + (Vector3.right * -distanceMovedX);
-			activePanel.transform.localPosition = Vector3.Lerp (activePanel.transform.localPosition, activePanelMoveTo, 4f * Time.deltaTime);
+			Vector3 bgGoTo = bgPanel.transform.localPosition;
+			bgGoTo.x -= dragDelta.x * 0.25f;
+			bgPanel.transform.localPosition = bgGoTo;
 		}
 	}
-
-	public void setNavFollow(Vector3 _mousePos){
-		distanceMovedY = 0f;
-		distanceMovedX = 0f;
-		navTouchStart = _mousePos;
-		menuObjectStart = menu.localPosition;
-		if (activePanel != null) {
-			activePanelStart = activePanel.transform.localPosition;
-		}
-		navDoFollow = true;
-		Debug.Log("following nav");
-	}
-	public void setPanelFollow(Vector3 _mousePos){
-		distanceMovedY = 0f;
-		distanceMovedX = 0f;
-		panelTouchStart = _mousePos;
-		menuObjectStart = menu.localPosition;
-		if (activePanel != null) {
-			activePanelStart = activePanel.transform.localPosition;
-		}
-		panelDoFollow = true;
-		Debug.Log("following panel");
-	}
-
-
-
-	private void openKiosk(int _col){
-		SetCam (6, _col);
-		Open ();
-	}
-
-
-
-	Vector2 WorldUnitsInCamera;
-	Vector2 WorldToPixelAmount;
-	void PixelsToUnits(){
-		WorldUnitsInCamera.y = userCam.orthographicSize * 2;
-		WorldUnitsInCamera.x = WorldUnitsInCamera.y * Screen.width / Screen.height;
-
-		WorldToPixelAmount.x = Screen.width / WorldUnitsInCamera.x;
-		WorldToPixelAmount.y = Screen.height / WorldUnitsInCamera.y;
-		Debug.Log (WorldUnitsInCamera + ", " + WorldToPixelAmount);
-	}
-
-//	public Vector2 ConvertToWorldUnits(Vector2 TouchLocation)
-//	{
-//		Vector2 returnVec2;
-//
-//		returnVec2.x = ((TouchLocation.x / WorldToPixelAmount.x) - (WorldUnitsInCamera.x / 2)) +
-//			Camera.transform.position.x;
-//		returnVec2.y = ((TouchLocation.y / WorldToPixelAmount.y) - (WorldUnitsInCamera.y / 2)) +
-//			Camera.transform.position.y;
-//
-//		return returnVec2;
-//	}
 }

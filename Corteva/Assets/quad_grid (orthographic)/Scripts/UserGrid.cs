@@ -22,6 +22,7 @@ public class UserGrid : MonoBehaviour {
 	}
 
 	public void MakeGrid(){
+		transform.localPosition += Vector3.down * 1.85f;
 		for (int i = 1; i <= panels; i++) {
 			Vector3 panelPostion = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
 

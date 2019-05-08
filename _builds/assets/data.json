@@ -59,7 +59,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumbnail 01",
+							"title": "Video",
 							"body": ""
 						}
 					}	
@@ -98,7 +98,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumbnail 01",
+							"title": "3d viz",
 							"body": ""
 						}
 					}	
@@ -132,7 +132,7 @@
 						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "videos/Sunset - 1280x720.mp4",
+							"bg_path": "videos/Autumn - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
@@ -156,13 +156,52 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_03.jpg",
+							"bg_path": "images_1x1/sample_05.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumbnail 01",
+							"title": "Video",
 							"body": ""
 						}
-					}
+					}	
+				},
+				{
+					"panelID": "0202",
+					"front":{
+						"template": "infographic_01", 
+						"content":{
+							"bg_type": "",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Infographic 01",
+							"body": ""
+						}
+					},
+					"back":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_05.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "3d viz",
+							"body": ""
+						}
+					}	
 				}
 			]
 		},
@@ -193,14 +232,14 @@
 						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "videos/Sunset - 1280x720.mp4",
+							"bg_path": "videos/Cornfield - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
 							"body": ""
 						}
 					},
-					"back": {
+					"back":{
 						"template": "template_03",
 						"content":{
 							"bg_type": "color",
@@ -212,19 +251,57 @@
 							"body": "Back body"
 						}
 					},
-					"thumbnail": 
-					{
+					"thumbnail":{
 						"template": "template_01",
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_03.jpg",
+							"bg_path": "images_1x1/sample_06.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumbnail 01",
+							"title": "Video",
 							"body": ""
 						}
-					}
+					}	
+				},
+				{
+					"panelID": "0302",
+					"front":{
+						"template": "infographic_01", 
+						"content":{
+							"bg_type": "",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Infographic 01",
+							"body": ""
+						}
+					},
+					"back":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_06.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "3d viz",
+							"body": ""
+						}
+					}	
 				}
 			]
 		},
@@ -279,13 +356,52 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_03.jpg",
+							"bg_path": "images_1x1/sample_07.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumbnail 01",
+							"title": "Video",
 							"body": ""
 						}
-					}
+					}	
+				},
+				{
+					"panelID": "0402",
+					"front":{
+						"template": "infographic_01", 
+						"content":{
+							"bg_type": "",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Infographic 01",
+							"body": ""
+						}
+					},
+					"back":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_07.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "3d viz",
+							"body": ""
+						}
+					}	
 				}
 			]
 		}

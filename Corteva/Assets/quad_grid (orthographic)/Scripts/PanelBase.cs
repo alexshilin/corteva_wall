@@ -640,18 +640,17 @@ public class PanelBase : MonoBehaviour {
 
 	public void BackToGrid()
 	{
-		
-			Debug.Log ("[BackToGrid] " + name);
-			if (currViewFacingForward != PanelView.Thumbnail) 
-			{
-				ActivateView (PanelView.Thumbnail, true);
-			}
-			panelState = PanelState.Animating;
-			myKiosk.somePanelIsAnimating = true;
-			Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
-			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
-			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
-			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
+		Debug.Log ("[BackToGrid] " + name);
+		if (currViewFacingForward != PanelView.Thumbnail) 
+		{
+			ActivateView (PanelView.Thumbnail, true);
+		}
+		panelState = PanelState.Animating;
+		myKiosk.somePanelIsAnimating = true;
+		Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
+		EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
+		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
+		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
 	}
 
 	private void ActivateFromGrid(bool _waitForActiveToClose){
@@ -664,7 +663,8 @@ public class PanelBase : MonoBehaviour {
 		myKiosk.somePanelIsAnimating = true;
 		myKiosk.activePanel = transform;
 		myKiosk.userGrid.GetComponent<UserGrid> ().emptySpot = transform.localPosition;
-		Vector3 goTo = Vector3.forward * 25f;
+		Vector3 goTo = myKiosk.menu.localPosition;
+		goTo.z = 25f;
 		transform.parent = myKiosk.transform;
 		EaseCurve.Instance.Vec3 (transform, transform.localPosition, goTo, 0.5f, delay, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, delay, EaseCurve.Instance.easeOut);
@@ -679,21 +679,26 @@ public class PanelBase : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e)
 	{
-		if (panelView == PanelView.Background
-		    || panelContext == PanelContext.Idle
-		    || (panelContext == PanelContext.Kiosk && panelState == PanelState.Ready))
+		if (panelView == PanelView.Background || panelContext == PanelContext.Idle)
 		{
 			return;
 		}
 
-		transform.position += transformGesture.DeltaPosition;
-		myKiosk.menuFollowPanel = true;
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Ready && myKiosk.activePanel == null) {
+			myKiosk.dragDelta = transformGesture.DeltaPosition;
+			myKiosk.dragGrid = true;
+		}
 
-		transform.localScale *= transformGesture.DeltaScale;
-		if (transform.localScale.x > 1)
-			transform.localScale = Vector3.one;
-		if (transform.localScale.x < 0.5f)
-			transform.localScale = Vector3.one * 0.5f;
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
+			transform.position += transformGesture.DeltaPosition;
+			myKiosk.menuFollowPanel = true;
+
+			transform.localScale *= transformGesture.DeltaScale;
+			if (transform.localScale.x > 1)
+				transform.localScale = Vector3.one;
+			if (transform.localScale.x < 0.5f)
+				transform.localScale = Vector3.one * 0.5f;
+		}
 	}
 
 	private void transformCompletedHandler(object sender, EventArgs e)
@@ -701,6 +706,10 @@ public class PanelBase : MonoBehaviour {
 		if (panelView == PanelView.Background || panelContext == PanelContext.Idle)
 			return;
 
+		if (myKiosk.dragGrid) {
+			myKiosk.dragGrid = false;
+		}
+		
 		if (myKiosk != null) {
 			myKiosk.menuFollowPanel = false;
 		}
@@ -712,8 +721,10 @@ public class PanelBase : MonoBehaviour {
 		yield return new WaitForSeconds (0.4f);
 		Debug.Log ("[MovePanelToKiosk] UserKiosk_" + _col);
 		GameObject kiosk = GameObject.Find ("/Kiosks/UserKiosk_" + _col);
+		Vector3 posInPurgatory = kiosk.transform.position;
+		posInPurgatory.z = 0;
+		transform.position = posInPurgatory + (Vector3.up * transform.position.y) + (Vector3.forward * 25f);
 		transform.parent = kiosk.transform;
-		transform.localPosition = Vector3.zero + Vector3.forward * 25f;
 		ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("Default"));
 		panelContext = PanelContext.Kiosk;
 		panelState = PanelState.Active;
