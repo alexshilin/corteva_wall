@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleJSON;
 
 
 /*
@@ -141,13 +142,13 @@ public class IdleStateController : MonoBehaviour {
 
 		ClearKiosks ();
 			
-		MakeBackgroundPanels();
+		SetBackgroundPanels();
 	}
 
 
 
-	void MakeBackgroundPanels(){
-		Debug.Log ("[MakeBackgroundPanels]");
+	void SetBackgroundPanels(){
+		Debug.Log ("[SetBackgroundPanels]");
 		for (int i = 0; i < environments.Count; i++) {
 			environments[i].envBackgroundPanels[0].transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
 			environments[i].envBackgroundPanels[0].transform.localScale *= 3; //??
@@ -670,8 +671,6 @@ public class IdleStateController : MonoBehaviour {
 				}
 			}
 
-
-
 			GameObject panel = Instantiate (AM.NEWpanelPrefab);
 
 			panel.transform.parent = ccGo.transform.Find ("Container");
@@ -690,12 +689,19 @@ public class IdleStateController : MonoBehaviour {
 			po.environment = environments [currEnv];
 
 			if (i == 0) {
-				po.AssemblePanel ("title_idle");
+				po.AssembleBasic ("title_idle");
 				po.ActivateView (PanelBase.PanelView.Front, false);
 
 			} else {
-				string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
-				po.AssemblePanel (temp);
+				//string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+
+				//choose random panel for now
+				JSONNode panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+
+				po.panelID = environments [currEnv].envTitle + "_" + panelData ["panelID"];
+				panel.name = environments[currEnv].envTitle + "_" + po.panelID;
+
+				po.Assemble (panelData);
 
 				//TEMP
 				bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
@@ -705,7 +711,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 
-			panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
+			//panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
 
 			if (idleSequence [i].panelType == new Vector2 (1, 2) || idleSequence [i].panelType == new Vector2 (2, 2)) {
 				po.panelView = PanelBase.PanelView.Background;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleJSON;
 
 public class UserGrid : MonoBehaviour {
 
@@ -32,7 +33,6 @@ public class UserGrid : MonoBehaviour {
 				currColumn++;
 			}
 
-			//if (transform.GetComponentInParent<UserKiosk>().activePanel != null && i == 2) {
 			if (i == 2) {
 				emptySpot = panelPostion;
 				continue;
@@ -44,29 +44,13 @@ public class UserGrid : MonoBehaviour {
 
 			PanelBase po = panel.GetComponent<PanelBase> ();
 
-			string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
-			po.AssemblePanel (temp);
-			/*
-			int r = Random.Range (0, 3);
-			if (r == 1) {
-				//po.SetAs3dViz ();
-				po.SetAsImage ();
-			} else if (r == 2) {
-				po.SetAsVideo (false, false);
-				//panel.GetComponent<PanelObject> ().SetAsImage ();
-			} else {
-				po.SetAsImage ();
-			}
-			po.SetAsThumbnail ();
-			*/
-			po.panelView = PanelBase.PanelView.Thumbnail;
 			po.panelContext = PanelBase.PanelContext.Kiosk;
 			po.panelState = PanelBase.PanelState.Ready;
 			po.myKiosk = transform.GetComponentInParent<UserKiosk>(); //TMP, change this
+			po.environment = po.myKiosk.env;
+			JSONNode panelData = po.myKiosk.env.envPanelData[Random.Range(0, po.myKiosk.env.envPanelData.Count)];
+			po.Assemble (panelData);
 			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
-			//po.ActivateView (PanelBase.PanelView.Front, true);
-			//panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
-			//panel.SetActive (true);
 
 		}
 	}

@@ -112,16 +112,51 @@ public class PanelBase : MonoBehaviour {
 			AssembleView (_panelData ["thumbnail"], PanelView.Thumbnail);
 		}
 
-		if (_panelData ["front"].Count > 0 && !(_panelData ["back"].Count > 0 && _panelData ["thumbnail"].Count > 0)) {
-			ActivateView (PanelView.Front, false);
-		} else {
-			ActivateView (PanelView.Thumbnail, false);
-			ActivateView (PanelView.Front, true);
-		}
-
+//		if (_panelData ["front"].Count > 0 && !(_panelData ["back"].Count > 0 && _panelData ["thumbnail"].Count > 0)) {
+//			ActivateView (PanelView.Front, false);
+//		} else {
+//			ActivateView (PanelView.Thumbnail, false);
+//			ActivateView (PanelView.Front, true);
+//		}
 	}
 
-	void AssembleView(JSONNode _templateData, PanelView _view)
+	public void AssembleBasic(string _template, string _path = ""){
+		GameObject t;
+		Renderer panelRenderer;
+
+		if (_template == "16x9_bg") {
+			t = LoadModule ("1x1_texture", PanelView.Front);
+			t.name = "1x1_texture";
+			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+			vid.url = AssetManager.Instance.GetVideo (_path);
+			vid.enabled = true;
+			vid.Prepare ();
+			//vid.Play ();
+			return;
+		}
+
+		if (_template == "32x9_bg") {
+			t = LoadModule ("2x1_texture", PanelView.Front);
+			t.name = "2x1_texture";
+			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+			vid.url = AssetManager.Instance.Get329Video (_path);
+			vid.enabled = true;
+			vid.Prepare ();
+			//vid.Play ();
+			return;
+		}
+
+		if (_template == "title_idle") {
+			//FRONT
+			t = LoadModule ("1x1_texture_color_02", PanelView.Front);
+			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
+			return;
+		}
+	}
+
+	public void AssembleView(JSONNode _templateData, PanelView _view)
 	{
 		GameObject t;
 		Renderer panelRenderer;
@@ -129,14 +164,9 @@ public class PanelBase : MonoBehaviour {
 
 		string template = _templateData ["template"];
 
-		if (template == "title_idle") {
-			//FRONT
-			t = LoadModule ("1x1_texture_color_02", _view);
-			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
-			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
-			return;
-		}
+
+
+
 
 		//bg	video OR image OR color
 		if (template == "template_00") {
@@ -165,6 +195,9 @@ public class PanelBase : MonoBehaviour {
 			}
 			return;
 		}
+
+
+
 
 		//bg	video OR image OR color
 		//txt	title AND/OR body
@@ -212,6 +245,9 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
+
+
+
 		if (template == "template_03") {
 			t = LoadModule ("1x1_texture_color", _view);
 			if (_templateData ["content"] ["bg_color"].Count == 3) {
@@ -226,25 +262,29 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
-		if (template == "16x9_bg") {
-			t = LoadModule ("1x1_texture", _view);
-			t.name = "1x1_texture";
-			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-			vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
-			vid.enabled = true;
-			vid.Prepare ();
-			//vid.Play ();
-			return;
-		}
 
-		if (template == "32x9_bg") {
-			t = LoadModule ("2x1_texture", _view);
-			t.name = "2x1_texture";
-			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-			vid.url = AssetManager.Instance.Get329Video (_templateData ["content"] ["bg_path"]);
-			vid.enabled = true;
-			vid.Prepare ();
-			//vid.Play ();
+
+
+		if (template == "infographic_01") {
+			t = LoadModule ("1x1_texture_color", _view);
+			if (_templateData ["content"] ["bg_color"].Count == 3) {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+			} else {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			}
+
+			t = LoadModule ("1x1_viz_earth", _view);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			t = LoadModule ("1x1_txt_layout_02", _view);
+			if (_templateData ["content"] ["title"] != "") {
+				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
+			}
+			if (_templateData ["content"] ["body"] != "") {
+				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			}
+			t.transform.localPosition += transform.forward * -0.02f;
+
 			return;
 		}
 	}
@@ -376,15 +416,18 @@ public class PanelBase : MonoBehaviour {
 	}
 
 
+	private Transform GetViewContainer(PanelView _view){
+		if (_view == PanelView.Front) return front;
+		if (_view == PanelView.Back) return back;
+		if (_view == PanelView.Thumbnail) return thumbnail;
+		return front;
+	}
 	private GameObject LoadModule(string _type, PanelView _view)
 	{
 		//Debug.Log("\t[LoadModule] '"+_type+"' into "+_view);
 
 		//determine parent container
-		Transform viewParent = front;
-		if (_view == PanelView.Front) viewParent = front;
-		if (_view == PanelView.Back) viewParent = back;
-		if (_view == PanelView.Thumbnail) viewParent = thumbnail;
+		Transform viewParent = GetViewContainer(_view);
 
 		//instantiate module
 		GameObject module = null;

@@ -10,28 +10,9 @@
 			"summary": "Globe Summary",
 			"colorRGB": [0, 114, 206],
 			"iconPath": "misc/globe_title.png",
-			"backgrounds_16x9": [
-				{
-					"front":{
-						"template": "16x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos/Sunset - 1280x720.mp4"
-						}
-					}
-				}
-			],
-			"backgrounds_32x9": [
-				{
-					"front":{
-						"template": "32x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos_HD_329/FogCrop.mp4"
-						}
-					}
-				}
-			],
+			"idle_background_video_16x9": "videos/Sunset - 1280x720.mp4",
+			"idle_background_video_32x9": "videos_HD_329/FogCrop.mp4",
+			"kiosk_background_image_16x9": "images_1x1/sample_03.jpg",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -58,8 +39,7 @@
 							"body": ""
 						}
 					},
-					"back": 
-					{
+					"back":{
 						"template": "template_03",
 						"content":{
 							"bg_type": "color",
@@ -71,8 +51,7 @@
 							"body": "Back body"
 						}
 					},
-					"thumbnail": 
-					{
+					"thumbnail":{
 						"template": "template_01",
 						"content":{
 							"bg_type": "image",
@@ -80,7 +59,46 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumnbail 01",
+							"title": "Thumbnail 01",
+							"body": ""
+						}
+					}	
+				},
+				{
+					"panelID": "0102",
+					"front":{
+						"template": "infographic_01", 
+						"content":{
+							"bg_type": "",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Infographic 01",
+							"body": ""
+						}
+					},
+					"back":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images_1x1/sample_03.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Thumbnail 01",
 							"body": ""
 						}
 					}	
@@ -92,28 +110,9 @@
 			"summary": "Farm Summary",
 			"colorRGB": [0, 191, 111],
 			"iconPath": "misc/farm_title.png",
-			"backgrounds_16x9": [
-				{
-					"front":{
-						"template": "16x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos/Cornfield - 1280x720.mp4"
-						}
-					}
-				}
-			],
-			"backgrounds_32x9": [
-				{
-					"front":{
-						"template": "32x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos_HD_329/SunsetCrop.mp4"
-						}
-					}
-				}
-			],
+			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
+			"idle_background_video_32x9": "videos_HD_329/SunsetCrop.mp4",
+			"kiosk_background_image_16x9": "",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -160,7 +159,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumnbail 01",
+							"title": "Thumbnail 01",
 							"body": ""
 						}
 					}
@@ -172,29 +171,9 @@
 			"summary": "Plant Summary",
 			"colorRGB": [252, 76, 2],
 			"iconPath": "misc/plant_title.png",
-			"backgrounds_16x9": [
-				{
-					"front":{
-						"template": "16x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos/Autumn - 1280x720.mp4"
-						}
-					}
-				}
-			],
-			"backgrounds_32x9": [
-				{
-					"front":{
-						"template": "32x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos_HD_329/ForestCrop.mp4"
-						}
-						
-					}
-				}
-			],
+			"idle_background_video_16x9": "videos/Autumn - 1280x720.mp4",
+			"idle_background_video_32x9": "videos_HD_329/ForestCrop.mp4",
+			"kiosk_background_image_16x9": "",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -242,7 +221,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumnbail 01",
+							"title": "Thumbnail 01",
 							"body": ""
 						}
 					}
@@ -254,28 +233,9 @@
 			"summary": "Seed Summary",
 			"colorRGB": [26, 26, 26],
 			"iconPath": "misc/seed_title.png",
-			"backgrounds_16x9": [
-				{
-					"front":{
-						"template": "16x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos/Cornfield - 1280x720.mp4"
-						}
-					}
-				}
-			],
-			"backgrounds_32x9": [
-				{
-					"front":{
-						"template": "32x9_bg",
-						"content":{
-							"bg_type": "video", 
-							"bg_path": "videos_HD_329/SnowCrop.mp4"
-						}
-					}
-				}
-			],
+			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
+			"idle_background_video_32x9": "videos_HD_329/SnowCrop.mp4",
+			"kiosk_background_image_16x9": "",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -322,7 +282,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Thumnbail 01",
+							"title": "Thumbnail 01",
 							"body": ""
 						}
 					}

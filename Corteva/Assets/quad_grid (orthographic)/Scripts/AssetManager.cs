@@ -16,6 +16,7 @@ public class Environment
 	public string envSummary;
 	public List<GameObject> envBackgroundPanels = new List<GameObject>();
 	public List<GameObject> envPanels = new List<GameObject>();
+	public JSONNode envPanelData;
 }
 
 public class AssetManager : MonoBehaviour {
@@ -52,6 +53,7 @@ public class AssetManager : MonoBehaviour {
 	public Transform panels;
 	public Transform cams;
 	public Transform kiosks;
+	public Transform idleBackgrounds;
 	public PanelObject bgPanel1;
 	public PanelObject bgPanel2;
 	#endregion
@@ -147,34 +149,30 @@ public class AssetManager : MonoBehaviour {
 			e.envSummary = N ["environments"] [i] ["summary"];
 			e.envColor = new Color32 ((byte)N ["environments"] [i] ["colorRGB"][0].AsInt, (byte)N ["environments"] [i] ["colorRGB"][1].AsInt, (byte)N ["environments"] [i] ["colorRGB"][2].AsInt, 255);
 			e.envIconPath = assetPath + N ["environments"] [i] ["iconPath"];
+			e.envPanelData = N ["environments"] [i] ["content_panels"];
 
 
 			//TODO: put these into a pool.
 			//update idlestatecontrolller to grab panels from pool
 			if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is169) {
-				for (int b = 0; b < N ["environments"] [i] ["backgrounds_16x9"].Count; b++) {
-					var panelData = N ["environments"] [i] ["backgrounds_16x9"] [b];
-					GameObject panelBaseGO = Instantiate (NEWpanelPrefab);
-					PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
-					panelBase.panelID = e.envTitle + "_bg";
-					panelBaseGO.name = panelBase.panelID;
-					panelBase.environment = e;
-					panelBase.Assemble (panelData);
-					e.envBackgroundPanels.Add (panelBaseGO);
-				}
+				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, idleBackgrounds);
+				PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
+				panelBase.panelID = e.envTitle + "_bg";
+				panelBaseGO.name = panelBase.panelID;
+				panelBase.environment = e;
+				panelBase.AssembleBasic ("16x9_bg", N ["environments"] [i] ["idle_background_video_16x9"]);
+				e.envBackgroundPanels.Add (panelBaseGO);
 			} else {
-				for (int b = 0; b < N ["environments"] [i] ["backgrounds_32x9"].Count; b++) {
-					var panelData = N ["environments"] [i] ["backgrounds_32x9"] [b];
-					GameObject panelBaseGO = Instantiate (NEWpanelPrefab);
-					PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
-					panelBase.panelID = e.envTitle + "_bg";
-					panelBaseGO.name = panelBase.panelID;
-					panelBase.environment = e;
-					panelBase.Assemble (panelData);
-					e.envBackgroundPanels.Add (panelBaseGO);
-				}
+				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, idleBackgrounds);
+				PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
+				panelBase.panelID = e.envTitle + "_bg";
+				panelBaseGO.name = panelBase.panelID;
+				panelBase.environment = e;
+				panelBase.AssembleBasic ("32x9_bg", N ["environments"] [i] ["idle_background_video_32x9"]);
+				e.envBackgroundPanels.Add (panelBaseGO);
 			}
 
+			/*
 			for (int a = 0; a < N ["environments"] [i] ["content_panels"].Count; a++) {
 				var panelData = N ["environments"] [i] ["content_panels"] [a];
 				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, transform);
@@ -185,6 +183,7 @@ public class AssetManager : MonoBehaviour {
 				panelBase.Assemble (panelData);
 				e.envPanels.Add(panelBaseGO);
 			}
+			*/
 			environments.Add (e);
 		}
 
