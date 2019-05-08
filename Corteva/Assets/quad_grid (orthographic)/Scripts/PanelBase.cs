@@ -146,6 +146,14 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
+		if (_template == "kiosk_bg") {
+			//FRONT
+			t = LoadModule ("1x1_texture_color", PanelView.Front);
+			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
+			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_path);
+			return;
+		}
+
 		if (_template == "title_idle") {
 			//FRONT
 			t = LoadModule ("1x1_texture_color_02", PanelView.Front);
@@ -608,17 +616,19 @@ public class PanelBase : MonoBehaviour {
 
 		//panel in kiosk context that is background should close active kiosk
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Background) {
-
+			//first check if another panel is active, and hide that one
+			if (myKiosk.activePanel) {
+				Debug.Log("\t has active panel, closing that panel first");
+				myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+			}
 		}
 
 		//panel in kiosk context that is a thumbnail should activate
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Thumbnail && panelState == PanelState.Ready) {
 			//first check if another panel is active, and hide that one
-			//EventsManager.Instance.UserKioskActivatePanelInGridRequest();
 			if (myKiosk.activePanel) {
 				Debug.Log("\t has active panel, closing that panel first");
 				myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
-				//ActivateFromGrid (true);
 			} else {
 				Debug.Log("\t no active panel, opening thumbnail");
 				ActivateFromGrid (false);

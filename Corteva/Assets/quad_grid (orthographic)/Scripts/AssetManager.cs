@@ -15,6 +15,7 @@ public class Environment
 	public string envTitle;
 	public string envSummary;
 	public List<GameObject> envBackgroundPanels = new List<GameObject>();
+	public string kioskBg;
 	public List<GameObject> envPanels = new List<GameObject>();
 	public JSONNode envPanelData;
 }
@@ -150,7 +151,7 @@ public class AssetManager : MonoBehaviour {
 			e.envColor = new Color32 ((byte)N ["environments"] [i] ["colorRGB"][0].AsInt, (byte)N ["environments"] [i] ["colorRGB"][1].AsInt, (byte)N ["environments"] [i] ["colorRGB"][2].AsInt, 255);
 			e.envIconPath = assetPath + N ["environments"] [i] ["iconPath"];
 			e.envPanelData = N ["environments"] [i] ["content_panels"];
-
+			e.kioskBg = N ["environments"] [i] ["kiosk_background_image_16x9"];
 
 			//TODO: put these into a pool.
 			//update idlestatecontrolller to grab panels from pool

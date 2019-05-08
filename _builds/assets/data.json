@@ -12,7 +12,7 @@
 			"iconPath": "misc/globe_title.png",
 			"idle_background_video_16x9": "videos/Sunset - 1280x720.mp4",
 			"idle_background_video_32x9": "videos_HD_329/FogCrop.mp4",
-			"kiosk_background_image_16x9": "images_1x1/sample_03.jpg",
+			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -112,7 +112,7 @@
 			"iconPath": "misc/farm_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
 			"idle_background_video_32x9": "videos_HD_329/SunsetCrop.mp4",
-			"kiosk_background_image_16x9": "",
+			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -212,7 +212,7 @@
 			"iconPath": "misc/plant_title.png",
 			"idle_background_video_16x9": "videos/Autumn - 1280x720.mp4",
 			"idle_background_video_32x9": "videos_HD_329/ForestCrop.mp4",
-			"kiosk_background_image_16x9": "",
+			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
 			"beauty_panels": [
 				{
 					"format": "1x1",
@@ -312,7 +312,7 @@
 			"iconPath": "misc/seed_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
 			"idle_background_video_32x9": "videos_HD_329/SnowCrop.mp4",
-			"kiosk_background_image_16x9": "",
+			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
 			"beauty_panels": [
 				{
 					"format": "1x1",

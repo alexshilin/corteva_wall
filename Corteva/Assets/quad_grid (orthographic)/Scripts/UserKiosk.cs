@@ -115,13 +115,17 @@ public class UserKiosk : MonoBehaviour {
 	}
 
 	void Init(){
-		bgPanel = Instantiate (AssetManager.Instance.panelPrefab, transform);
+		bgPanel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);
 		bgPanel.name = "bgPanel";
 		bgPanel.transform.localPosition = new Vector3 (0, 0, 50);
 		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
-		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
-		bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
-		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
+		bgPanel.GetComponent<PanelBase> ().AssembleBasic ("kiosk_bg", env.kioskBg);
+		bgPanel.GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Kiosk;
+		bgPanel.GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
+		bgPanel.GetComponent<PanelBase> ().myKiosk = transform.GetComponent<UserKiosk> ();
+//		bgPanel.GetComponent<PanelObject> ().SetAsImage ();
+//		bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
+//		bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
 		bgFinalPos = new Vector3(1f, 0, 60);
 		bgPanel.SetActive (false);
 
@@ -197,7 +201,7 @@ public class UserKiosk : MonoBehaviour {
 			Vector3 menuGoTo = activePanel.localPosition;
 			menuGoTo.z = menu.localPosition.z;
 			menuGoTo.x = menu.localPosition.x;
-			menu.localPosition = Vector3.Lerp (menu.localPosition, menuGoTo, 2f * Time.deltaTime);
+			menu.localPosition = Vector3.Lerp (menu.localPosition, menuGoTo, 4f * Time.deltaTime);
 		}
 
 		if (dragGrid) {
