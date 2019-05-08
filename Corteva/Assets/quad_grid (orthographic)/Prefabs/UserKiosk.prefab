@@ -523,10 +523,11 @@ MonoBehaviour:
     envColor:
       serializedVersion: 2
       rgba: 0
-    envIcon: {fileID: 0}
+    envIconPath: 
     envTitle: 
     envSummary: 
-    envBackgroundVideos: []
+    envBackgroundPanels: []
+    envPanels: []
   column: 0
   activePanel: {fileID: 0}
   somePanelIsAnimating: 0
@@ -722,7 +723,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1002508013211598}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc7fd33c57d694994b0ab9f33fcdcbea, type: 3}
   m_Name: 

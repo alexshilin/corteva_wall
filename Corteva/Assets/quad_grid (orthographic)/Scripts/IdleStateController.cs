@@ -42,6 +42,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 	List<PanelObject> bgPanels = new List<PanelObject> ();
+	public List<PanelBase> bgPanels2 = new List<PanelBase> ();
 	int currBg = 0;
 
 	public List<int> kioskColumns = new List<int> ();
@@ -127,7 +128,7 @@ public class IdleStateController : MonoBehaviour {
 			ClearCellCams ();
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha8)) {
-			ZoomBG ();
+			ZoomBG2 ();
 		}
 
 	}
@@ -146,6 +147,17 @@ public class IdleStateController : MonoBehaviour {
 
 
 	void MakeBackgroundPanels(){
+		Debug.Log ("[MakeBackgroundPanels]");
+		for (int i = 0; i < environments.Count; i++) {
+			environments[i].envBackgroundPanels[0].transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
+			environments[i].envBackgroundPanels[0].transform.localScale *= 3; //??
+			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Idle;
+			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
+			bgPanels2.Add (environments [i].envBackgroundPanels [0].GetComponent<PanelBase> ());
+		}
+		currBg = 0;
+
+		/*
 		//get video files based on aspect ratio
 		List<string> bgVideos = new List<string> (SM.currAspect==ScreenManager.Aspect.is169 ? AM.videoFiles : AM.videoFiles329);
 		//preload all background videos
@@ -166,6 +178,7 @@ public class IdleStateController : MonoBehaviour {
 			bgPanels.Add (bgPanel.GetComponent<PanelObject> ());
 		}
 		currBg = 0;
+		*/
 	}
 
 	#region cleanup
@@ -200,7 +213,7 @@ public class IdleStateController : MonoBehaviour {
 	#endregion
 
 	#region event listener reactions
-	private void KioskOpenResponse (Vector2 _gridPos, Environment _env){
+	private void KioskOpenResponse (Vector2 _gridPos, Vector2 _screenPos, Environment _env){
 		Debug.Log ("!![KioskOpenResponse] at col " + _gridPos.x);
 
 		//update which columns have kiosks
@@ -211,6 +224,20 @@ public class IdleStateController : MonoBehaviour {
 			if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
 				//hide it
 				HideTitlePanel ();
+				//disable cell cams in column
+				for (int n = 0; n < idleSequence.Count; n++) {
+					if (idleSequence [n].col == (int)_gridPos.x) {
+						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+							Debug.Log ("\tdisabling idle cam at col " + n);
+							idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+						}
+					}
+				}
+
+				if (!kioskColumns.Contains (0)) {
+					AM.mainCamera.enabled = false;
+					AM.userInitCamera.enabled = false;
+				}
 			}
 		}
 	}
@@ -218,11 +245,24 @@ public class IdleStateController : MonoBehaviour {
 		Debug.Log ("!![KioskCloseResponse] at col " + _gridPos.x + " " + (_now ? "now" : "prepare"));
 		//a kiosk is being closed
 		if (_now) {
+			if (!kioskColumns.Contains (0)) {
+				AM.mainCamera.enabled = true;
+				AM.userInitCamera.enabled = true;
+			}
 			//do something after the kiosks have been closed
 			for (int i = 0; i < kioskColumns.Count; i++) {
 				if (i==(int)_gridPos.x && kioskColumns [i] == 1){
 					Debug.Log ("\tclosing kiosk at col " + i);
 					kioskColumns [i] = 0;
+					//enable cell cams in column
+					for (int n = 0; n < idleSequence.Count; n++) {
+						if (idleSequence [n].col == (int)_gridPos.x) {
+							if (!idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+								Debug.Log ("\tre-enabling idle cam at col " + i);
+								idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -624,7 +664,14 @@ public class IdleStateController : MonoBehaviour {
 				ccGo.transform.parent = AM.cams;
 				ccGo.transform.localPosition = new Vector3 (ccGo.transform.position.x + (idleSequence [i].col * 40f), ccGo.transform.position.y - (idleSequence [i].row * 20), 0);
 				ccGo.name = idleSequence [i].col + ", " + idleSequence [i].row;
+
+				if (kioskColumns [idleSequence [i].col] == 1) {
+					ccCam.enabled = false;
+				}
 			}
+
+
+
 			GameObject panel = Instantiate (AM.NEWpanelPrefab);
 
 			panel.transform.parent = ccGo.transform.Find ("Container");
@@ -708,7 +755,7 @@ public class IdleStateController : MonoBehaviour {
 
 			if (i == 0) {
 				EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
-				Invoke ("ZoomBG", 0.5f);
+				Invoke ("ZoomBG2", 0.5f);
 				titlePauseTime = Time.time;
 				yield return new WaitForSecondsRealtime (1f);
 			} else {
@@ -855,6 +902,25 @@ public class IdleStateController : MonoBehaviour {
 		EaseCurve.Instance.Scl (bgPanels[currBg].transform, bgPanels[currBg].transform.localScale, bgPanels[currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG);
 		EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
 	}
+	void ZoomBG2(){
+		int nextBGi = currBg+1;
+		if (nextBGi == bgPanels2.Count)
+			nextBGi = 0;
+		bgPanels2 [nextBGi].transform.position = nextPosition;
+		bgPanels2 [nextBGi].PlayBgVideo ();
+		Material bgMat;
+		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+			bgMat = bgPanels2[currBg].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+			bgPanels2 [nextBGi].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+		} else {
+			bgMat = bgPanels2[currBg].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+			bgPanels2 [nextBGi].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+		}
+		Color32 toColor = bgMat.color;
+		toColor.a = 0;
+		EaseCurve.Instance.Scl (bgPanels2[currBg].transform, bgPanels2[currBg].transform.localScale, bgPanels2[currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG2);
+		EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
+	}
 
 
 	Vector3 baseScale;
@@ -862,6 +928,20 @@ public class IdleStateController : MonoBehaviour {
 	Vector3 nextPosition = new Vector3 (0, 0, 105);
 	Vector3 readyPosition = new Vector3 (0, 100, 100);
 	Color32 baseColor = new Color32 (255, 255, 255, 255);
+
+	void UpdateBG2(){
+
+		baseScale = new Vector3 (3f, 3f, 3f);
+
+		bgPanels2[currBg].PauseBgVideo ();
+		bgPanels2[currBg].transform.position = readyPosition;
+		bgPanels2[currBg].transform.localScale = baseScale;
+		//set next bg as current
+		currBg++;
+		if (currBg == bgPanels2.Count)
+			currBg = 0;
+		bgPanels2[currBg].transform.position = activePosition;
+	}
 
 
 	void UpdateBG(){

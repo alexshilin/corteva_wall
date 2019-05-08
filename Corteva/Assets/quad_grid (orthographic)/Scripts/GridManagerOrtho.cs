@@ -135,7 +135,6 @@ public class GridManagerOrtho : MonoBehaviour {
 			Vector3 topRightOffset = new Vector3 (startSize.x, 0, 0);
 			Vector3 bottomLeftOffset = new Vector3 (0, -startSize.y, 0);
 			Vector3 bottomRightOffset = new Vector3 (startSize.x, -startSize.y, 0);
-			Vector3 panelPos = startPos + step + centerOffset;
 			GridItem gi = new GridItem();
 			gi.id = i;
 			gi.row = yy + 1;

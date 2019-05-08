@@ -34,7 +34,7 @@ public class UserKioskController : MonoBehaviour {
 
 	*/
 
-	private void tryOpenKiosk(Vector2 _gridPos, Environment _env){
+	private void tryOpenKiosk(Vector2 _gridPos, Vector2 _screenPos, Environment _env){
 		Debug.Log ("!![tryOpenKiosk] at col "+_gridPos.x);
 		Vector2 gridPos = _gridPos;
 		GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
@@ -46,6 +46,7 @@ public class UserKioskController : MonoBehaviour {
 		}
 		uK.GetComponent<UserKiosk> ().env = _env;
 		uK.GetComponent<UserKiosk> ().column = (int)_gridPos.x;
+		uK.GetComponent<UserKiosk> ().tapScreenPos = _screenPos;
 		uK.GetComponent<UserKiosk> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;

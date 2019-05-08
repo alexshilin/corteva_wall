@@ -10,41 +10,48 @@
 			"summary": "Globe Summary",
 			"colorRGB": [0, 114, 206],
 			"iconPath": "misc/globe_title.png",
-			"backgrounds": [
-			{
-				"format": "16:9",
-				"type": "video", 
-				"path": "videos/Sunset - 1280x720.mp4"
-			},
-			{
-				"format": "32:9",
-				"type": "video", 
-				"path": "videos_HD_329/FogCrop.mp4"
-			}
+			"backgrounds_16x9": [
+				{
+					"front":{
+						"template": "16x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos/Sunset - 1280x720.mp4"
+						}
+					}
+				}
+			],
+			"backgrounds_32x9": [
+				{
+					"front":{
+						"template": "32x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos_HD_329/FogCrop.mp4"
+						}
+					}
+				}
 			],
 			"beauty_panels": [
-			{
-				"format": "1x1",
-				"type": "video",
-				"path": "videos/Sunset - 1280x720.mp4"
-			},
-			{
-				"format": "1x2", 
-				"type": "image",
-				"path": "images_1x2/sample_1x2.jpg"
-			}
+				{
+					"format": "1x1",
+					"type": "video",
+					"path": "videos/Sunset - 1280x720.mp4"
+				},{
+					"format": "1x2", 
+					"type": "image",
+					"path": "images_1x2/sample_1x2.jpg"
+				}
 			],
 			"content_panels":[
 				{
 					"panelID": "0101",
-					"front":
-					{
+					"front":{
 						"template": "template_01", 
-						"content":
-						{
+						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "Sunset - 1280x720.mp4",
+							"bg_path": "videos/Sunset - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
@@ -54,8 +61,7 @@
 					"back": 
 					{
 						"template": "template_03",
-						"content":
-						{
+						"content":{
 							"bg_type": "color",
 							"bg_color": [],
 							"bg_path": "",
@@ -68,8 +74,7 @@
 					"thumbnail": 
 					{
 						"template": "template_01",
-						"content":
-						{
+						"content":{
 							"bg_type": "image",
 							"bg_color": [],
 							"bg_path": "images_1x1/sample_03.jpg",
@@ -87,52 +92,57 @@
 			"summary": "Farm Summary",
 			"colorRGB": [0, 191, 111],
 			"iconPath": "misc/farm_title.png",
-			"backgrounds": [
-			{
-				"format": "16:9",
-				"type": "video", 
-				"path": "videos/Cornfield - 1280x720.mp4"
-			},
-			{
-				"format": "32:9",
-				"type": "video", 
-				"path": "videos_HD_329/SunsetCrop.mp4"
-			}
+			"backgrounds_16x9": [
+				{
+					"front":{
+						"template": "16x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos/Cornfield - 1280x720.mp4"
+						}
+					}
+				}
+			],
+			"backgrounds_32x9": [
+				{
+					"front":{
+						"template": "32x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos_HD_329/SunsetCrop.mp4"
+						}
+					}
+				}
 			],
 			"beauty_panels": [
-			{
-				"format": "1x1",
-				"type": "image",
-				"path": "images_1x1/sample_05.jpg"
-			},
-			{
-				"format": "1x2", 
-				"type": "image",
-				"path": "images_1x2/sample_1x2.jpg"
-			}
+				{
+					"format": "1x1",
+					"type": "image",
+					"path": "images_1x1/sample_05.jpg"
+				},{
+					"format": "1x2", 
+					"type": "image",
+					"path": "images_1x2/sample_1x2.jpg"
+				}
 			],
 			"content_panels": [
 				{
 					"panelID": "0201",
-					"front":
-					{
+					"front":{
 						"template": "template_01", 
-						"content":
-						{
+						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "Sunset - 1280x720.mp4",
+							"bg_path": "videos/Sunset - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
 							"body": ""
 						}
 					},
-					"back": 
-					{
+					"back":{
 						"template": "template_03",
-						"content":
-						{
+						"content":{
 							"bg_type": "color",
 							"bg_color": [],
 							"bg_path": "",
@@ -142,11 +152,9 @@
 							"body": "Back body"
 						}
 					},
-					"thumbnail": 
-					{
+					"thumbnail":{
 						"template": "template_01",
-						"content":
-						{
+						"content":{
 							"bg_type": "image",
 							"bg_color": [],
 							"bg_path": "images_1x1/sample_03.jpg",
@@ -164,52 +172,58 @@
 			"summary": "Plant Summary",
 			"colorRGB": [252, 76, 2],
 			"iconPath": "misc/plant_title.png",
-			"backgrounds": [
-			{
-				"format": "16:9",
-				"type": "video", 
-				"path": "videos/Autumn - 1280x720.mp4"
-			},
-			{
-				"format": "32:9",
-				"type": "video", 
-				"path": "videos_HD_329/ForestCrop.mp4"
-			}
+			"backgrounds_16x9": [
+				{
+					"front":{
+						"template": "16x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos/Autumn - 1280x720.mp4"
+						}
+					}
+				}
+			],
+			"backgrounds_32x9": [
+				{
+					"front":{
+						"template": "32x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos_HD_329/ForestCrop.mp4"
+						}
+						
+					}
+				}
 			],
 			"beauty_panels": [
-			{
-				"format": "1x1",
-				"type": "image",
-				"path": "images_1x1/sample_06.jpg"
-			},
-			{
-				"format": "1x2", 
-				"type": "image",
-				"path": "images_1x2/sample_1x2.jpg"
-			}
+				{
+					"format": "1x1",
+					"type": "image",
+					"path": "images_1x1/sample_06.jpg"
+				},{
+					"format": "1x2", 
+					"type": "image",
+					"path": "images_1x2/sample_1x2.jpg"
+				}
 			],
 			"content_panels": [
 				{
 					"panelID": "0301",
-					"front":
-					{
+					"front":{
 						"template": "template_01", 
-						"content":
-						{
+						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "Sunset - 1280x720.mp4",
+							"bg_path": "videos/Sunset - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
 							"body": ""
 						}
 					},
-					"back": 
-					{
+					"back": {
 						"template": "template_03",
-						"content":
-						{
+						"content":{
 							"bg_type": "color",
 							"bg_color": [],
 							"bg_path": "",
@@ -222,8 +236,7 @@
 					"thumbnail": 
 					{
 						"template": "template_01",
-						"content":
-						{
+						"content":{
 							"bg_type": "image",
 							"bg_color": [],
 							"bg_path": "images_1x1/sample_03.jpg",
@@ -241,52 +254,57 @@
 			"summary": "Seed Summary",
 			"colorRGB": [26, 26, 26],
 			"iconPath": "misc/seed_title.png",
-			"backgrounds": [
-			{
-				"format": "16:9",
-				"type": "video", 
-				"path": "videos/Cornfield - 1280x720.mp4"
-			},
-			{
-				"format": "32:9",
-				"type": "video", 
-				"path": "videos_HD_329/SnowCrop.mp4"
-			}
+			"backgrounds_16x9": [
+				{
+					"front":{
+						"template": "16x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos/Cornfield - 1280x720.mp4"
+						}
+					}
+				}
+			],
+			"backgrounds_32x9": [
+				{
+					"front":{
+						"template": "32x9_bg",
+						"content":{
+							"bg_type": "video", 
+							"bg_path": "videos_HD_329/SnowCrop.mp4"
+						}
+					}
+				}
 			],
 			"beauty_panels": [
-			{
-				"format": "1x1",
-				"type": "video",
-				"path": "videos/Autumn - 1280x720.mp4"
-			},
-			{
-				"format": "1x2", 
-				"type": "image",
-				"path": "images_1x2/sample_1x2.jpg"
-			}
+				{
+					"format": "1x1",
+					"type": "video",
+					"path": "videos/Autumn - 1280x720.mp4"
+				},{
+					"format": "1x2", 
+					"type": "image",
+					"path": "images_1x2/sample_1x2.jpg"
+				}
 			],
 			"content_panels": [
 				{
 					"panelID": "0401",
-					"front":
-					{
+					"front":{
 						"template": "template_01", 
-						"content":
-						{
+						"content":{
 							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "Sunset - 1280x720.mp4",
+							"bg_path": "videos/Sunset - 1280x720.mp4",
 							"txt_color": [],
 							"category": "",
 							"title": "Globe Title 01",
 							"body": ""
 						}
 					},
-					"back": 
-					{
+					"back":{
 						"template": "template_03",
-						"content":
-						{
+						"content":{
 							"bg_type": "color",
 							"bg_color": [],
 							"bg_path": "",
@@ -296,11 +314,9 @@
 							"body": "Back body"
 						}
 					},
-					"thumbnail": 
-					{
+					"thumbnail":{
 						"template": "template_01",
-						"content":
-						{
+						"content":{
 							"bg_type": "image",
 							"bg_color": [],
 							"bg_path": "images_1x1/sample_03.jpg",

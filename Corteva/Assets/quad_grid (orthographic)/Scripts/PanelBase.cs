@@ -63,13 +63,15 @@ public class PanelBase : MonoBehaviour {
 	private PanelModulePool PMP;
 
 	void Awake(){
-		tapGesture = GetComponent<TapGesture> ();
-		transformGesture = GetComponent<TransformGesture> ();
+		
 		panelState = PanelState.Ready;
 	}
 
 	private void OnEnable()
 	{
+		tapGesture = GetComponent<TapGesture> ();
+		transformGesture = GetComponent<TransformGesture> ();
+
 		tapGesture.Tapped += tappedHandler;
 
 		transformGesture.TransformStarted += transformStartedHandler;
@@ -84,6 +86,7 @@ public class PanelBase : MonoBehaviour {
 	private void OnDisable()
 	{
 		tapGesture.Tapped -= tappedHandler;
+
 		transformGesture.TransformStarted -= transformStartedHandler;
 		transformGesture.Transformed -= transformedHandler;
 		transformGesture.TransformCompleted -= transformCompletedHandler;
@@ -109,8 +112,13 @@ public class PanelBase : MonoBehaviour {
 			AssembleView (_panelData ["thumbnail"], PanelView.Thumbnail);
 		}
 
-		ActivateView (PanelView.Thumbnail, false);
-		ActivateView (PanelView.Front, true);
+		if (_panelData ["front"].Count > 0 && !(_panelData ["back"].Count > 0 && _panelData ["thumbnail"].Count > 0)) {
+			ActivateView (PanelView.Front, false);
+		} else {
+			ActivateView (PanelView.Thumbnail, false);
+			ActivateView (PanelView.Front, true);
+		}
+
 	}
 
 	void AssembleView(JSONNode _templateData, PanelView _view)
@@ -140,7 +148,8 @@ public class PanelBase : MonoBehaviour {
 				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
 				vid.enabled = true;
 				vid.Prepare ();
-				vid.Play ();
+				if (_view == PanelView.Front)
+					vid.Play ();
 			} else {
 				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
 				if (isImage) {
@@ -214,6 +223,28 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x1_txt_layout_03", _view);
 			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
 			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			return;
+		}
+
+		if (template == "16x9_bg") {
+			t = LoadModule ("1x1_texture", _view);
+			t.name = "1x1_texture";
+			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+			vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+			vid.enabled = true;
+			vid.Prepare ();
+			//vid.Play ();
+			return;
+		}
+
+		if (template == "32x9_bg") {
+			t = LoadModule ("2x1_texture", _view);
+			t.name = "2x1_texture";
+			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+			vid.url = AssetManager.Instance.Get329Video (_templateData ["content"] ["bg_path"]);
+			vid.enabled = true;
+			vid.Prepare ();
+			//vid.Play ();
 			return;
 		}
 	}
@@ -343,9 +374,11 @@ public class PanelBase : MonoBehaviour {
 //		ActivateView (PanelView.Thumbnail, flip);
 //		ActivateView (PanelView.Front, !flip);
 	}
+
+
 	private GameObject LoadModule(string _type, PanelView _view)
 	{
-		Debug.Log("\t[LoadModule] '"+_type+"' into "+_view);
+		//Debug.Log("\t[LoadModule] '"+_type+"' into "+_view);
 
 		//determine parent container
 		Transform viewParent = front;
@@ -362,9 +395,11 @@ public class PanelBase : MonoBehaviour {
 		}
 		return module;
 	}
+
+
 	public void ActivateView(PanelView _viewToShow, bool _faceAway)
 	{
-		Debug.Log ("[ActivateView] "+_viewToShow+" to "+(_faceAway ? "away" : "forward"));
+		Debug.Log ("[ActivateView] "+_viewToShow+" to "+(_faceAway ? "away" : "toward"));
 
 		Transform viewToShow = front;
 		if (_viewToShow == PanelView.Front) viewToShow = front;
@@ -374,29 +409,36 @@ public class PanelBase : MonoBehaviour {
 		if (_faceAway) {
 			viewToShow.transform.localPosition = awayPos;
 			viewToShow.transform.localEulerAngles = awayRot;
-			//viewToShow.gameObject.SetActive (true);
-			SetRender(viewToShow, true);
+			viewToShow.gameObject.SetActive (true);
+			//SetRender(viewToShow, true);
 			currViewFacingAway = _viewToShow;
 		} else {
 			viewToShow.transform.localPosition = forwardPos;
 			viewToShow.transform.localEulerAngles = forwardRot;
-			//viewToShow.gameObject.SetActive (true);
-			SetRender(viewToShow, true);
+			viewToShow.gameObject.SetActive (true);
+			//SetRender(viewToShow, true);
 			currViewFacingForward = _viewToShow;
 			panelView = _viewToShow;
 		}
 
+		//Debug.Log ((viewToShow.GetComponentInChildren<VideoPlayer> ()?"YES video player":"NO video player"));
+		if (viewToShow.GetComponentInChildren<VideoPlayer> ()) {
+			//if (viewToShow.GetComponentInChildren<VideoPlayer> ().isPrepared) {
+				viewToShow.GetComponentInChildren<VideoPlayer> ().Play ();
+			//}
+		}
+			
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
-			//front.gameObject.SetActive (false);
-			SetRender(front, false);
+			front.gameObject.SetActive (false);
+			//SetRender(front, false);
 		}
 		if (currViewFacingAway != PanelView.Back && currViewFacingForward != PanelView.Back) {
-			//back.gameObject.SetActive (false);
-			SetRender(back, false);
+			back.gameObject.SetActive (false);
+			//SetRender(back, false);
 		}
 		if (currViewFacingAway != PanelView.Thumbnail && currViewFacingForward != PanelView.Thumbnail) {
-			//thumbnail.gameObject.SetActive (false);
-			SetRender(thumbnail, false);
+			thumbnail.gameObject.SetActive (false);
+			//SetRender(thumbnail, false);
 		}
 	}
 
@@ -444,16 +486,16 @@ public class PanelBase : MonoBehaviour {
 
 		//hide away view
 		if (currViewFacingAway == PanelView.Front) {
-			//front.gameObject.SetActive (false);
-			SetRender(front, false);
+			front.gameObject.SetActive (false);
+			//SetRender(front, false);
 		}
 		if (currViewFacingAway == PanelView.Back) {
-			//back.gameObject.SetActive (false);
-			SetRender(back, false);
+			back.gameObject.SetActive (false);
+			//SetRender(back, false);
 		}
 		if (currViewFacingAway == PanelView.Thumbnail) {
-			//thumbnail.gameObject.SetActive (false);
-			SetRender(thumbnail, false);
+			thumbnail.gameObject.SetActive (false);
+			//SetRender(thumbnail, false);
 		}
 
 		panelView = currViewFacingForward;
@@ -472,7 +514,7 @@ public class PanelBase : MonoBehaviour {
 			&& (panelView == PanelView.Background || panelState == PanelState.Animating)) 
 		{
 			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos);
+			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
 		}
 
 		//if the panel is animating, dont execute following
@@ -495,7 +537,7 @@ public class PanelBase : MonoBehaviour {
 			EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 			ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
-			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, environment);
+			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment);
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
 		}
 
@@ -624,7 +666,7 @@ public class PanelBase : MonoBehaviour {
 
 	IEnumerator MovePanelToKiosk(int _col)
 	{
-		yield return new WaitForSeconds (1f);
+		yield return new WaitForSeconds (0.4f);
 		Debug.Log ("[MovePanelToKiosk] UserKiosk_" + _col);
 		GameObject kiosk = GameObject.Find ("/Kiosks/UserKiosk_" + _col);
 		transform.parent = kiosk.transform;
@@ -642,6 +684,13 @@ public class PanelBase : MonoBehaviour {
 
 	public void SetAs329Video(bool _playWhenReady = false){
 		AssemblePanel ("329bg");
+	}
+
+	public void PlayBgVideo(){
+		transform.GetComponentInChildren<VideoPlayer> ().Play ();
+	}
+	public void PauseBgVideo(){
+		transform.GetComponentInChildren<VideoPlayer> ().Pause ();
 	}
 
 //	public void SetAs329Video(bool _playWhenReady = false){

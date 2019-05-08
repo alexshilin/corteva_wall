@@ -34,6 +34,7 @@ public class UserKiosk : MonoBehaviour {
 
 	public Environment env;
 	public int column;
+	public Vector2 tapScreenPos;
 
 	private int timesIveBeenTapped;
 
@@ -59,6 +60,7 @@ public class UserKiosk : MonoBehaviour {
 		EventsManager.Instance.OnEnvironmentSwitch += environmentSwitchHandler;
 		//EventsManager.Instance.OnUserKioskActivatePanelInGrid += userKioskActivatePanelInGridHandler;
 	}
+
 	void OnDisable(){
 		pressGesture.Pressed -= pressedHandler;
 
@@ -114,7 +116,7 @@ public class UserKiosk : MonoBehaviour {
 
 	public void SetCam(float _totalColumns, float _userColumn){
 		float userColumn = _userColumn;
-		Debug.Log ("[SetCam] at col " + userColumn + " of " + _totalColumns);
+		Debug.Log ("[SetCam] at col " + userColumn + " of " + _totalColumns+" | "+tapScreenPos);
 
 		camRectW = 1f / _totalColumns;
 		camRectX = camRectW * userColumn;
@@ -153,8 +155,8 @@ public class UserKiosk : MonoBehaviour {
 
 		navInitPos = nav.transform.localPosition + (Vector3.up * 6);
 
-		gridInitPos = new Vector3(1.7f, -1.9f, 0);
-		gridFinalPos = new Vector3(-0.3f, -1.9f, 0);
+		gridInitPos = new Vector3(1.7f, -1.85f, 0);
+		gridFinalPos = new Vector3(-0.3f, -1.85f, 0);
 		userGrid.gameObject.SetActive (false);
 	}
 
@@ -167,13 +169,30 @@ public class UserKiosk : MonoBehaviour {
 		nav.SetActive (true);
 		headerPanel.SetActive (true);
 		userGrid.gameObject.SetActive (true);
-		//bgPanel.SetActive (true);
+
+		Vector3 tapOffset = userCam.ScreenToViewportPoint (tapScreenPos);
+		if (tapOffset.y < 0.5f)
+			gridInitPos.y += (0.5f - tapOffset.y) * -10f;
+		if(gridInitPos.y < -4.85f)
+			gridInitPos.y = -4.85f;
+		Debug.Log ("\tgridInitPos: " + gridInitPos);
+
+		if (activePanel) {
+			Vector3 panelInitPos = activePanel.transform.localPosition;
+			if (tapOffset.y < 0.5f)
+				panelInitPos.y += (0.5f - tapOffset.y) * -10f;
+			if (panelInitPos.y < -3f)
+				panelInitPos.y = -3f;
+			EaseCurve.Instance.Vec3 (activePanel.transform, activePanel.transform.localPosition, panelInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
+		}
+
 		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
 		EaseCurve.Instance.Vec3 (nav.transform, nav.transform.localPosition, navInitPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridInitPos, 1f, 0f, EaseCurve.Instance.easeOut, Next2, "local");
 	}
 
 	void Next2(){
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.5f;
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 1f, 0f, EaseCurve.Instance.easeIn, null, "local");
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeIn, null, "local");
 		//PixelsToUnits ();

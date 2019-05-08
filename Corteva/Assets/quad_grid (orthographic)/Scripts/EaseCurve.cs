@@ -83,10 +83,12 @@ public class EaseCurve : MonoBehaviour
 				yield break;
 			}
 		}
-		if (_space == "local") {
-			_target.localPosition = _end;
-		} else {
-			_target.position = _end;
+		if (_target != null) {
+			if (_space == "local") {
+				_target.localPosition = _end;
+			} else {
+				_target.position = _end;
+			}
 		}
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
@@ -106,11 +108,18 @@ public class EaseCurve : MonoBehaviour
 		float rate = 1 / _duration;
 		yield return new WaitForSeconds (_delay);
 		while (t < 1) {
-			t += rate * Time.deltaTime;
-			_target.localRotation = _start * Quaternion.AngleAxis(_curve.Evaluate (t) * _rotDegrees, _axis);
-			yield return null;
+			if (_target != null) {
+				t += rate * Time.deltaTime;
+				_target.localRotation = _start * Quaternion.AngleAxis (_curve.Evaluate (t) * _rotDegrees, _axis);
+				yield return null;
+			} else {
+				Debug.LogWarning ("[EaseRot] target object not found");
+				yield break;
+			}
 		}
-		_target.localRotation = _start * Quaternion.AngleAxis(_rotDegrees, _axis);
+		if (_target != null) {
+			_target.localRotation = _start * Quaternion.AngleAxis (_rotDegrees, _axis);
+		}
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();
@@ -129,11 +138,18 @@ public class EaseCurve : MonoBehaviour
 		float rate = 1 / _duration;
 		yield return new WaitForSeconds (_delay);
 		while (t < 1) {
-			t += rate * Time.deltaTime;
-			_target.localScale = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
-			yield return null;
+			if (_target != null) {
+				t += rate * Time.deltaTime;
+				_target.localScale = Vector3.Lerp (_start, _end, _curve.Evaluate (t));
+				yield return null;
+			} else {
+				Debug.LogWarning ("[EaseScl] target object not found");
+				yield break;
+			}
 		}
-		_target.localScale = _end;
+		if (_target != null) {
+			_target.localScale = _end;
+		}
 		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
 		if(_callback!=null)
 			_callback ();

@@ -14,7 +14,7 @@ public class Environment
 	public string envIconPath;
 	public string envTitle;
 	public string envSummary;
-	public List<string> envBackgroundVideos;
+	public List<GameObject> envBackgroundPanels = new List<GameObject>();
 	public List<GameObject> envPanels = new List<GameObject>();
 }
 
@@ -105,28 +105,36 @@ public class AssetManager : MonoBehaviour {
 		relativeFolderOffset = -2;
 		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
 		basePath = Application.dataPath;
+		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		ScreenManager.Instance.Log ("platform: "+Application.platform.ToString());
 		if (Application.platform == RuntimePlatform.WindowsPlayer) {
-			//offset = -1;
+			relativeFolderOffset = -1;
 			filePrefix = "";
 		}
 		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), relativeFolderOffset));
-		ScreenManager.Instance.Log("app path: " + Application.dataPath);
 
 		//asset folder name
 		assetsFolder = basePath + "/assets/";
 		if (Application.isEditor) {
 			assetsFolder = basePath + "/_builds/assets/";
 		}
-		ScreenManager.Instance.Log("assets path: "+assetsFolder);
+		ScreenManager.Instance.Log("assets folder: "+assetsFolder);
 	}
 
 	private void ParseAppData(){
-		string dataAsJson = File.ReadAllText("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/data.json");
+		string dataAsJson = File.ReadAllText (assetsFolder+"data.json");
+
 		var N = JSON.Parse(dataAsJson);
 
-		string assetPath = N ["asset_path_mac"];
+		string assetPath;
+		if (Application.platform == RuntimePlatform.WindowsPlayer) {
+			assetPath = N ["asset_path_win"];
+		} else {
+			assetPath = N ["asset_path_mac"];
+		}
+
+		ScreenManager.Instance.Log("assets path: "+assetPath);
 
 		Debug.Log ("Total Environemtns: "+N["environments"].Count);
 
@@ -139,6 +147,33 @@ public class AssetManager : MonoBehaviour {
 			e.envSummary = N ["environments"] [i] ["summary"];
 			e.envColor = new Color32 ((byte)N ["environments"] [i] ["colorRGB"][0].AsInt, (byte)N ["environments"] [i] ["colorRGB"][1].AsInt, (byte)N ["environments"] [i] ["colorRGB"][2].AsInt, 255);
 			e.envIconPath = assetPath + N ["environments"] [i] ["iconPath"];
+
+
+			//TODO: put these into a pool.
+			//update idlestatecontrolller to grab panels from pool
+			if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is169) {
+				for (int b = 0; b < N ["environments"] [i] ["backgrounds_16x9"].Count; b++) {
+					var panelData = N ["environments"] [i] ["backgrounds_16x9"] [b];
+					GameObject panelBaseGO = Instantiate (NEWpanelPrefab);
+					PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
+					panelBase.panelID = e.envTitle + "_bg";
+					panelBaseGO.name = panelBase.panelID;
+					panelBase.environment = e;
+					panelBase.Assemble (panelData);
+					e.envBackgroundPanels.Add (panelBaseGO);
+				}
+			} else {
+				for (int b = 0; b < N ["environments"] [i] ["backgrounds_32x9"].Count; b++) {
+					var panelData = N ["environments"] [i] ["backgrounds_32x9"] [b];
+					GameObject panelBaseGO = Instantiate (NEWpanelPrefab);
+					PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
+					panelBase.panelID = e.envTitle + "_bg";
+					panelBaseGO.name = panelBase.panelID;
+					panelBase.environment = e;
+					panelBase.Assemble (panelData);
+					e.envBackgroundPanels.Add (panelBaseGO);
+				}
+			}
 
 			for (int a = 0; a < N ["environments"] [i] ["content_panels"].Count; a++) {
 				var panelData = N ["environments"] [i] ["content_panels"] [a];
@@ -174,6 +209,11 @@ public class AssetManager : MonoBehaviour {
 	public string GetVideo(string _name){
 		int i = videoFiles.FindIndex (x => x.Contains (_name));
 		return videoFiles [i];
+	}
+
+	public string Get329Video(string _name){
+		int i = videoFiles329.FindIndex (x => x.Contains (_name));
+		return videoFiles329 [i];
 	}
 
 	public Texture GetRandomTexture(){
@@ -323,7 +363,7 @@ public class AssetManager : MonoBehaviour {
 			{
 				yield return null;
 			}
-			Texture2D t = new Texture2D(2, 2);
+			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, false);
 			www.LoadImageIntoTexture(t);
 			loadedTextures1x1.Add (t);
 		}
@@ -336,7 +376,7 @@ public class AssetManager : MonoBehaviour {
 			{
 				yield return null;
 			}
-			Texture2D t = new Texture2D(2, 2);
+			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, false);
 			www.LoadImageIntoTexture(t);
 			loadedTextures1x2.Add (t);
 		}

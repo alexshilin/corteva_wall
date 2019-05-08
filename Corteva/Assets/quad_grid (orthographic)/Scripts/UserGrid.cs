@@ -64,7 +64,7 @@ public class UserGrid : MonoBehaviour {
 			po.panelState = PanelBase.PanelState.Ready;
 			po.myKiosk = transform.GetComponentInParent<UserKiosk>(); //TMP, change this
 			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
-			po.ActivateView (PanelBase.PanelView.Front, true);
+			//po.ActivateView (PanelBase.PanelView.Front, true);
 			//panel.transform.rotation *= Quaternion.AngleAxis (360, transform.up);
 			//panel.SetActive (true);
 

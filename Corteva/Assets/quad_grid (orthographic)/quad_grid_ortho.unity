@@ -1625,7 +1625,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: layers.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1662,11 +1662,11 @@ Prefab:
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: layers.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1721195347}
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: layers.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1937405585}
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: basicEditor
       value: 0
@@ -1686,7 +1686,7 @@ Prefab:
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: layers.Array.data[2]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1937405586}
     - target: {fileID: 11400000, guid: 1c4dd8a13f501b04f84fe824120f70bb, type: 2}
       propertyPath: layers.Array.data[3]
       value: 
@@ -3126,6 +3126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleSequence: []
+  bgPanels2: []
   kioskColumns: 
   kioskColumnsToClose: 
   currEnv: -1
@@ -3809,9 +3810,9 @@ MonoBehaviour:
     prefab: {fileID: 1689012887217586, guid: dcc32db90cb894875adcbb29305c38f5, type: 2}
   - name: 1x1_txt_layout_01
     prefab: {fileID: 1911294450542466, guid: bca1996efc8cc4deca07b810ea5121bb, type: 2}
-  - name: 1x2_texture
-    prefab: {fileID: 1019014280875392, guid: b265668b524d14681958cbae09a3015f, type: 2}
-  - name: 2x1_texture_color
+  - name: 2x1_texture
+    prefab: {fileID: 1019014280875392, guid: eb05820b7e973488a9d57e35eb354dfd, type: 2}
+  - name: 1x2_texture_color
     prefab: {fileID: 1965982401141508, guid: 5aac698dd7449464d93e7d8d6b7ff7b6, type: 2}
   - name: 2x1_txt_layout_l
     prefab: {fileID: 1840487997274300, guid: c86dbcfcee6b94b98a6ae9b20a40211f, type: 2}
@@ -3825,6 +3826,8 @@ MonoBehaviour:
     prefab: {fileID: 1965982401141508, guid: 421566459115341a898cc4a80acdcffc, type: 2}
   - name: 1x1_txt_layout_03
     prefab: {fileID: 1911294450542466, guid: 258a60b2bfa19455681ce572fe743434, type: 2}
+  - name: 1x1_texture
+    prefab: {fileID: 1689012887217586, guid: 29c4572d6a60449cbb7d217f9c645f84, type: 2}
   recycler: []
 --- !u!4 &2115049105
 Transform:

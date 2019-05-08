@@ -56,7 +56,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4802058859812714}
   m_Layer: 0
-  m_Name: 2x1_texture_color
+  m_Name: 1x2_texture_color
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
