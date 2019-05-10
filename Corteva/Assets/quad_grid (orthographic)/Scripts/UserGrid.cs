@@ -34,9 +34,11 @@ public class UserGrid : MonoBehaviour {
 				currColumn++;
 			}
 
-			if (i == 2) {
-				emptySpot = panelPostion;
-				continue;
+			if (i == 3) {
+				if (transform.GetComponentInParent<UserKiosk> ().activePanel != null) {
+					emptySpot = panelPostion;
+					continue;
+				}
 			}
 
 			GameObject panel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);

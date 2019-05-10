@@ -564,8 +564,12 @@ public class PanelBase : MonoBehaviour {
 		if (panelContext == PanelContext.Idle 
 			&& (panelView == PanelView.Background || panelState == PanelState.Animating)) 
 		{
-			Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-			EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
+			if (IdleStateController.Instance.layoutGrid == null) {
+				IdleStateController.Instance.StartIdleLoop ();
+			} else {
+				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
+				EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
+			}
 		}
 
 		//if the panel is animating, dont execute following

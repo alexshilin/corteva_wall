@@ -35,7 +35,8 @@ public class IdleStateController : MonoBehaviour {
 
 
 	#region class vars
-	int[][] layoutGrid;
+	[HideInInspector]
+	public int[][] layoutGrid;
 	public List<CellAction> idleSequence = new List<CellAction>();
 	int startColumn;
 	Vector2 startPanelPos;
@@ -60,7 +61,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 	float timeElapsedSinceLastTransition;
-	float timeToNextTransition = 10f;
+	public float timeToNextTransition = 10f;
 	bool activeTransitionLoop = false;
 
 	bool panelsInTransition = false;
@@ -230,7 +231,7 @@ public class IdleStateController : MonoBehaviour {
 					if (idleSequence [n].col == (int)_gridPos.x) {
 						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
 							Debug.Log ("\tdisabling idle cam at col " + n);
-							idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+							StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
 						}
 					}
 				}
@@ -241,6 +242,10 @@ public class IdleStateController : MonoBehaviour {
 				}
 			}
 		}
+	}
+	private IEnumerator DisableCellCamUnderKiosk(int _cam, float _wait){
+		yield return new WaitForSeconds (_wait);
+		idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
 	}
 	private void KioskCloseResponse(Vector2 _gridPos, bool _now){
 		Debug.Log ("!![KioskCloseResponse] at col " + _gridPos.x + " " + (_now ? "now" : "prepare"));
@@ -305,7 +310,7 @@ public class IdleStateController : MonoBehaviour {
 		}
 	}
 
-	void StartIdleLoop(){
+	public void StartIdleLoop(){
 		Debug.Log ("[StartIdleLoop]");
 		timeElapsedSinceLastTransition = timeToNextTransition;
 		panelsInTransition = false;

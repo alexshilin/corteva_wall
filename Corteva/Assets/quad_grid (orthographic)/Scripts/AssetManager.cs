@@ -211,6 +211,11 @@ public class AssetManager : MonoBehaviour {
 		return videoFiles [i];
 	}
 
+	public string GetHDVideo(string _name){
+		int i = hdVideoFiles.FindIndex (x => x.Contains (_name));
+		return hdVideoFiles [i];
+	}
+
 	public string Get329Video(string _name){
 		int i = videoFiles329.FindIndex (x => x.Contains (_name));
 		return videoFiles329 [i];

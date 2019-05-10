@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TouchScript.Gestures;
 using System;
+using TMPro;
 
 public class UserKiosk : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class UserKiosk : MonoBehaviour {
 	public Transform userGrid;
 	public Transform menu;
 	public Transform closer;
+	public TextMeshPro countdown;
 
 	private GameObject bgPanel;
 	private GameObject headerPanel;
@@ -42,6 +44,13 @@ public class UserKiosk : MonoBehaviour {
 
 	private PressGesture pressGesture;
 
+	private float timeSinceLastTouch = 0f;
+	private float maxWaitUntouched = 10f;
+	private bool waitingForSave = false;
+	private float timeTillClose = 0f;
+	private float maxTimeTillClose = 5f;
+	private bool closing = false;
+
 	void Start () {
 		
 	}
@@ -66,14 +75,23 @@ public class UserKiosk : MonoBehaviour {
 		kioskTapped ();
 	}
 	public void kioskTapped(){
-		timesIveBeenTapped++;
+		waitingForSave = false;
+		timeSinceLastTouch = 0f;
+
+		//timesIveBeenTapped++;
 		//Debug.Log ("[kioskTappedHandler] " + transform.name + "tapped "+timesIveBeenTapped+" times.");
 		if (closer.gameObject.activeSelf) {
 			closer.gameObject.SetActive (false);
 		}
 	}
+	private void AreYouStillThere(){
+		closer.gameObject.SetActive (true);
+		timeTillClose = maxTimeTillClose;
+		waitingForSave = true;
+	}
 
 	private void environmentSwitchHandler(){
+		/*
 		Debug.Log ("!![environmentSwitchHandler] col " + column + " ("+(timesIveBeenTapped>0?"active":"inactive")+")");
 		//environemnts are switching, has there been any user activity?
 		if (timesIveBeenTapped == 0) {
@@ -89,12 +107,14 @@ public class UserKiosk : MonoBehaviour {
 		} else {
 			timesIveBeenTapped = 0;
 		}
+		*/
 	}
 
 
 
 	public void CloseKiosk(){
 		Debug.Log ("[CloseKiosk] " + column);
+		closing = true;
 		EventsManager.Instance.UserKioskCloseRequest (new Vector2(column, 0), true);
 		Close();
 	}
@@ -196,6 +216,23 @@ public class UserKiosk : MonoBehaviour {
 	}
 		
 	void Update () {
+		if (closing)
+			return;
+		
+		if (waitingForSave) {
+			timeTillClose -= Time.deltaTime;
+			countdown.text = Mathf.RoundToInt(timeTillClose).ToString ();
+			if (timeTillClose < 0) {
+				countdown.text = "0";
+				CloseKiosk ();
+			}
+		} else {
+			timeSinceLastTouch += Time.deltaTime;
+
+			if (timeSinceLastTouch > maxWaitUntouched) {
+				AreYouStillThere ();
+			}
+		}
 
 		if (menuFollowPanel) {
 			Vector3 menuGoTo = activePanel.localPosition;

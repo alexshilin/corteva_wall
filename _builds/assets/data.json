@@ -2,7 +2,7 @@
 	"last_update": "",
 	"location": "",
 	"asset_path_mac": "/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/",
-	"asset_path_win": "",
+	"asset_path_win": "C:/Users/Alex/Desktop/corteva_builds/assets/",
 	"environments":
 	[
 		{
@@ -59,7 +59,7 @@
 							"bg_path": "images_1x1/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Video",
+							"title": "This is<br>a title",
 							"body": ""
 						}
 					}	
