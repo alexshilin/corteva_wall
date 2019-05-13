@@ -138,7 +138,7 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("2x1_texture", PanelView.Front);
 			t.name = "2x1_texture";
 			VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-			vid.url = AssetManager.Instance.Get329Video (_path);
+			vid.url = AssetManager.Instance.GetVideo (_path);
 			vid.enabled = true;
 			vid.Prepare ();
 			//vid.Play ();
@@ -146,7 +146,6 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		if (_template == "kiosk_bg") {
-			//FRONT
 			t = LoadModule ("1x1_texture_color", PanelView.Front);
 			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
 			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_path);
@@ -154,7 +153,6 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		if (_template == "title_idle") {
-			//FRONT
 			t = LoadModule ("1x1_texture_color_02", PanelView.Front);
 			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
@@ -173,6 +171,43 @@ public class PanelBase : MonoBehaviour {
 
 
 
+		if (template == "beauty_1x1") {
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				if (_view == PanelView.Front)
+					vid.Play ();
+			} else {
+				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+			}
+			return;
+		}
+
+
+
+		if (template == "beauty_1x2") {
+			t = LoadModule ("1x2_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				if (_view == PanelView.Front)
+					vid.Play ();
+			} else {
+				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+			}
+			return;
+		}
 
 
 		//bg	video OR image OR color
@@ -202,7 +237,6 @@ public class PanelBase : MonoBehaviour {
 			}
 			return;
 		}
-
 
 
 
@@ -254,7 +288,7 @@ public class PanelBase : MonoBehaviour {
 
 
 
-
+		//standard back view template
 		if (template == "template_03") {
 			t = LoadModule ("1x1_texture_color", _view);
 			if (_templateData ["content"] ["bg_color"].Count == 3) {
@@ -296,132 +330,6 @@ public class PanelBase : MonoBehaviour {
 		}
 	}
 
-	#region module assembly
-	public void AssemblePanel(string _template)//(Environment _environment, int _id)
-	{
-//		environment = _environment;
-//		panelID = _id;
-		Debug.Log("[AssemblePanel]");
-//		string _template = "01";
-		GameObject t;
-		Renderer panelRenderer;
-		TextMeshPro text;
-
-
-
-		if (_template == "329bg") {
-			t = LoadModule ("1x2_texture", PanelView.Front);
-			//populate the module
-			//panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-			//panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_img);
-			ActivateView (PanelView.Front, true);
-			return;
-		}
-
-		//bg	colorBG AND imgFG w/alpha
-		if (_template == "title_idle") {
-			//FRONT
-			t = LoadModule ("1x1_texture_color_02", PanelView.Front);
-			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
-			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
-			return;
-		}
-
-
-
-		//sample video/image template
-		if (_template == "template_01") {
-			//THUMBNAIL
-			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
-			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
-
-			//FRONT
-			t = LoadModule ("1x1_texture_color", PanelView.Front);
-
-			bool isVideo = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-			if (isVideo) {
-				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetRandomVideo ();
-				vid.enabled = true;
-				vid.Prepare ();
-				vid.Play ();
-			} else {
-				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("sample_07");
-			}
-
-			t = LoadModule ("1x1_txt_layout_02", PanelView.Front);
-			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
-			text.text = "Front";
-			t.transform.Find ("Body").gameObject.SetActive (false);
-			t.transform.localPosition += transform.forward * -0.01f;
-
-			//BACK
-			t = LoadModule ("1x1_texture_color", PanelView.Back);
-			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
-
-			t = LoadModule ("1x1_txt_layout_02", PanelView.Back);
-			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
-			text.text = "Back";
-			t.transform.Find ("Body").gameObject.SetActive (false);
-			t.transform.localPosition += transform.forward * -0.01f;
-			return;
-		}
-
-
-		//sample visualization template
-		if (_template == "template_02") {
-			//THUMBNAIL
-			t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
-			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
-
-			//FRONT
-			t = LoadModule ("1x1_texture_color", PanelView.Front);
-			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
-
-			t = LoadModule ("1x1_viz_earth", PanelView.Front);
-			t.transform.localPosition += transform.forward * -0.01f;
-
-			t = LoadModule ("1x1_txt_layout_02", PanelView.Front);
-			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
-			text.text = "Front";
-			t.transform.Find ("Body").gameObject.SetActive (false);
-			t.transform.localPosition += transform.forward * -0.02f;
-
-			//BACK
-			t = LoadModule ("1x1_texture_color", PanelView.Back);
-			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 (50, 50, 50, 255);
-
-			t = LoadModule ("1x1_txt_layout_02", PanelView.Back);
-			text = t.transform.Find("Title").GetComponent<TextMeshPro> ();
-			text.text = "Back";
-			t.transform.Find ("Body").gameObject.SetActive (false);
-			t.transform.localPosition += transform.forward * -0.01f;
-			return;
-		}
-
-
-
-		t = LoadModule ("1x1_texture_color", PanelView.Thumbnail);
-		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_thumbnail");
-
-		t = LoadModule ("1x1_texture_color", PanelView.Front);
-		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_front");
-
-		t = LoadModule ("1x1_texture_color", PanelView.Back);
-		panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
-		panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture ("test_back");
-
-//		bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-//		ActivateView (PanelView.Thumbnail, flip);
-//		ActivateView (PanelView.Front, !flip);
-	}
-
 
 	private Transform GetViewContainer(PanelView _view){
 		if (_view == PanelView.Front) return front;
@@ -449,7 +357,7 @@ public class PanelBase : MonoBehaviour {
 
 	public void ActivateView(PanelView _viewToShow, bool _faceAway)
 	{
-		Debug.Log ("[ActivateView] "+_viewToShow+" to "+(_faceAway ? "away" : "toward"));
+		//Debug.Log ("[ActivateView] "+_viewToShow+" to "+(_faceAway ? "away" : "toward"));
 
 		Transform viewToShow = front;
 		if (_viewToShow == PanelView.Front) viewToShow = front;
@@ -460,35 +368,28 @@ public class PanelBase : MonoBehaviour {
 			viewToShow.transform.localPosition = awayPos;
 			viewToShow.transform.localEulerAngles = awayRot;
 			viewToShow.gameObject.SetActive (true);
-			//SetRender(viewToShow, true);
 			currViewFacingAway = _viewToShow;
 		} else {
 			viewToShow.transform.localPosition = forwardPos;
 			viewToShow.transform.localEulerAngles = forwardRot;
 			viewToShow.gameObject.SetActive (true);
-			//SetRender(viewToShow, true);
 			currViewFacingForward = _viewToShow;
-			//panelView = _viewToShow;
+			panelView = _viewToShow;
 		}
 
 		//Debug.Log ((viewToShow.GetComponentInChildren<VideoPlayer> ()?"YES video player":"NO video player"));
 		if (viewToShow.GetComponentInChildren<VideoPlayer> ()) {
-			//if (viewToShow.GetComponentInChildren<VideoPlayer> ().isPrepared) {
-				viewToShow.GetComponentInChildren<VideoPlayer> ().Play ();
-			//}
+			viewToShow.GetComponentInChildren<VideoPlayer> ().Play ();
 		}
 			
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
 			front.gameObject.SetActive (false);
-			//SetRender(front, false);
 		}
 		if (currViewFacingAway != PanelView.Back && currViewFacingForward != PanelView.Back) {
 			back.gameObject.SetActive (false);
-			//SetRender(back, false);
 		}
 		if (currViewFacingAway != PanelView.Thumbnail && currViewFacingForward != PanelView.Thumbnail) {
 			thumbnail.gameObject.SetActive (false);
-			//SetRender(thumbnail, false);
 		}
 	}
 
@@ -551,7 +452,7 @@ public class PanelBase : MonoBehaviour {
 		panelView = currViewFacingForward;
 		Debug.Log ("[PanelFlipped] " + prevViewFacingFront + " | " + prevViewFacingAway + " >> " + currViewFacingForward + " | " + currViewFacingAway);
 	}
-	#endregion
+
 
 	#region touch handlers
 	private void tappedHandler(object sender, EventArgs e)
@@ -750,10 +651,7 @@ public class PanelBase : MonoBehaviour {
 			FlipAround ();
 		}
 	}
-
-	public void SetAs329Video(bool _playWhenReady = false){
-		AssemblePanel ("329bg");
-	}
+		
 
 	public void PlayBgVideo(){
 		transform.GetComponentInChildren<VideoPlayer> ().Play ();
@@ -761,19 +659,6 @@ public class PanelBase : MonoBehaviour {
 	public void PauseBgVideo(){
 		transform.GetComponentInChildren<VideoPlayer> ().Pause ();
 	}
-
-//	public void SetAs329Video(bool _playWhenReady = false){
-//		frontFullPanelTexture329.gameObject.SetActive (true);
-//		frontFullPanel329.gameObject.SetActive (true);
-//
-//		LoadVideo(AssetManager.Instance.GetRandom329Video(), _playWhenReady);
-//		videoPlayer329.Control.MuteAudio (true);
-//		videoPlayer329.enabled = true;
-//
-//		using329video = true;
-//		if(_playWhenReady)
-//			videoPlayer329.Control.Play ();
-//	}
 
 
 }

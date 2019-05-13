@@ -10,16 +10,40 @@ using SimpleJSON;
 public class Environment
 {
 	public int envID;
-	public Color32 envColor;
-	public string envIconPath;
 	public string envTitle;
 	public string envSummary;
-	public List<GameObject> envBackgroundPanels = new List<GameObject>();
+	public string envIconPath;
 	public string kioskBg;
-	public List<GameObject> envPanels = new List<GameObject>();
+	public Color32 envColor;
+	public List<GameObject> envBackgroundPanels = new List<GameObject>();
 	public JSONNode envPanelData;
+	public JSONNode btyPanelData;
+	public List<int> bty1x1Indeces = new List<int> ();
+	public List<int> bty1x2Indeces = new List<int> ();
+	public int env1x1Count;
 }
-
+/*
+[System.Serializable]
+public class Panel
+{
+	public string panelID;
+	public List<PanelSide> panelSide = new List<PanelSide>();
+}
+[System.Serializable]
+public class PanelSide
+{
+	public PanelBase.PanelView view; 
+	public string template;
+	public List<PanelAsset> panelAsset = new List<PanelAsset>();
+}
+[System.Serializable]
+public class PanelAsset
+{
+	public string assetPath;
+	public string assetType;
+	public string assetFormat;
+}
+*/
 public class AssetManager : MonoBehaviour {
 	#region class variables
 	private string basePath;
@@ -28,21 +52,14 @@ public class AssetManager : MonoBehaviour {
 	private string assetsFolder;
 
 
-	private List<string> filesToLoad1x1 = new List<string>();
-	private List<string> filesToLoad1x2 = new List<string>();
+	private List<string> texturesToLoad = new List<string>();
 	[HideInInspector]
-	public List<Texture2D> loadedTextures1x1 = new List<Texture2D>();
-	[HideInInspector]
-	public List<Texture2D> loadedTextures1x2 = new List<Texture2D>();
+	public List<Texture2D> loadedTextures = new List<Texture2D>();
+
+
 	[HideInInspector]
 	public List<string> videoFiles = new List<string> ();
 	private List<string> usedVideoFiles = new List<string> ();
-	[HideInInspector]
-	public List<string> hdVideoFiles = new List<string> ();
-	private List<string> usedHdVideoFiles = new List<string> ();
-	[HideInInspector]
-	public List<string> videoFiles329 = new List<string> ();
-	private List<string> usedVideoFiles329 = new List<string> ();
 	#endregion
 
 
@@ -70,14 +87,6 @@ public class AssetManager : MonoBehaviour {
 	public List<Environment> environments = new List<Environment>();
 	#endregion
 
-
-	#region events
-//	public delegate void AssetsFinishedLoadingEvent();
-//	public event AssetsFinishedLoadingEvent OnAssetsFinishedLoading;
-//
-//	public delegate void SceneFinishedLoadingEvent(string _scene);
-//	public event SceneFinishedLoadingEvent OnSceneFinishedLoading;
-	#endregion
 
 	private static AssetManager _instance;
 	public static AssetManager Instance { get { return _instance; } }
@@ -150,11 +159,10 @@ public class AssetManager : MonoBehaviour {
 			e.envSummary = N ["environments"] [i] ["summary"];
 			e.envColor = new Color32 ((byte)N ["environments"] [i] ["colorRGB"][0].AsInt, (byte)N ["environments"] [i] ["colorRGB"][1].AsInt, (byte)N ["environments"] [i] ["colorRGB"][2].AsInt, 255);
 			e.envIconPath = assetPath + N ["environments"] [i] ["iconPath"];
+			e.btyPanelData = N ["environments"] [i] ["beauty_panels"];
 			e.envPanelData = N ["environments"] [i] ["content_panels"];
 			e.kioskBg = N ["environments"] [i] ["kiosk_background_image_16x9"];
 
-			//TODO: put these into a pool.
-			//update idlestatecontrolller to grab panels from pool
 			if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is169) {
 				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, idleBackgrounds);
 				PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
@@ -173,18 +181,15 @@ public class AssetManager : MonoBehaviour {
 				e.envBackgroundPanels.Add (panelBaseGO);
 			}
 
-			/*
-			for (int a = 0; a < N ["environments"] [i] ["content_panels"].Count; a++) {
-				var panelData = N ["environments"] [i] ["content_panels"] [a];
-				GameObject panelBaseGO = Instantiate (NEWpanelPrefab, transform);
-				PanelBase panelBase = panelBaseGO.GetComponent<PanelBase> ();
-				panelBase.panelID = N ["environments"] [i] ["content_panels"] [a] ["panelID"];
-				panelBaseGO.name = e.envTitle + "_" + panelBase.panelID;
-				panelBase.environment = e;
-				panelBase.Assemble (panelData);
-				e.envPanels.Add(panelBaseGO);
+			e.env1x1Count = e.envPanelData.Count;
+			for (int a = 0; a < e.btyPanelData.Count; a++) {
+				if (e.btyPanelData [a]["front"]["template"] == "beauty_1x2") {
+					e.bty1x2Indeces.Add (a);
+				} else {
+					e.bty1x1Indeces.Add (a);
+				}
 			}
-			*/
+				
 			environments.Add (e);
 		}
 
@@ -202,30 +207,19 @@ public class AssetManager : MonoBehaviour {
 	}
 
 	public Texture GetTexture(string _name){
-		int i = filesToLoad1x1.FindIndex (x => x.Contains (_name));
-		return loadedTextures1x1 [i];
+		//Debug.Log ("Getting: " + _name);
+		int i = texturesToLoad.FindIndex (x => x.Contains (_name));
+		return loadedTextures [i];
 	}
+
+	public Texture GetRandomTexture(){
+		return loadedTextures [Random.Range (0, loadedTextures.Count)];
+	}
+
 
 	public string GetVideo(string _name){
 		int i = videoFiles.FindIndex (x => x.Contains (_name));
 		return videoFiles [i];
-	}
-
-	public string GetHDVideo(string _name){
-		int i = hdVideoFiles.FindIndex (x => x.Contains (_name));
-		return hdVideoFiles [i];
-	}
-
-	public string Get329Video(string _name){
-		int i = videoFiles329.FindIndex (x => x.Contains (_name));
-		return videoFiles329 [i];
-	}
-
-	public Texture GetRandomTexture(){
-		return loadedTextures1x1 [Random.Range (0, loadedTextures1x1.Count)];
-	}
-	public Texture GetRandomTexture1x2(){
-		return loadedTextures1x2 [Random.Range (0, loadedTextures1x2.Count)];
 	}
 		
 	public string GetRandomVideo(){
@@ -237,31 +231,6 @@ public class AssetManager : MonoBehaviour {
 			usedVideoFiles.Clear ();
 		}
 		usedVideoFiles.Add (vid);
-		return vid;
-	}
-
-	public string GetRandomHDVideo(){
-		return GetRandomVideo ();
-//		int r = Random.Range (0, hdVideoFiles.Count);
-//		string vid = hdVideoFiles [r];
-//		hdVideoFiles.RemoveAt (r);
-//		if (hdVideoFiles.Count == 0) {
-//			hdVideoFiles = new List<string> (usedHdVideoFiles);
-//			usedHdVideoFiles.Clear ();
-//		}
-//		usedHdVideoFiles.Add (vid);
-//		return vid;
-	}
-
-	public string GetRandom329Video(){
-		int r = Random.Range (0, videoFiles329.Count);
-		string vid = videoFiles329 [r];
-		videoFiles329.RemoveAt (r);
-		if (videoFiles329.Count == 0) {
-			videoFiles329 = new List<string> (usedVideoFiles329);
-			usedVideoFiles329.Clear ();
-		}
-		usedVideoFiles329.Add (vid);
 		return vid;
 	}
 	#endregion
@@ -321,22 +290,16 @@ public class AssetManager : MonoBehaviour {
 
 		//TEMP
 		//save paths of files from the following directories
-		DirectoryInfo dir = new DirectoryInfo(assetsFolder+"images_1x1/");
+		DirectoryInfo dir = new DirectoryInfo(assetsFolder+"images/");
 		FileInfo[] info = dir.GetFiles("*.jpg");
 		foreach (FileInfo fi in info){
-			filesToLoad1x1.Add (filePrefix + fi.FullName);
+			texturesToLoad.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"misc/");
 		info = dir.GetFiles("*.png");
 		foreach (FileInfo fi in info){
-			filesToLoad1x1.Add (filePrefix + fi.FullName);
-		}
-
-		dir = new DirectoryInfo(assetsFolder+"images_1x2/");
-		info = dir.GetFiles("*.jpg");
-		foreach (FileInfo fi in info){
-			filesToLoad1x2.Add (filePrefix + fi.FullName);
+			texturesToLoad.Add (filePrefix + fi.FullName);
 		}
 
 		dir = new DirectoryInfo(assetsFolder+"videos/");
@@ -345,22 +308,9 @@ public class AssetManager : MonoBehaviour {
 			videoFiles.Add (filePrefix + fi.FullName);
 		}
 
-		dir = new DirectoryInfo(assetsFolder+"videos_HD/");
-		info = dir.GetFiles("*.mp4");
-		foreach (FileInfo fi in info){
-			hdVideoFiles.Add (filePrefix + fi.FullName);
-		}
-
-		dir = new DirectoryInfo(assetsFolder+"videos_HD_329/");
-		info = dir.GetFiles("*.mp4");
-		foreach (FileInfo fi in info){
-			videoFiles329.Add (filePrefix + fi.FullName);
-		}
-
-
 		//preload images to textures
 		ScreenManager.Instance.Log("Loading textures...");
-		foreach(string file in filesToLoad1x1)
+		foreach(string file in texturesToLoad)
 		{
 			ScreenManager.Instance.Log("  loading: " + file);
 			WWW www = new WWW(file);
@@ -370,20 +320,7 @@ public class AssetManager : MonoBehaviour {
 			}
 			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, false);
 			www.LoadImageIntoTexture(t);
-			loadedTextures1x1.Add (t);
-		}
-
-		foreach(string file in filesToLoad1x2)
-		{
-			ScreenManager.Instance.Log("  loading: " + file);
-			WWW www = new WWW(file);
-			while (!www.isDone)
-			{
-				yield return null;
-			}
-			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, false);
-			www.LoadImageIntoTexture(t);
-			loadedTextures1x2.Add (t);
+			loadedTextures.Add (t);
 		}
 
 		ScreenManager.Instance.Log(" texture loading DONE"); 

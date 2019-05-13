@@ -333,38 +333,38 @@ public class PanelObject : MonoBehaviour {
 		frontFullPanelColor.gameObject.SetActive (false);
 		frontFullPanel.gameObject.SetActive (true);
 	}
-	public void SetAsImage1x2(){
-		Renderer panelRenderer = frontSplitPanelTexture.GetComponent<Renderer> ();
-		panelRenderer.material.mainTexture = AssetManager.Instance.GetRandomTexture1x2 ();
-		frontFullPanel.gameObject.SetActive (false);
-
-		frontSplitPanel.gameObject.SetActive (true);
-		frontSplitPanelTexture.gameObject.SetActive (true);
-		frontSplitPanelColor.gameObject.SetActive (false);
-	}
+//	public void SetAsImage1x2(){
+//		Renderer panelRenderer = frontSplitPanelTexture.GetComponent<Renderer> ();
+//		panelRenderer.material.mainTexture = AssetManager.Instance.GetRandomTexture1x2 ();
+//		frontFullPanel.gameObject.SetActive (false);
+//
+//		frontSplitPanel.gameObject.SetActive (true);
+//		frontSplitPanelTexture.gameObject.SetActive (true);
+//		frontSplitPanelColor.gameObject.SetActive (false);
+//	}
 		
-	public void SetAs329Video(bool _playWhenReady = false){
-		frontFullPanelTexture329.gameObject.SetActive (true);
-		frontFullPanel329.gameObject.SetActive (true);
-
-		LoadVideo(AssetManager.Instance.GetRandom329Video(), _playWhenReady);
-		videoPlayer329.Control.MuteAudio (true);
-		videoPlayer329.enabled = true;
-
-		using329video = true;
-		if(_playWhenReady)
-			videoPlayer329.Control.Play ();
-	}
+//	public void SetAs329Video(bool _playWhenReady = false){
+//		frontFullPanelTexture329.gameObject.SetActive (true);
+//		frontFullPanel329.gameObject.SetActive (true);
+//
+//		LoadVideo(AssetManager.Instance.GetRandomVideo(), _playWhenReady);
+//		videoPlayer329.Control.MuteAudio (true);
+//		videoPlayer329.enabled = true;
+//
+//		using329video = true;
+//		if(_playWhenReady)
+//			videoPlayer329.Control.Play ();
+//	}
 
 	public void SetAsVideo(bool _hd, bool _playWhenReady){
 		VideoPanel (_hd, _playWhenReady);
 	}
 	private void VideoPanel(bool _hd, bool _playWhenReady){
-		if (_hd) {
-			videoPlayer.url = AssetManager.Instance.GetRandomHDVideo ();
-		} else {
+//		if (_hd) {
+//			videoPlayer.url = AssetManager.Instance.GetRandomHDVideo ();
+//		} else {
 			videoPlayer.url = AssetManager.Instance.GetRandomVideo ();
-		}
+//		}
 		videoPlayer.enabled = true;
 		videoPlayer.Prepare ();
 		frontFullPanelTexture.gameObject.SetActive (true);

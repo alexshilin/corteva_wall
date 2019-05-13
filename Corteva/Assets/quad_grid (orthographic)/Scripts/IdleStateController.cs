@@ -54,6 +54,7 @@ public class IdleStateController : MonoBehaviour {
 	public int currEnv = -1;
 
 	string[] availableTypes = new string[]{"1x1","1x1","1x1","1x1","1x2","2x2"};
+
 	List<string> usedTypes = new List<string>();
 
 	Transform currTitleCam;
@@ -318,7 +319,6 @@ public class IdleStateController : MonoBehaviour {
 	}
 
 
-
 	void PlanLayout(){
 
 		Debug.Log ("----------------------------------------------------------");
@@ -480,12 +480,18 @@ public class IdleStateController : MonoBehaviour {
 
 	string CheckAvailable(int _row, int _col, int _panelType){
 		string r;
+		int coin;
 		if (_panelType == 3) {
-			r = availableTypes [Random.Range (0, availableTypes.Length)];
+			//r = availableTypes [Random.Range (0, availableTypes.Length)];
+			coin = Random.Range(0, 3);
+			r = (coin == 0) ? "2x2" : "1x1";
 		} else if (_panelType == 2) {
-			r = availableTypes [Random.Range (0, availableTypes.Length - 1)];
+			//r = availableTypes [Random.Range (0, availableTypes.Length - 1)];
+			coin = Random.Range(0, 3);
+			r = (coin == 0) ? "1x2" : "1x1";
 		} else {
-			r = availableTypes [Random.Range (0, availableTypes.Length - 2)];
+			//r = availableTypes [Random.Range (0, availableTypes.Length - 2)];
+			r = "1x1";
 		}
 		//r = availableTypes [Random.Range (0, availableTypes.Length - 2)];
 		//TODO make sure there is AT LEAST + AT MOST 1 instance of a 1x2 and 2x2 panel type
@@ -676,75 +682,73 @@ public class IdleStateController : MonoBehaviour {
 				}
 			}
 
+			//create, setup new panel
 			GameObject panel = Instantiate (AM.NEWpanelPrefab);
-
 			panel.transform.parent = ccGo.transform.Find ("Container");
 			panel.transform.localPosition = Vector3.zero;
 			panel.transform.localScale = Vector3.one;
 			panel.transform.localPosition = Vector3.Scale (-idleSequence [i].direction, new Vector3 (6f, 3.5f, 0f));
 			Vector3 toPos = Vector3.zero;
 
+			//setup panel base
 			PanelBase po = panel.GetComponent<PanelBase> ();
-
 			po.gridID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
 			po.panelContext = PanelBase.PanelContext.Idle;
 			po.panelState = PanelBase.PanelState.Animating;
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.environment = environments [currEnv];
 
+			//assemble the required panel type
 			if (i == 0) {
-				po.panelView = PanelBase.PanelView.Background;
+				//first panel is always a title card
 				po.panelID = environments [currEnv].envTitle + "_Title";
 				po.AssembleBasic ("title_idle");
 				po.ActivateView (PanelBase.PanelView.Front, false);
+				po.panelView = PanelBase.PanelView.Background;
 
 			} else {
-				//string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
+				JSONNode panelData;
+				int r;
 
-				//choose random panel for now
-				JSONNode panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+				if (idleSequence [i].panelType == new Vector2 (2, 2)) {
+					
+					//if desired type is 2x2, grab a beauty panel
+					r = Random.Range(0, environments[currEnv].bty1x1Indeces.Count);
+					panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x1Indeces[r]];
+					po.Assemble (panelData);
+					po.ActivateView (PanelBase.PanelView.Front, false);
 
-				po.panelView = PanelBase.PanelView.Front;
 
-				po.panelID = environments [currEnv].envTitle + "_" + panelData ["panelID"];
-				panel.name = environments[currEnv].envTitle + "_" + po.panelID;
-
-				po.Assemble (panelData);
-
-				//TEMP
-				bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-				po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
-				po.ActivateView (PanelBase.PanelView.Front, !flip);
+				} else if (idleSequence [i].panelType == new Vector2 (1, 2)) {
+					
+					//if desired type is 1x2, grab a beauty panel
+					toPos.x += (5.33333f / 4f);
+					r = Random.Range(0, environments[currEnv].bty1x2Indeces.Count);
+					panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x2Indeces[r]];
+					po.Assemble (panelData);
+					po.ActivateView (PanelBase.PanelView.Front, false);
+				
+				
+				} else {
+					
+					//all others are 1x1, grab a content panel
+					//choose random panel for now
+					panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+					po.panelID = environments [currEnv].envTitle + "_" + panelData ["panelID"];
+					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
+					po.Assemble (panelData);
+					//TEMP show either the front of thumbnail view
+					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
+					po.ActivateView (PanelBase.PanelView.Front, !flip);
+				}
 			}
 
-
-
-			//panel.name = "Panel " + idleSequence [i].col + ", " + idleSequence [i].row;
-
-			if (idleSequence [i].panelType == new Vector2 (1, 2) || idleSequence [i].panelType == new Vector2 (2, 2)) {
+			//if panel is title card or beauty, set its view as "background"
+			//tapping "background" panels in idle view opens blank kiosk rather than keeping the active panel
+			if (i==0 || idleSequence [i].panelType == new Vector2 (1, 2) || idleSequence [i].panelType == new Vector2 (2, 2)) {
 				po.panelView = PanelBase.PanelView.Background;
 			}
-
-			/*po.SetPanelColors (environments [currEnv].envColor);
-			if (i == 0) {
-				po.SetAsTitle (environments [currEnv].envTitle);
-				po.panelMode = PanelObject.PanelView.Background;
-			} else if (idleSequence [i].panelType == new Vector2 (1, 2)) {
-				po.SetAsImage1x2 ();
-				po.panelMode = PanelObject.PanelView.Background;
-				//panel.GetComponent<PanelObject> ().SetAsNonInteractive ();
-				toPos.x += (5.33333f / 4f);
-			} else {
-				int r = Random.Range (0, 3);
-				if (r == 1) {
-					po.SetAs3dViz ();
-				} else if (r == 2) {
-					po.SetAsVideo (false, true);
-					//panel.GetComponent<PanelObject> ().SetAsImage ();
-				} else {
-					po.SetAsImage ();
-				}
-			}*/
 
 			idleSequence [i].fromPos = panel.transform.localPosition;
 			idleSequence [i].toPos = toPos;

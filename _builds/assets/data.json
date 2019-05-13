@@ -11,17 +11,41 @@
 			"colorRGB": [0, 114, 206],
 			"iconPath": "misc/globe_title.png",
 			"idle_background_video_16x9": "videos/Sunset - 1280x720.mp4",
-			"idle_background_video_32x9": "videos_HD_329/FogCrop.mp4",
-			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
+			"idle_background_video_32x9": "videos/FogCrop.mp4",
+			"kiosk_background_image_16x9": "images/sample_02.jpg",
 			"beauty_panels": [
 				{
-					"format": "1x1",
-					"type": "video",
-					"path": "videos/Sunset - 1280x720.mp4"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "video",
+							"bg_path": "videos/Sunset - 1280x720.mp4"
+						}
+					}
 				},{
-					"format": "1x2", 
-					"type": "image",
-					"path": "images_1x2/sample_1x2.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_01.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2_02.jpg"
+						}
+					}
 				}
 			],
 			"content_panels":[
@@ -56,7 +80,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_03.jpg",
+							"bg_path": "images/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "This is<br>a title",
@@ -95,7 +119,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_03.jpg",
+							"bg_path": "images/sample_03.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "3d viz",
@@ -111,17 +135,41 @@
 			"colorRGB": [0, 191, 111],
 			"iconPath": "misc/farm_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
-			"idle_background_video_32x9": "videos_HD_329/SunsetCrop.mp4",
-			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
+			"idle_background_video_32x9": "videos/SunsetCrop.mp4",
+			"kiosk_background_image_16x9": "images/sample_02.jpg",
 			"beauty_panels": [
 				{
-					"format": "1x1",
-					"type": "image",
-					"path": "images_1x1/sample_05.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "video",
+							"bg_path": "videos/Sunset - 1280x720.mp4"
+						}
+					}
 				},{
-					"format": "1x2", 
-					"type": "image",
-					"path": "images_1x2/sample_1x2.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_01.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2_02.jpg"
+						}
+					}
 				}
 			],
 			"content_panels": [
@@ -156,7 +204,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_05.jpg",
+							"bg_path": "images/sample_05.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "Video",
@@ -195,7 +243,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_05.jpg",
+							"bg_path": "images/sample_05.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "3d viz",
@@ -211,17 +259,41 @@
 			"colorRGB": [252, 76, 2],
 			"iconPath": "misc/plant_title.png",
 			"idle_background_video_16x9": "videos/Autumn - 1280x720.mp4",
-			"idle_background_video_32x9": "videos_HD_329/ForestCrop.mp4",
-			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
+			"idle_background_video_32x9": "videos/ForestCrop.mp4",
+			"kiosk_background_image_16x9": "images/sample_02.jpg",
 			"beauty_panels": [
 				{
-					"format": "1x1",
-					"type": "image",
-					"path": "images_1x1/sample_06.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "video",
+							"bg_path": "videos/Sunset - 1280x720.mp4"
+						}
+					}
 				},{
-					"format": "1x2", 
-					"type": "image",
-					"path": "images_1x2/sample_1x2.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_01.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2_02.jpg"
+						}
+					}
 				}
 			],
 			"content_panels": [
@@ -256,7 +328,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_06.jpg",
+							"bg_path": "images/sample_06.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "Video",
@@ -295,7 +367,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_06.jpg",
+							"bg_path": "images/sample_06.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "3d viz",
@@ -311,17 +383,41 @@
 			"colorRGB": [26, 26, 26],
 			"iconPath": "misc/seed_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
-			"idle_background_video_32x9": "videos_HD_329/SnowCrop.mp4",
-			"kiosk_background_image_16x9": "images_1x1/sample_02.jpg",
+			"idle_background_video_32x9": "videos/SnowCrop.mp4",
+			"kiosk_background_image_16x9": "images/sample_02.jpg",
 			"beauty_panels": [
 				{
-					"format": "1x1",
-					"type": "video",
-					"path": "videos/Autumn - 1280x720.mp4"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "video",
+							"bg_path": "videos/Sunset - 1280x720.mp4"
+						}
+					}
 				},{
-					"format": "1x2", 
-					"type": "image",
-					"path": "images_1x2/sample_1x2.jpg"
+					"front":{
+						"template": "beauty_1x1", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_01.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2.jpg"
+						}
+					}
+				},{
+					"front":{
+						"template": "beauty_1x2", 
+						"content":{
+							"bg_type": "image",
+							"bg_path": "images/sample_1x2_02.jpg"
+						}
+					}
 				}
 			],
 			"content_panels": [
@@ -356,7 +452,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_07.jpg",
+							"bg_path": "images/sample_07.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "Video",
@@ -395,7 +491,7 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images_1x1/sample_07.jpg",
+							"bg_path": "images/sample_07.jpg",
 							"txt_color": [],
 							"category": "",
 							"title": "3d viz",
