@@ -689,11 +689,12 @@ public class IdleStateController : MonoBehaviour {
 			po.gridID = idleSequence [i].col + (int)GM.desiredGrid.x * idleSequence [i].row;
 			po.panelContext = PanelBase.PanelContext.Idle;
 			po.panelState = PanelBase.PanelState.Animating;
-			po.panelView = PanelBase.PanelView.Front;
 			po.panelGridPos = new Vector2 (idleSequence [i].col, idleSequence [i].row);
 			po.environment = environments [currEnv];
 
 			if (i == 0) {
+				po.panelView = PanelBase.PanelView.Background;
+				po.panelID = environments [currEnv].envTitle + "_Title";
 				po.AssembleBasic ("title_idle");
 				po.ActivateView (PanelBase.PanelView.Front, false);
 
@@ -702,6 +703,8 @@ public class IdleStateController : MonoBehaviour {
 
 				//choose random panel for now
 				JSONNode panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+
+				po.panelView = PanelBase.PanelView.Front;
 
 				po.panelID = environments [currEnv].envTitle + "_" + panelData ["panelID"];
 				panel.name = environments[currEnv].envTitle + "_" + po.panelID;

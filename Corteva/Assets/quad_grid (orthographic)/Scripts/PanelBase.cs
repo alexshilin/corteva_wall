@@ -63,7 +63,6 @@ public class PanelBase : MonoBehaviour {
 	private PanelModulePool PMP;
 
 	void Awake(){
-		
 		panelState = PanelState.Ready;
 	}
 
@@ -469,7 +468,7 @@ public class PanelBase : MonoBehaviour {
 			viewToShow.gameObject.SetActive (true);
 			//SetRender(viewToShow, true);
 			currViewFacingForward = _viewToShow;
-			panelView = _viewToShow;
+			//panelView = _viewToShow;
 		}
 
 		//Debug.Log ((viewToShow.GetComponentInChildren<VideoPlayer> ()?"YES video player":"NO video player"));
@@ -703,15 +702,17 @@ public class PanelBase : MonoBehaviour {
 			myKiosk.dragGrid = true;
 		}
 
-		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active && myKiosk.activePanel == transform) {
 			transform.position += transformGesture.DeltaPosition;
 			myKiosk.menuFollowPanel = true;
 
+			/*
 			transform.localScale *= transformGesture.DeltaScale;
 			if (transform.localScale.x > 1)
 				transform.localScale = Vector3.one;
 			if (transform.localScale.x < 0.5f)
 				transform.localScale = Vector3.one * 0.5f;
+			*/
 		}
 	}
 
