@@ -1,95 +1,64 @@
-﻿Shader "Custom/Unlit/Transparent Color Gradient" {
-	Properties{
-		_MainTex("Base (RGB) Trans (A)", 2D) = "white" { }
-		_Color("Color1", Color) = (1.000000,1.000000,1.000000,1.000000)
-		_Color2("Color2", Color) = (1.000000,1.000000,1.000000,1.000000)
-	}
-	
-		SubShader{
-			LOD 100
-			Tags{ "QUEUE" = "Transparent" "IGNOREPROJECTOR" = "true" "RenderType" = "Transparent" }
-			Pass{
-			Tags{ "QUEUE" = "Transparent" "IGNOREPROJECTOR" = "true" "RenderType" = "Transparent" }
-			Blend SrcAlpha OneMinusSrcAlpha
-		
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma target 2.0
-			#include "UnityCG.cginc"
-			#pragma multi_compile_fog
-			#define USING_FOG (defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2))
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-			// uniforms
-			float4 _MainTex_ST;
+Shader "Custom/Unlit/Gradient" {
+	Properties {
+        _color1 ("Color 1", Color) = (1, 0.5, 0.5, 1)
+        _color2 ("Color 2", Color) = (0.5, 1, 1, 1)
+        _direction("Direction", Range(0, 1)) = 1
+        _position ("Position", Range(0,1)) = 0.5
+    }
+    SubShader {
+        Pass {        
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            float4 _color1;
+            float4 _color2; 
+            float4 _finalColor;
+            float _direction;
+            float _position;
+            
+            float _HorizontalSpeed;
+            float _VerticalSpeed;
 
-			// vertex shader input data
-			struct appdata {
-				float3 pos : POSITION;
-				float3 uv0 : TEXCOORD0;
-			};
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 tex : TEXCOORD0;
+                float3 normal : NORMAL;
+            };
 
-			// vertex-to-fragment interpolators
-			struct v2f {
-				fixed4 color : COLOR0;
-				float2 uv0 : TEXCOORD0;
-				#if USING_FOG
-					fixed fog : TEXCOORD1;
-				#endif
-				float4 pos : SV_POSITION;
-				float4 screenPos: TEXCOORD2;
-			};
+            struct v2f {
+                float4 vertex : TEXCOORD;
+                float4 pos : POSITION;
+                float4 color : COLOR;
+            };
 
-			// vertex shader
-			v2f vert(appdata IN) {
-				v2f o;
-				half4 color = half4(0,0,0,1.1);
-				float3 eyePos = mul(UNITY_MATRIX_MV, float4(IN.pos,1)).xyz;
-				half3 viewDir = 0.0;
-				o.color = saturate(color);
-				// compute texture coordinates
-				o.uv0 = IN.uv0.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-				// fog
-				#if USING_FOG
-					float fogCoord = length(eyePos.xyz); // radial fog distance
-					UNITY_CALC_FOG_FACTOR(fogCoord);
-					o.fog = saturate(unityFogFactor);
-				#endif
-				// transform position
-				o.pos = UnityObjectToClipPos(IN.pos);
-				o.screenPos = ComputeScreenPos(o.pos);
-				return o;
-			}
+            v2f vert(appdata v, v2f o) {
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.vertex = v.tex;
+                return o;
+            };
 
-			// textures
-			sampler2D _MainTex;
-			fixed4 _Color;
-			fixed4 _Color2;
+            half4 frag(v2f i) : COLOR {
 
-			// fragment shader
-			fixed4 frag(v2f IN) : SV_Target{
-				fixed4 col;
-				fixed4 tex, tmp0, tmp1, tmp2;
-				// SetTexture #0
-				tex = tex2D(_MainTex, IN.uv0.xy);
+            	_finalColor = _color1;
+				_finalColor.a = 1;
+                _finalColor.r = (_color1.r * (1-_position)) + _color2.r * _position;
+                _finalColor.g = (_color1.g * (1-_position)) + _color2.g * _position;
+                _finalColor.b = (_color1.b * (1-_position)) + _color2.b * _position;
 
-				float2 screenPosition = (IN.screenPos.xy / IN.screenPos.w);
 
-				//float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
-				fixed4 color = lerp(_Color, _Color2, screenPosition.y);
+//                _finalColor.r = ( _color1.r*i.vertex.y*_direction+_color1.r*i.vertex.x*(1-_direction) ) + ( _color2.r*(1-i.vertex.y)*_direction+_color2.r*(1-i.vertex.x)*(1-_direction) );
+//                _finalColor.g = ( _color1.g*i.vertex.y*_direction+_color1.g*i.vertex.x*(1-_direction) ) + ( _color2.g*(1-i.vertex.y)*_direction+_color2.g*(1-i.vertex.x)*(1-_direction) );
+//                _finalColor.b = ( _color1.b*i.vertex.y*_direction+_color1.b*i.vertex.x*(1-_direction) ) + ( _color2.b*(1-i.vertex.y)*_direction+_color2.b*(1-i.vertex.x)*(1-_direction) );
+                
 
-				col.rgb = tex * color;
-				col.a = tex.a * color.a;
-				// fog
-				#if USING_FOG
-					col.rgb = lerp(unity_FogColor.rgb, col.rgb, IN.fog);
-				#endif
-				return col;
-			}
 
-			// texenvs
-			//! TexEnv0: 01010102 01050106 [_MainTex] [_Color]
-			ENDCG
-		}
-	}
-}
+                return _finalColor;
+            };
+            ENDCG
+        }
+    } 
+    FallBack "Diffuse"
+    }

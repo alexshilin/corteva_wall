@@ -18,11 +18,21 @@ public class UserGrid : MonoBehaviour {
 	public Vector3 emptySpot;
 
 	void Start () {
-		MakeGrid ();
+		transform.localPosition += Vector3.down * 1.85f;
+		//MakeGrid ();
+	}
+
+	public void ClearGrid(){
+		Debug.Log("[ClearGrid]");
+		foreach (Transform child in transform) {
+			Destroy (child.gameObject);
+		}
+		currColumn = 1;
+		currRow = 1;
+		currPanelsInColumn = 0;
 	}
 
 	public void MakeGrid(){
-		transform.localPosition += Vector3.down * 1.85f;
 		for (int i = 1; i <= panels; i++) {
 			Vector3 panelPostion = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
 

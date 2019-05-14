@@ -48,6 +48,24 @@ public class EaseCurve : MonoBehaviour
 	}
 
 
+	public void GradientPos(Material _mat, float _start, float _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		StartCoroutine (EaseGradientPos (_mat, _start, _end, _duration, _delay, _curve, _callback));
+	}
+	private IEnumerator EaseGradientPos(Material _mat, float _start, float _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			t += rate * Time.deltaTime;
+			_mat.SetFloat ("_position", Mathf.Lerp (_start, _end, _curve.Evaluate (t)));
+			//Color32 currentColor = Color32.Lerp(_startColor, _endColor, _curve.Evaluate (t));
+			//_mat.color = currentColor;
+			yield return null;
+		}
+		if(_callback!=null)
+			_callback ();
+	}
+
 
 
 	public void Vec3(Transform _target, Vector3 _start, Vector3 _end, float _duration){

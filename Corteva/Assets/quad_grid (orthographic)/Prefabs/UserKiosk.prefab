@@ -75,6 +75,8 @@ GameObject:
   - component: {fileID: 224950664094517028}
   - component: {fileID: 222122197522435832}
   - component: {fileID: 114577382903751454}
+  - component: {fileID: 114745907735397748}
+  - component: {fileID: 114237483335263562}
   m_Layer: 0
   m_Name: Image (1)
   m_TagString: Untagged
@@ -92,6 +94,8 @@ GameObject:
   - component: {fileID: 224141624480265068}
   - component: {fileID: 222934401555662574}
   - component: {fileID: 114640304266765464}
+  - component: {fileID: 114913072885167028}
+  - component: {fileID: 114473887335078796}
   m_Layer: 0
   m_Name: Image (3)
   m_TagString: Untagged
@@ -143,6 +147,8 @@ GameObject:
   - component: {fileID: 224100419128734778}
   - component: {fileID: 222868549581673028}
   - component: {fileID: 114393763639721912}
+  - component: {fileID: 114383724068251644}
+  - component: {fileID: 114598897108795090}
   m_Layer: 0
   m_Name: Image (2)
   m_TagString: Untagged
@@ -175,6 +181,8 @@ GameObject:
   - component: {fileID: 224792755294392972}
   - component: {fileID: 222444292870765272}
   - component: {fileID: 114492780013081412}
+  - component: {fileID: 114028785210886832}
+  - component: {fileID: 114851538840948740}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -432,7 +440,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1703087684232006}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.7, y: 0, z: 1}
+  m_LocalPosition: {x: 2, y: 0, z: 1}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 4179740852013654}
@@ -579,7 +587,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 08ff5d6f898a449eb913face9d595361, type: 2}
+  - {fileID: 2100000, guid: 2dd50f4c06f124a84abdadfd17969747, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -770,21 +778,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userCam: {fileID: 20695944576802614}
   nav: {fileID: 1544073979894326}
+  navBG: {fileID: 4236380457035484}
+  navBGrend: {fileID: 23500326674625108}
   userGrid: {fileID: 4489215921048918}
   menu: {fileID: 4179740852013654}
   closer: {fileID: 4398661632508388}
   countdown: {fileID: 114341351606125732}
   env:
     envID: 0
+    envTitle: 
+    envSummary: 
+    envIconPath: 
+    kioskBg: 
     envColor:
       serializedVersion: 2
       rgba: 0
-    envIconPath: 
-    envTitle: 
-    envSummary: 
     envBackgroundPanels: []
-    kioskBg: 
-    envPanels: []
+    bty1x1Indeces: 
+    bty1x2Indeces: 
+    env1x1Count: 0
   column: 0
   tapScreenPos: {x: 0, y: 0}
   activePanel: {fileID: 0}
@@ -792,6 +804,45 @@ MonoBehaviour:
   menuFollowPanel: 0
   dragGrid: 0
   dragDelta: {x: 0, y: 0, z: 0}
+--- !u!114 &114028785210886832
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1530675049615976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a878a6ff128243dfb1d89ca0273f059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnTap:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  numberOfTapsRequired: 1
+  timeLimit: Infinity
+  distanceLimit: Infinity
+  combinePointers: 0
+  combinePointersInterval: 0.3
 --- !u!114 &114149888393714814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -840,6 +891,19 @@ MonoBehaviour:
     m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   ignoreChildren: 0
+--- !u!114 &114237483335263562
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1325237127476116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01eade88138d144f9a975bec859f4efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myKiosk: {fileID: 114011449947804456}
+  envID: 1
 --- !u!114 &114257205529597248
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1002,6 +1066,45 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
+--- !u!114 &114383724068251644
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1451226697556252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a878a6ff128243dfb1d89ca0273f059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnTap:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  numberOfTapsRequired: 1
+  timeLimit: Infinity
+  distanceLimit: Infinity
+  combinePointers: 0
+  combinePointersInterval: 0.3
 --- !u!114 &114386318532519616
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1073,12 +1176,25 @@ MonoBehaviour:
   hitProps: 0
   hit3DObjects: 1
   hit2DObjects: 0
-  hitWorldSpaceUI: 0
+  hitWorldSpaceUI: 1
   hitScreenSpaceUI: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 67108095
   useHitFilters: 0
+--- !u!114 &114473887335078796
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1378554399947254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01eade88138d144f9a975bec859f4efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myKiosk: {fileID: 114011449947804456}
+  envID: 3
 --- !u!114 &114492780013081412
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1169,6 +1285,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &114598897108795090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1451226697556252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01eade88138d144f9a975bec859f4efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myKiosk: {fileID: 114011449947804456}
+  envID: 2
 --- !u!114 &114640304266765464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1196,6 +1325,45 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114745907735397748
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1325237127476116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a878a6ff128243dfb1d89ca0273f059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnTap:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  numberOfTapsRequired: 1
+  timeLimit: Infinity
+  distanceLimit: Infinity
+  combinePointers: 0
+  combinePointersInterval: 0.3
 --- !u!114 &114785502472661406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1234,6 +1402,58 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &114851538840948740
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1530675049615976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01eade88138d144f9a975bec859f4efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myKiosk: {fileID: 114011449947804456}
+  envID: 0
+--- !u!114 &114913072885167028
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1378554399947254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a878a6ff128243dfb1d89ca0273f059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnTap:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  numberOfTapsRequired: 1
+  timeLimit: Infinity
+  distanceLimit: Infinity
+  combinePointers: 0
+  combinePointersInterval: 0.3
 --- !u!114 &114913263446109468
 MonoBehaviour:
   m_ObjectHideFlags: 1

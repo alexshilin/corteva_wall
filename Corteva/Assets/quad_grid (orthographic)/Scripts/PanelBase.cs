@@ -146,7 +146,8 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		if (_template == "kiosk_bg") {
-			t = LoadModule ("1x1_texture_color", PanelView.Front);
+			t = LoadModule ("1x1_texture", PanelView.Front);
+			t.name = "1x1_texture";
 			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
 			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_path);
 			return;

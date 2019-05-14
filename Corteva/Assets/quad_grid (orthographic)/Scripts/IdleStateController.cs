@@ -159,29 +159,6 @@ public class IdleStateController : MonoBehaviour {
 			bgPanels2.Add (environments [i].envBackgroundPanels [0].GetComponent<PanelBase> ());
 		}
 		currBg = 0;
-
-		/*
-		//get video files based on aspect ratio
-		List<string> bgVideos = new List<string> (SM.currAspect==ScreenManager.Aspect.is169 ? AM.videoFiles : AM.videoFiles329);
-		//preload all background videos
-		for (int i = 0; i < bgVideos.Count; i++) {
-			GameObject bgPanel = Instantiate (AM.panelPrefab);
-			bgPanel.SetActive (true);
-			//place all bg panels off-screen so they dont get rendered
-			bgPanel.transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
-			bgPanel.transform.localScale *= GM.desiredGrid.x;
-			if (SM.currAspect==ScreenManager.Aspect.is169) {
-				bgPanel.GetComponent<PanelObject> ().SetAsVideo (false, i == 0);
-			} else {
-				bgPanel.GetComponent<PanelObject> ().SetAs329Video (i == 0);
-			}
-			bgPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Idle;
-			bgPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
-			//bgPanel.GetComponent<PanelObject> ().SetAsNonInteractive ();
-			bgPanels.Add (bgPanel.GetComponent<PanelObject> ());
-		}
-		currBg = 0;
-		*/
 	}
 
 	#region cleanup
@@ -232,7 +209,12 @@ public class IdleStateController : MonoBehaviour {
 					if (idleSequence [n].col == (int)_gridPos.x) {
 						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
 							Debug.Log ("\tdisabling idle cam at col " + n);
-							StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
+							if (idleSequence [n].panelType == new Vector2 (2, 2)) {
+								//what to do with 2x2 panel when a kiosk is opened on top of it?
+							} else {
+								StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
+							}
+
 						}
 					}
 				}
@@ -264,10 +246,8 @@ public class IdleStateController : MonoBehaviour {
 					//enable cell cams in column
 					for (int n = 0; n < idleSequence.Count; n++) {
 						if (idleSequence [n].col == (int)_gridPos.x) {
-							if (!idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
-								Debug.Log ("\tre-enabling idle cam at col " + i);
-								idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
-							}
+							Debug.Log ("\tre-enabling idle cam at col " + i);
+							idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
 						}
 					}
 				}
@@ -843,10 +823,9 @@ public class IdleStateController : MonoBehaviour {
 				//since it no longer part of the idleSequence, we dont want to animate it
 				//but not animating <something> will throw off the timing of the remaining panels in the idleSequence
 				//in that case, we use the color quad as a stand-in for the panel object
-				Transform p = idleSequence [i].panel.transform;
-				if (p.parent.name != "Container") {
-					p = idleSequence [i].cellCam.transform.Find ("Container");
-				} else {
+				Transform p = idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad");
+				if (idleSequence [i].panel != null) {
+					p = idleSequence [i].panel.transform;
 					idleSequence [i].cellCam.transform.Find ("Container").Find ("Quad").gameObject.SetActive (false);
 					idleSequence [i].panel.GetComponent<PanelBase> ().panelState = PanelBase.PanelState.Animating;
 				}
@@ -872,10 +851,10 @@ public class IdleStateController : MonoBehaviour {
 	public void nextSequence(){
 		Debug.Log ("[nextSequence]");
 		panelsInTransition = false;
-		if (kioskColumns.Contains (1)) {
+//		if (kioskColumns.Contains (1)) {
 			//displatch event that we've switched environments
-			EventsManager.Instance.EnvironmentSwitchRequest ();
-		}
+//			EventsManager.Instance.EnvironmentSwitchRequest ();
+//		}
 		//CloseKiosks ();
 		ClearCellCams ();
 		PlanLayout ();
