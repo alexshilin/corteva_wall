@@ -102,6 +102,7 @@ public class PanelBase : MonoBehaviour {
 
 	public void Assemble(JSONNode _panelData)
 	{
+		Debug.Log ("[Assemble] " + _panelData ["panelID"] + ": " + ((_panelData ["front"].Count > 0) ? "front" : "nil") + " , " + ((_panelData ["back"].Count > 0) ? "back" : "nil") + " , " + ((_panelData ["thumb"].Count > 0) ? "thumb" : "nil"));
 		if (_panelData ["front"].Count > 0) {
 			AssembleView (_panelData ["front"], PanelView.Front);
 		}
@@ -170,8 +171,6 @@ public class PanelBase : MonoBehaviour {
 		TextMeshPro text;
 
 		string template = _templateData ["template"];
-
-
 
 		if (template == "beauty_1x1") {
 			t = LoadModule ("1x1_texture_color", _view);

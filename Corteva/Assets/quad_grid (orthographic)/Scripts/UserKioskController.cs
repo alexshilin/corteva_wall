@@ -44,14 +44,15 @@ public class UserKioskController : MonoBehaviour {
 		if (_env == null) {
 			_env = AssetManager.Instance.environments [IdleStateController.Instance.currEnv];
 		}
-		uK.GetComponent<UserKiosk> ().env = _env;
-		uK.GetComponent<UserKiosk> ().column = (int)_gridPos.x;
-		uK.GetComponent<UserKiosk> ().tapScreenPos = _screenPos;
+		UserKiosk uKkiosk = uK.GetComponent<UserKiosk> ();
+		uKkiosk.env = _env;
+		uKkiosk.column = (int)_gridPos.x;
+		uKkiosk.tapScreenPos = _screenPos;
 		if (_panel != null) {
-			uK.GetComponent<UserKiosk> ().activePanel = _panel;
+			uKkiosk.activePanel = _panel;
 		}
-		uK.GetComponent<UserKiosk> ().userGrid.GetComponent<UserGrid> ().MakeGrid();
-		uK.GetComponent<UserKiosk> ().SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
+		uKkiosk.userGrid.GetComponent<UserGrid> ().MakeGrid();
+		uKkiosk.SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;
 		UserKioskObject uKo = new UserKioskObject ();
