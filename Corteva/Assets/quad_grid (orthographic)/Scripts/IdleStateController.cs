@@ -216,6 +216,12 @@ public class IdleStateController : MonoBehaviour {
 							}
 
 						}
+						if (_panel != null) {
+							if (idleSequence [n].panel == _panel.gameObject) {
+								Debug.Log ("\tremoving panel from idleSequence");
+								idleSequence [n].panel = null;
+							}
+						}
 					}
 				}
 
