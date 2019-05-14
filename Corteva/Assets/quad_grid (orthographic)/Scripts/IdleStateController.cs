@@ -193,7 +193,7 @@ public class IdleStateController : MonoBehaviour {
 	#endregion
 
 	#region event listener reactions
-	private void KioskOpenResponse (Vector2 _gridPos, Vector2 _screenPos, Environment _env){
+	private void KioskOpenResponse (Vector2 _gridPos, Vector2 _screenPos, Environment _env, Transform _panel){
 		Debug.Log ("!![KioskOpenResponse] at col " + _gridPos.x);
 
 		//update which columns have kiosks

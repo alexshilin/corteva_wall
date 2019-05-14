@@ -111,6 +111,12 @@ public class UserKiosk : MonoBehaviour {
 		headerPanel = null;
 		headerPanelOld.transform.localPosition += Vector3.forward * 10f;
 
+		//animate out the active panel (if applicable)
+		if (activePanel != null) {
+			EaseCurve.Instance.Vec3 (activePanel, activePanel.localPosition, activePanel.localPosition + Vector3.right * 10, 0.3f, 0f, EaseCurve.Instance.easeIn, null, "local");
+			//activePanel.GetComponent<PanelBase>().BackToGrid();
+		}
+
 		//animate the grid out
 		Vector3 gridLeave = userGrid.transform.localPosition;
 		gridLeave.x += -10f;
@@ -122,12 +128,20 @@ public class UserKiosk : MonoBehaviour {
 	/// Step 2 in the Kiosk environment trasition sequence
 	/// </summary>
 	void ContinueSwitch(){
+		//clean/unreference the previous active panel if any
+		if (activePanel != null) {
+			Destroy (activePanel.gameObject);
+			activePanel = null;
+		}
 		//remove old items from user grid
 		userGrid.GetComponent<UserGrid> ().ClearGrid ();
 		//reset user grid position
 		userGrid.transform.localPosition = new Vector3 (2, userGrid.transform.localPosition.y, userGrid.transform.localPosition.z);
+
 		//create new title and backgrounds
 		Populate ();
+
+		userGrid.GetComponent<UserGrid> ().MakeGrid ();
 
 		//calculate where new grid should animate to
 		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.25f;
@@ -141,7 +155,7 @@ public class UserKiosk : MonoBehaviour {
 		Material bgMat = bgPanelOld.transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
 		Color32 toColor = bgMat.color;
 		toColor.a = 0;
-		EaseCurve.Instance.Scl (bgPanelOld.transform, bgPanelOld.transform.localScale, bgPanelOld.transform.localScale * 1.5f, 0.51f, 0, EaseCurve.Instance.linear, ContinueSwitch2);
+		EaseCurve.Instance.Scl (bgPanelOld.transform, bgPanelOld.transform.localScale, bgPanelOld.transform.localScale * 1.5f, 0.51f, 0, EaseCurve.Instance.linear, FinishSwitch);
 		EaseCurve.Instance.MatColor (bgMat, Color.white, toColor, 0.5f, 0, EaseCurve.Instance.linear);
 
 		//animate nav bg color
@@ -162,9 +176,9 @@ public class UserKiosk : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Step 3 of the Kiosk environemnt transition sequence
+	/// Last step of the Kiosk environemnt transition sequence
 	/// </summary>
-	void ContinueSwitch2(){
+	void FinishSwitch(){
 		//remove old previous background and title panels
 		if (bgPanelOld != null)
 			Destroy (bgPanelOld);
@@ -237,6 +251,9 @@ public class UserKiosk : MonoBehaviour {
 
 		//create the content panels
 		Populate ();
+
+		somePanelIsAnimating = true;
+
 		//start the camera open animation
 		EaseCurve.Instance.CamRect (userCam, camClosedRect, camOpenedRect, 0.5f, EaseCurve.Instance.easeIn, Next);
 	}
@@ -264,8 +281,6 @@ public class UserKiosk : MonoBehaviour {
 		headerPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
 		headerPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
 		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
-
-		userGrid.GetComponent<UserGrid> ().MakeGrid ();
 	}
 
 	/// <summary>
@@ -304,14 +319,22 @@ public class UserKiosk : MonoBehaviour {
 	void Next2(){
 		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.25f;
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
-		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
+		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, FinishOpen, "local");
+	}
+
+	/// <summary>
+	/// Last step in Kiosk open sequence
+	/// </summary>
+	void FinishOpen(){
+		//toggle interaction active
+		somePanelIsAnimating = false;
 	}
 
 	/// <summary>
 	/// Running all the time
 	/// </summary>
 	void Update () {
-		//if were closing, stop
+		//if kiosk closing, stop
 		if (closing)
 			return;
 

@@ -33,9 +33,9 @@ public class EventsManager : MonoBehaviour {
 	public event SceneFinishedLoadingEvent OnSceneFinishedLoading;
 	public void SceneFinishedLoading(string _scene){ OnSceneFinishedLoading (_scene); }
 
-	public delegate void UserKioskOpenRequestEvent(Vector2 _gridPos, Vector2 _screenPos, Environment _env = null);
+	public delegate void UserKioskOpenRequestEvent(Vector2 _gridPos, Vector2 _screenPos, Environment _env = null, Transform _panel = null);
 	public event UserKioskOpenRequestEvent OnUserKioskOpenRequest;
-	public void UserKioskOpenRequest(Vector2 _gridPos, Vector2 _screenPos, Environment _env = null){ OnUserKioskOpenRequest (_gridPos, _screenPos, _env); }
+	public void UserKioskOpenRequest(Vector2 _gridPos, Vector2 _screenPos, Environment _env = null, Transform _panel = null){ OnUserKioskOpenRequest (_gridPos, _screenPos, _env, _panel); }
 
 	public delegate void UserKioskCloseRequestEvent(Vector2 _gridPos, bool _closeImmediately);
 	public event UserKioskCloseRequestEvent OnUserKioskCloseRequest;

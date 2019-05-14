@@ -5,7 +5,7 @@ using SimpleJSON;
 
 public class UserGrid : MonoBehaviour {
 
-	public GameObject panelPrefab;
+	public UserKiosk myKiosk;
 	private int panels = 6;
 	private int maxPanelsPerColumn = 3;
 	private float totalHeight = 3;
@@ -17,9 +17,10 @@ public class UserGrid : MonoBehaviour {
 
 	public Vector3 emptySpot;
 
+
+
 	void Start () {
 		transform.localPosition += Vector3.down * 1.85f;
-		//MakeGrid ();
 	}
 
 	public void ClearGrid(){
@@ -33,6 +34,9 @@ public class UserGrid : MonoBehaviour {
 	}
 
 	public void MakeGrid(){
+		Debug.Log ("[MakeGrid]");
+		Debug.Log ("\twith active panel? " + (myKiosk.activePanel!=null));
+		Debug.Log ("\ttotal panels" + myKiosk.env.envPanelData.Count);
 		for (int i = 1; i <= panels; i++) {
 			Vector3 panelPostion = new Vector3 ((currColumn * 5.333333f) + (currColumn * panelSpacing), (currRow * 3) + (currRow * panelSpacing), 0);
 
@@ -45,7 +49,7 @@ public class UserGrid : MonoBehaviour {
 			}
 
 			if (i == 3) {
-				if (transform.GetComponentInParent<UserKiosk> ().activePanel != null) {
+				if (myKiosk.activePanel != null) {
 					emptySpot = panelPostion;
 					continue;
 				}
@@ -59,9 +63,9 @@ public class UserGrid : MonoBehaviour {
 
 			po.panelContext = PanelBase.PanelContext.Kiosk;
 			po.panelState = PanelBase.PanelState.Ready;
-			po.myKiosk = transform.GetComponentInParent<UserKiosk>(); //TMP, change this
-			po.environment = po.myKiosk.env;
-			JSONNode panelData = po.myKiosk.env.envPanelData[Random.Range(0, po.myKiosk.env.envPanelData.Count)];
+			po.myKiosk = myKiosk; //TMP, change this
+			po.environment = myKiosk.env;
+			JSONNode panelData = myKiosk.env.envPanelData[Random.Range(0, myKiosk.env.envPanelData.Count)];
 			po.Assemble (panelData);
 			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
 

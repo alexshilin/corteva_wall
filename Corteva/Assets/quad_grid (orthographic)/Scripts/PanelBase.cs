@@ -95,8 +95,9 @@ public class PanelBase : MonoBehaviour {
 		
 	}
 
-	void Update(){
 
+	void Update(){
+		
 	}
 
 	public void Assemble(JSONNode _panelData)
@@ -402,7 +403,7 @@ public class PanelBase : MonoBehaviour {
 
 	void PanelFlipped(){
 		UpdatePanelView ();
-		myKiosk.somePanelIsAnimating = false;
+		//myKiosk.somePanelIsAnimating = false;
 		panelState = PanelState.Active;
 	}
 	void PanelMovedToUserGrid(){
@@ -493,7 +494,7 @@ public class PanelBase : MonoBehaviour {
 			EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
 			ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
 			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
-			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment);
+			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment, transform);
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
 		}
 
@@ -521,24 +522,29 @@ public class PanelBase : MonoBehaviour {
 
 		//panel in kiosk context that is background should close active kiosk
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Background) {
-			//first check if another panel is active, and hide that one
-			if (myKiosk.activePanel) {
-				Debug.Log("\t has active panel, closing that panel first");
-				myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+			//make sure the kiosk isnt in the middle of animating something 
+			if (!myKiosk.somePanelIsAnimating) {
+				//first check if another panel is active, and hide that one
+				if (myKiosk.activePanel) {
+					Debug.Log ("\t has active panel, closing that panel first");
+					myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+				}
 			}
 		}
 
 		//panel in kiosk context that is a thumbnail should activate
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Thumbnail && panelState == PanelState.Ready) {
-			//first check if another panel is active, and hide that one
-			if (myKiosk.activePanel) {
-				Debug.Log("\t has active panel, closing that panel first");
-				myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
-			} else {
-				Debug.Log("\t no active panel, opening thumbnail");
-				ActivateFromGrid (false);
+			//make sure the kiosk isnt in the middle of animating something
+			if (!myKiosk.somePanelIsAnimating) {
+				//first check if another panel is active, and hide that one
+				if (myKiosk.activePanel) {
+					Debug.Log ("\t has active panel, closing that panel first");
+					myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+				} else {
+					Debug.Log ("\t no active panel, opening thumbnail");
+					ActivateFromGrid (false);
+				}
 			}
-
 		}
 	}
 
@@ -546,7 +552,7 @@ public class PanelBase : MonoBehaviour {
 	{
 		Debug.Log ("\t[FlipAround]");
 		panelState = PanelState.Animating;
-		myKiosk.somePanelIsAnimating = true;
+		//myKiosk.somePanelIsAnimating = true;
 		//SetAsThumbnail (); //this should happen elsewhere
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.easeOut, PanelFlipped);
 		//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);
