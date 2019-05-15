@@ -4,12 +4,12 @@ using UnityEngine;
 using SimpleJSON;
 
 
-/*
- * this class is responsible for:
- * generating layout configurations for the grid's idle state
- * instantiating the cell cameras and panels for each layout
- * managing the animations and transitions between idle states
-*/
+/// <summary>
+/// this class is responsible for:
+/// generating layout configurations for the grid's idle state
+///	instantiating the cell cameras and panels for each layout
+///	managing the animations and transitions between idle states
+/// </summary>
 public class IdleStateController : MonoBehaviour {
 
 
@@ -252,8 +252,11 @@ public class IdleStateController : MonoBehaviour {
 					//enable cell cams in column
 					for (int n = 0; n < idleSequence.Count; n++) {
 						if (idleSequence [n].col == (int)_gridPos.x) {
-							Debug.Log ("\tre-enabling idle cam at col " + i);
-							idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
+							//check that there is in fact a cell cam object to toggle
+							if (idleSequence [n].cellCam != null) {
+								Debug.Log ("\tre-enabling idle cam at col " + i);
+								idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
+							}
 						}
 					}
 				}
@@ -720,7 +723,7 @@ public class IdleStateController : MonoBehaviour {
 					//all others are 1x1, grab a content panel
 					//choose random panel for now
 					panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
-					po.panelID = environments [currEnv].envTitle + "_" + panelData ["panelID"];
+					po.panelID = panelData ["panelID"];
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
 					po.Assemble (panelData);
 					//TEMP show either the front of thumbnail view

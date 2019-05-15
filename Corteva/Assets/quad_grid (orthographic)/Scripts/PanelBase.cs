@@ -169,6 +169,7 @@ public class PanelBase : MonoBehaviour {
 		GameObject t;
 		Renderer panelRenderer;
 		TextMeshPro text;
+		Color txtColor;
 
 		string template = _templateData ["template"];
 
@@ -193,7 +194,7 @@ public class PanelBase : MonoBehaviour {
 
 
 		if (template == "beauty_1x2") {
-			t = LoadModule ("1x2_texture_color", _view);
+			t = LoadModule ("1x2_beauty", _view);
 
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
@@ -212,7 +213,8 @@ public class PanelBase : MonoBehaviour {
 
 
 		//bg	video OR image OR color
-		if (template == "template_00") {
+		if (template == "template_00") 
+		{
 			t = LoadModule ("1x1_texture_color", _view);
 
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
@@ -239,11 +241,8 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
-
-
-		//bg	video OR image OR color
-		//txt	title AND/OR body
 		if (template == "template_01") {
+			//
 			t = LoadModule ("1x1_texture_color", _view);
 
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
@@ -267,38 +266,108 @@ public class PanelBase : MonoBehaviour {
 				}
 			}
 
-
+			//
 			t = LoadModule ("1x1_txt_layout_02", _view);
 
-			if (_templateData ["content"] ["title"] != "") {
-				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
-			} else {
-				t.transform.Find ("Title").gameObject.SetActive (false);
+			txtColor = Color.white;
+			if (_templateData ["content"] ["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
 			}
-
-
-			if (_templateData ["content"] ["body"] != "") {
-				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
-			} else {
-				t.transform.Find ("Body").gameObject.SetActive (false);
-			}
-
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
+
+
+			return;
+		}
+
+		if (template == "template_02_tl" || 
+			template == "template_02_tr") 
+		{
+			//
+			string imgModule = (template == "template_02_tl") ? "1x2_texture_color_r" : "1x2_texture_color_l";
+			t = LoadModule (imgModule, _view);
+		
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				if (_view == PanelView.Front)
+					vid.Play ();
+			} else {
+				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+			}
+
+
+			//
+			string txtModule = (template == "template_02_tl") ? "1x2_txt_layout_l" : "1x2_txt_layout_r";
+			t = LoadModule ("1x2_txt_layout_l", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"] ["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			return;
+		}
+
+
+	
+		if (template == "template_03") {
+			//
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
+				if (isImage) {
+					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				} else {
+					if (_templateData ["content"] ["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					} else {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+					}
+				}
+			}
+
+			//
+			t = LoadModule ("1x1_txt_layout_03", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"] ["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+
 			return;
 		}
 
 
 
 		//standard back view template
-		if (template == "template_03") {
+		if (template == "template_04") {
 			t = LoadModule ("1x1_texture_color", _view);
 			if (_templateData ["content"] ["bg_color"].Count == 3) {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);
 			} else {
 				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
 
-			t = LoadModule ("1x1_txt_layout_03", _view);
+			t = LoadModule ("1x1_txt_layout_04", _view);
 			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
 			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
 			return;
@@ -310,7 +379,7 @@ public class PanelBase : MonoBehaviour {
 		if (template == "infographic_01") {
 			t = LoadModule ("1x1_texture_color", _view);
 			if (_templateData ["content"] ["bg_color"].Count == 3) {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);
 			} else {
 				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}

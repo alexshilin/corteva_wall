@@ -50,29 +50,29 @@
 			],
 			"content_panels":[
 				{
-					"panelID": "0101",
+					"panelID": "G03",
 					"front":{
 						"template": "template_01", 
 						"content":{
-							"bg_type": "video",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "videos/Sunset - 1280x720.mp4",
+							"bg_path": "images/G03_m.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Globe Title 01",
-							"body": ""
+							"title": "Global<br>problems<br>need local<br>solutions.",
+							"body": "That's why Corteva Agriscience™ is helping scientists around the world research new ways of growing."
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_02_tl",
 						"content":{
-							"bg_type": "color",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "images/G03_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
+							"title": "Pearl Millet is an<br>important staple<br>crop in India. ",
+							"body": "However, it goes rancid very quickly after being milled into flour, which causes huge amounts of Pearl Millet to be wasted.<br><br>Traditionally, agriculture companies don’t focus on millet because of its relatively low profitability. Corteva Agriscience believes in a different way of operating. Recently, researchers partnered with ICRISAT, a non-profit research institute, to develop improved Pearl Millet varieties that have a longer shelf life. This reduces waste and enriches the lives of both farmers and consumers. "
 						}
 					},
 					"thumbnail":{
@@ -80,16 +80,16 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_03.jpg",
+							"bg_path": "images/G03_i.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "This is<br>a title",
+							"title": "There's always a new way to grow.",
 							"body": ""
 						}
 					}	
 				},
 				{
-					"panelID": "0102",
+					"panelID": "G04",
 					"front":{
 						"template": "infographic_01", 
 						"content":{
@@ -103,7 +103,7 @@
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_04",
 						"content":{
 							"bg_type": "color",
 							"bg_color": [],
@@ -119,10 +119,86 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_03.jpg",
+							"bg_path": "images/G04_i.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "3d viz",
+							"title": "Common foods from uncommon places.",
+							"body": ""
+						}
+					}	
+				},{
+					"panelID": "G05",
+					"front":{
+						"template": "template_01", 
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/G05_m.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "We care<br>deeply about<br>food security.",
+							"body": "That's why Corteva Agriscience™ sponsors the Global Food Security Index in partnership with the Economist Intelligence Unity."
+						}
+					},
+					"back":{
+						"template": "template_02_tl",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/G05_d.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "What is the GFSI?",
+							"body": "The GFSI score includes information about the affordability, availability, quality and safety of the world’s food.<br><br>By looking at data from over a hundred countries, we can better understand how to help both developing and developed countries."
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/G05_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Can quality food also be affordable?",
+							"body": ""
+						}
+					}	
+				},{
+					"panelID": "G08",
+					"front":{
+						"template": "infographic_01", 
+						"content":{
+							"bg_type": "",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Infographic 01",
+							"body": ""
+						}
+					},
+					"back":{
+						"template": "template_04",
+						"content":{
+							"bg_type": "color",
+							"bg_color": [],
+							"bg_path": "",
+							"txt_color": [],
+							"category": "",
+							"title": "Back Title",
+							"body": "Back body"
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/G08_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "10 billion<br>mouths to feed.",
 							"body": ""
 						}
 					}	
@@ -174,29 +250,31 @@
 			],
 			"content_panels": [
 				{
-					"panelID": "0201",
+					"panelID": "F02",
 					"front":{
-						"template": "template_01", 
+						"template": "infographic_01", 
 						"content":{
-							"bg_type": "video",
-							"bg_color": [],
-							"bg_path": "videos/Autumn - 1280x720.mp4",
-							"txt_color": [],
-							"category": "",
-							"title": "Globe Title 01",
+							"bg_type": "",
+							"bg_color": [230,230,230],
+							"bg_path": "",
+							"txt_color": [0,0,0],
+							"category": "new technology",
+							"title": "Farming has<br>satellites too.",
 							"body": ""
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_02_tl",
 						"content":{
-							"bg_type": "color",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "images/F02_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
+							"title": "What do satellites<br>mean for growers?",
+							"body": "Better yields with 3-meter images proactively assessing issues.<br><br>Saving time with mobile access 
+anywhere, anytime.<br><br>Efficiency by avoiding images without relevant information.<br><br>Accuracy through directs scouting efforts.<br><br>Savings based on compliments or lowering costs of planes and drones.
+"
 						}
 					},
 					"thumbnail":{
@@ -204,16 +282,55 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_05.jpg",
-							"txt_color": [],
+							"bg_path": "images/F02_i.jpg",
+							"txt_color": [0,0,0],
 							"category": "",
-							"title": "Video",
+							"title": "Farming has<br>satellites too.",
 							"body": ""
 						}
 					}	
 				},
 				{
-					"panelID": "0202",
+					"panelID": "F07",
+					"front":{
+						"template": "template_02_tl", 
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/F07_m.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "500 million family<br>farmers strong.<br>2 billion people fed.",
+							"body": "Families own farms that account for 75% of the world’s agricultural land. That means over a quarter of the world's population is fed by family farmers."
+						}
+					},
+					"back":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/F07_d.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Our commitment.",
+							"body": "We are committed to bringing the latest farming practices, innovation and technology to these farms, wherever they may be, to enrich the lives of those who produce and those who consume."
+						}
+					},
+					"thumbnail":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/F07_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Family farming first.",
+							"body": ""
+						}
+					}	
+				},
+				{
+					"panelID": "F08",
 					"front":{
 						"template": "infographic_01", 
 						"content":{
@@ -222,20 +339,20 @@
 							"bg_path": "",
 							"txt_color": [],
 							"category": "",
-							"title": "Infographic 01",
+							"title": "",
 							"body": ""
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_02_tl",
 						"content":{
-							"bg_type": "color",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "images/F02_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
+							"title": "Title",
+							"body": "Body"
 						}
 					},
 					"thumbnail":{
@@ -243,19 +360,19 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_05.jpg",
+							"bg_path": "images/F08_i.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "3d viz",
+							"title": "A population<br>demanding<br>more protein.",
 							"body": ""
 						}
 					}	
-				}
+				},
 			]
 		},
 		{
-			"title": "Plant",
-			"summary": "Plant Summary",
+			"title": "Crop",
+			"summary": "Crop Summary",
 			"colorRGB": [252, 76, 2],
 			"iconPath": "misc/plant_title.png",
 			"idle_background_video_16x9": "videos/Autumn - 1280x720.mp4",
@@ -298,68 +415,107 @@
 			],
 			"content_panels": [
 				{
-					"panelID": "0301",
+					"panelID": "C01",
 					"front":{
 						"template": "template_01", 
 						"content":{
-							"bg_type": "video",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "videos/Cornfield - 1280x720.mp4",
+							"bg_path": "images/C01_m.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Globe Title 01",
-							"body": ""
+							"title": "What happens when 100 billion animals, over<br>18 years, eat<br>GMOs?",
+							"body": "Nothing. Except that the U.S. meat, dairy and egg industries become wildly more efficient and productive."
 						}
 					},
 					"back":{
-						"template": "template_03",
-						"content":{
-							"bg_type": "color",
-							"bg_color": [],
-							"bg_path": "",
-							"txt_color": [],
-							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
-						}
-					},
-					"thumbnail":{
 						"template": "template_01",
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_06.jpg",
+							"bg_path": "images/C01_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Video",
+							"title": "Why GMOs?",
+							"body": "GMOs increase productivity, allowing farmers to grow more crops with less inputs, grow crops where few could grow before, and introduce healthier traits to crops with little nutritional value. "
+						}
+					},
+					"thumbnail":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/C01_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "   Why       GMOs?",
 							"body": ""
 						}
 					}	
 				},
 				{
-					"panelID": "0302",
+					"panelID": "C02",
 					"front":{
-						"template": "infographic_01", 
+						"template": "template_01", 
 						"content":{
-							"bg_type": "",
+							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "videos/C02_b.mp4",
 							"txt_color": [],
 							"category": "",
-							"title": "Infographic 01",
+							"title": "",
 							"body": ""
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_01",
 						"content":{
-							"bg_type": "color",
+							"bg_type": "video",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "videos/C02_c.mp4",
 							"txt_color": [],
 							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
+							"title": "",
+							"body": ""
+						}
+					},
+					"thumbnail":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "video",
+							"bg_color": [],
+							"bg_path": "videos/C02_a.mp4",
+							"txt_color": [],
+							"category": "",
+							"title": "",
+							"body": ""
+						}
+					}	
+				},
+				{
+					"panelID": "C04",
+					"front":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/C04_m.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "It's what we do.",
+							"body": "We support the value chain and increase environmental sustainability by protecting crops.<br>We're focused on developing highly efficient products with excellent environmental profiles."
+						}
+					},
+					"back":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/C04_d.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Our crop protection.",
+							"body": "Corteva Agriscience’s Crop Protection platform operates in over 130 countries.<br><br>Our products that feature 65 different active ingredients.<br><br>We protect over 100 crops from insect pests, disease and weeds."
 						}
 					},
 					"thumbnail":{
@@ -367,10 +523,10 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_06.jpg",
+							"bg_path": "images/C04_i.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "3d viz",
+							"title": "Protecting crops<br>while protecting the environment.",
 							"body": ""
 						}
 					}	
@@ -422,68 +578,69 @@
 			],
 			"content_panels": [
 				{
-					"panelID": "0401",
+					"panelID": "S04",
 					"front":{
 						"template": "template_01", 
 						"content":{
-							"bg_type": "video",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "videos/Sunset - 1280x720.mp4",
+							"bg_path": "images/S04_m.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Globe Title 01",
-							"body": ""
+							"title": "Making soil<br>last a lifetime.",
+							"body": "When we take care of the soil, we grow more food and protect the environment.<br><br>Modern-farming practices, such as no-till farming and effective nitrogen management, help reduce agriculture’s environmental footprint and can increase carbon sequestration, helping to mitigate climate change. 
+"
 						}
 					},
 					"back":{
-						"template": "template_03",
-						"content":{
-							"bg_type": "color",
-							"bg_color": [],
-							"bg_path": "",
-							"txt_color": [],
-							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
-						}
-					},
-					"thumbnail":{
-						"template": "template_01",
+						"template": "template_02_tl",
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_07.jpg",
+							"bg_path": "images/S04_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Video",
+							"title": "What’s a gigaton?<br>A billion tons.",
+							"body": "There are over 2400 gigatons of carbon stored in soils globally. Soil carbon is the basis of soil fertility. It releases nutrients for plant growth, promotes the structure, biological and physical health of soil, and is a buffer against harmful substances.<br><br>Sustainable soil management is key to growing progress."
+						}
+					},
+					"thumbnail":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/S04_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Stewards of the soil.",
 							"body": ""
 						}
 					}	
 				},
 				{
-					"panelID": "0402",
+					"panelID": "S05",
 					"front":{
-						"template": "infographic_01", 
+						"template": "template_01", 
 						"content":{
-							"bg_type": "",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "images/S05_m.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Infographic 01",
-							"body": ""
+							"title": "100 years of<br>seed expertise.",
+							"body": "With the world’s most comprehensive germplasm, we make hybrid seeds tailored to farmer’s needs."
 						}
 					},
 					"back":{
-						"template": "template_03",
+						"template": "template_01",
 						"content":{
-							"bg_type": "color",
+							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "",
+							"bg_path": "images/S05_d.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "Back Title",
-							"body": "Back body"
+							"title": "Our seeds.",
+							"body": "Available in over 70 countries.<br><br>Our global resources meet local needs for over 10 crops.<br><br>Our brand portfolio: Pioneer, Brevant, Mycogen, Pannar, Nu-Tech."
 						}
 					},
 					"thumbnail":{
@@ -491,10 +648,49 @@
 						"content":{
 							"bg_type": "image",
 							"bg_color": [],
-							"bg_path": "images/sample_07.jpg",
+							"bg_path": "images/S05_i.jpg",
 							"txt_color": [],
 							"category": "",
-							"title": "3d viz",
+							"title": "Seeds for<br>every farmer.",
+							"body": ""
+						}
+					}	
+				},
+				{
+					"panelID": "S06",
+					"front":{
+						"template": "template_02_tl", 
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/S06_m.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "Get to know your soil",
+							"body": "Our Granular platform, combined with decades of agronomic expertise from Pioneer, allows farmers to monitor their soil with precision.<br><br>By using weather data and soil mapping, they manage nitrogen levels all season long."
+						}
+					},
+					"back":{
+						"template": "template_01",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/S05_d.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "",
+							"body": ""
+						}
+					},
+					"thumbnail":{
+						"template": "template_03",
+						"content":{
+							"bg_type": "image",
+							"bg_color": [],
+							"bg_path": "images/S06_i.jpg",
+							"txt_color": [],
+							"category": "",
+							"title": "It starts in the soil.",
 							"body": ""
 						}
 					}	
