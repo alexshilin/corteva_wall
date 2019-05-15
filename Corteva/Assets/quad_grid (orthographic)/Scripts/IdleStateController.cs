@@ -809,7 +809,7 @@ public class IdleStateController : MonoBehaviour {
 				} else {
 					
 					//all others are 1x1, grab a content panel
-					if (availableContentPanels.Count > -1) {
+					if (availableContentPanels.Count > 0) {
 						//choose random index from availableContentPanels
 						r = Random.Range (0, availableContentPanels.Count);
 						//grab data from json based on that index
