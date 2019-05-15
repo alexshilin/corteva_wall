@@ -57,6 +57,11 @@ public class IdleStateController : MonoBehaviour {
 
 	List<string> usedTypes = new List<string>();
 
+	List<string> availableBeautyPanels = new List<string> ();
+	List<string> usedBeautyPanels = new List<string> ();
+	List<int> availableContentPanels = new List<int> ();
+	List<int> usedContentPanels = new List<int> ();
+
 	Transform currTitleCam;
 	Transform currTitlePanel;
 
@@ -110,13 +115,19 @@ public class IdleStateController : MonoBehaviour {
 
 	void Update(){
 		//idle loop timer
+		//check that idle loop is running and that its not in the middle of a transition
 		if (activeTransitionLoop && !panelsInTransition) {
+			//TMP update time display
 			SM.idleTimerText.text = Mathf.Round(timeToNextTransition - timeElapsedSinceLastTransition) + "\n" + (activeTransitionLoop?"looping":"static") + " + " + (panelsInTransition?"busy":"available");
+			//update timer
 			timeElapsedSinceLastTransition += Time.deltaTime;
+			//if timer is up
 			if (timeElapsedSinceLastTransition >= timeToNextTransition) {
+				//clean up this layout
 				UnPlaceCameras ();
 			}
 		} else {
+			//TMP update idle display
 			SM.idleTimerText.text = (activeTransitionLoop?"looping":"static") + " + " + (panelsInTransition?"busy":"available");
 		}
 
@@ -136,54 +147,85 @@ public class IdleStateController : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Init this instance.
+	/// </summary>
 	public void Init(){
 		Debug.Log ("IdleStateController [Init] idle grid for " + GM.desiredGrid.x + " columns.");
 
 		//get environemnts
 		environments = new List<Environment>(AM.environments);
 
+		//clear kiosks if any
 		ClearKiosks ();
 			
+		//set up the background panels
 		SetBackgroundPanels();
 	}
 
 
-
+	/// <summary>
+	/// Sets the background panels.
+	/// </summary>
 	void SetBackgroundPanels(){
 		Debug.Log ("[SetBackgroundPanels]");
+		//loop through all environments
 		for (int i = 0; i < environments.Count; i++) {
+			//position background panel
 			environments[i].envBackgroundPanels[0].transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
+			//scale it
 			environments[i].envBackgroundPanels[0].transform.localScale *= 3; //??
+			//update its context and view
 			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Idle;
 			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
+			//add it to the backgrounds list
 			bgPanels2.Add (environments [i].envBackgroundPanels [0].GetComponent<PanelBase> ());
 		}
+		//set the current background index
 		currBg = 0;
 	}
 
 	#region cleanup
+	/// <summary>
+	/// Clears the kiosks.
+	/// </summary>
 	private void ClearKiosks(){
 		Debug.Log ("[ClearKiosks]");
+		//clears the active kiosk list
 		kioskColumns.Clear ();
+		//re-initialize the kiosk lists with empty placeholders
 		for (int i = 0; i < GM.desiredGrid.x; i++) {
 			kioskColumns.Add (0);
 			kioskColumnsToClose.Add (0);
 		}
 	}
-		
+
+	/// <summary>
+	/// Clears the cell cams. Cell cams are the camera that display each panel in the idle screen.
+	/// </summary>
 	private void ClearCellCams(){
 		Debug.Log ("[ClearCellCams] " + AM.cams.childCount);
+		//itrate through call cams parent object
 		foreach (Transform child in AM.cams) {
+			//check if theres an active ref to cell cam with a title card
 			if (currTitleCam != null) {
-				if (child != currTitleCam)
+				//if this child is not that cell cam
+				if (child != currTitleCam) {
+					//remove it
 					GameObject.Destroy (child.gameObject);
+				}
 			} else {
+				//no ref to cell cam with title card
+				//remove it
 				GameObject.Destroy (child.gameObject);
 			}
 		}
 		panelDepth = 50f;
 	}
 
+	/// <summary>
+	/// Clears everything in the idle screen.
+	/// </summary>
 	private void ClearEverything(){
 		Debug.Log ("[ClearEverything]");
 		ClearKiosks ();
@@ -193,6 +235,13 @@ public class IdleStateController : MonoBehaviour {
 	#endregion
 
 	#region event listener reactions
+	/// <summary>
+	/// Event handler. Activates when a kiosk wants to open
+	/// </summary>
+	/// <param name="_gridPos">Grid position where the kiosk wants to open.</param>
+	/// <param name="_screenPos">Screen position where the user tapped.</param>
+	/// <param name="_env">Env this kiosk should display.</param>
+	/// <param name="_panel">Panel that was tapped to actiate this kiosk.</param>
 	private void KioskOpenResponse (Vector2 _gridPos, Vector2 _screenPos, Environment _env, Transform _panel){
 		Debug.Log ("!![KioskOpenResponse] at col " + _gridPos.x);
 
@@ -204,57 +253,88 @@ public class IdleStateController : MonoBehaviour {
 			if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
 				//hide it
 				HideTitlePanel ();
-				//disable cell cams in column
+				//loop through current idle sequence
 				for (int n = 0; n < idleSequence.Count; n++) {
+					//if theres a panel in the column that the kiosk wants to open in
 					if (idleSequence [n].col == (int)_gridPos.x) {
+						//check if the cell cam for that panel is active
 						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+							//if it is, disable it
 							Debug.Log ("\tdisabling idle cam at col " + n);
 							if (idleSequence [n].panelType == new Vector2 (2, 2)) {
 								//what to do with 2x2 panel when a kiosk is opened on top of it?
 							} else {
+								//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
 								StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
 							}
 
 						}
+						//if this was activated by a content panel
 						if (_panel != null) {
+							//and if that panel is the current panel in the idle sequence
 							if (idleSequence [n].panel == _panel.gameObject) {
 								Debug.Log ("\tremoving panel from idleSequence");
+								//remove the reference to that panel from the idle sequence 
+								//so we dont try to animate somethething that no longer exists later on
 								idleSequence [n].panel = null;
 							}
 						}
 					}
 				}
 
+				//check if there are any columns that dont have a kiosk open
 				if (!kioskColumns.Contains (0)) {
+					//if all columns have kiosks
+					//disable the main and interstitial cameras
 					AM.mainCamera.enabled = false;
 					AM.userInitCamera.enabled = false;
 				}
 			}
 		}
 	}
+
+	/// <summary>
+	/// Disables the cell cam under kiosk after some time
+	/// </summary>
+	/// <returns>The cell cam under kiosk.</returns>
+	/// <param name="_cam">the index of the cell cam in the idle sequence</param>
+	/// <param name="_wait">the amount of time to wait before disabling it</param>
 	private IEnumerator DisableCellCamUnderKiosk(int _cam, float _wait){
 		yield return new WaitForSeconds (_wait);
 		idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
 	}
+
+	/// <summary>
+	/// Event handler. Activates when kiosk wants to close.
+	/// </summary>
+	/// <param name="_gridPos">Grid position where kiosk wants to close.</param>
+	/// <param name="_now">true if this kiosk should be closed now.</param>
 	private void KioskCloseResponse(Vector2 _gridPos, bool _now){
 		Debug.Log ("!![KioskCloseResponse] at col " + _gridPos.x + " " + (_now ? "now" : "prepare"));
 		//a kiosk is being closed
 		if (_now) {
+			//are there any columns without kiosks
 			if (!kioskColumns.Contains (0)) {
+				//if not, reactive the main and interstitial cameras
 				AM.mainCamera.enabled = true;
 				AM.userInitCamera.enabled = true;
 			}
-			//do something after the kiosks have been closed
+			//iterate through kiosk columns
 			for (int i = 0; i < kioskColumns.Count; i++) {
+				//check if the current index is where a kiosk wants to close
+				//and if there is in fact a kiosk places there
 				if (i==(int)_gridPos.x && kioskColumns [i] == 1){
 					Debug.Log ("\tclosing kiosk at col " + i);
+					//update the list that tell us which columns have kiosks
 					kioskColumns [i] = 0;
-					//enable cell cams in column
+					//iterate through idle sequence
 					for (int n = 0; n < idleSequence.Count; n++) {
+						//check if there are items under the closing kiosk
 						if (idleSequence [n].col == (int)_gridPos.x) {
 							//check that there is in fact a cell cam object to toggle
 							if (idleSequence [n].cellCam != null) {
 								Debug.Log ("\tre-enabling idle cam at col " + i);
+								//enable the camera for that cell cam
 								idleSequence [n].cellCam.GetComponentInChildren<Camera> ().enabled = true;
 							}
 						}
@@ -329,6 +409,9 @@ public class IdleStateController : MonoBehaviour {
 
 		//reset vars
 		usedTypes.Clear ();
+		usedBeautyPanels.Clear ();
+		availableContentPanels.Clear ();
+		usedContentPanels.Clear ();
 		previousPanelPos = Vector3.zero;
 		idleSequence.Clear ();
 
@@ -367,6 +450,11 @@ public class IdleStateController : MonoBehaviour {
 
 		Debug.Log (environments.Count);
 		Debug.Log ("\tENV (" + currEnv + " of "+environments.Count+"): " + environments [currEnv].envTitle);
+
+		//update available content panels
+		for (int i = 0; i < environments[currEnv].envPanelData.Count; i++) {
+			availableContentPanels.Add (i);
+		}
 
 		//set starting panel position
 		startPanelPos = new Vector2 (0, startColumn);
@@ -721,9 +809,21 @@ public class IdleStateController : MonoBehaviour {
 				} else {
 					
 					//all others are 1x1, grab a content panel
-					//choose random panel for now
-					panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+					if (availableContentPanels.Count > -1) {
+						//choose random index from availableContentPanels
+						r = Random.Range (0, availableContentPanels.Count);
+						//grab data from json based on that index
+						Debug.Log ("grabbing panel at index: " + r + " | " + (availableContentPanels.Count - 1));
+						panelData = environments [currEnv].envPanelData [availableContentPanels [r]];
+						availableContentPanels.RemoveAt (r);
+					}else{
+						Debug.Log ("grabbing random panel");
+						panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+					}
+
 					po.panelID = panelData ["panelID"];
+					usedContentPanels.Add(panelData["panelID"]);
+
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
 					po.Assemble (panelData);
 					//TEMP show either the front of thumbnail view
