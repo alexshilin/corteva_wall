@@ -112,13 +112,6 @@ public class PanelBase : MonoBehaviour {
 		if (_panelData ["thumbnail"].Count > 0) {
 			AssembleView (_panelData ["thumbnail"], PanelView.Thumbnail);
 		}
-
-//		if (_panelData ["front"].Count > 0 && !(_panelData ["back"].Count > 0 && _panelData ["thumbnail"].Count > 0)) {
-//			ActivateView (PanelView.Front, false);
-//		} else {
-//			ActivateView (PanelView.Thumbnail, false);
-//			ActivateView (PanelView.Front, true);
-//		}
 	}
 
 	public void AssembleBasic(string _template, string _path = ""){
@@ -160,6 +153,16 @@ public class PanelBase : MonoBehaviour {
 			t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			panelRenderer = t.transform.Find("TextureQuad").GetComponent<Renderer> ();
 			panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
+			return;
+		}
+
+		if (_template == "title_kiosk") {
+			t = LoadModule ("1x1_kiosk_title", PanelView.Front);
+			t.name = "1x1_kiosk_title";
+			t.transform.Find("Bg").GetComponent<Renderer> ().material.SetColor ("_color1", environment.envColor);
+			t.transform.Find("Icon").GetComponent<Renderer> ().material.mainTexture = AssetManager.Instance.GetTexture (environment.envIconPath);
+			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = environment.envTitle;
+			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = environment.envSummary;
 			return;
 		}
 	}
@@ -276,6 +279,11 @@ public class PanelBase : MonoBehaviour {
 			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
 
 			return;
 		}
@@ -300,6 +308,12 @@ public class PanelBase : MonoBehaviour {
 				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
 			}
 
+			if (_templateData ["content"] ["bg_color"].Count == 3) {
+				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+			} else {
+				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+			}
+
 
 			//
 			string txtModule = (template == "template_02_tl") ? "1x2_txt_layout_l" : "1x2_txt_layout_r";
@@ -311,6 +325,13 @@ public class PanelBase : MonoBehaviour {
 			}
 			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
+
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
 
 			return;
 		}
@@ -353,6 +374,12 @@ public class PanelBase : MonoBehaviour {
 			t.transform.localPosition += transform.forward * -0.01f;
 
 
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
+
 			return;
 		}
 
@@ -384,9 +411,7 @@ public class PanelBase : MonoBehaviour {
 				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
 
-			t = LoadModule ("1x1_viz_earth", _view);
-			t.transform.localPosition += transform.forward * -0.01f;
-
+			//
 			t = LoadModule ("1x1_txt_layout_02", _view);
 			if (_templateData ["content"] ["title"] != "") {
 				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
@@ -394,7 +419,17 @@ public class PanelBase : MonoBehaviour {
 			if (_templateData ["content"] ["body"] != "") {
 				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
 			}
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
 			t.transform.localPosition += transform.forward * -0.02f;
+
+			//
+			t = LoadModule ("1x1_viz_earth", _view);
+			t.transform.localPosition += transform.forward * -0.03f;
 
 			return;
 		}
@@ -450,6 +485,23 @@ public class PanelBase : MonoBehaviour {
 		//Debug.Log ((viewToShow.GetComponentInChildren<VideoPlayer> ()?"YES video player":"NO video player"));
 		if (viewToShow.GetComponentInChildren<VideoPlayer> ()) {
 			viewToShow.GetComponentInChildren<VideoPlayer> ().Play ();
+		}
+
+		//make sure this panel is in kiosk
+		if (panelContext == PanelContext.Kiosk) {
+			//check if this view has panel buttons
+			if (viewToShow.GetComponentInChildren<PanelExtras> ()) {
+				//if this is a front view and there is a back view
+				if (_viewToShow == PanelView.Front && back.childCount > 0) {
+					//enable the close and more buttons
+					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
+				}
+				//if this is the back view
+				if (_viewToShow == PanelView.Back) {
+					//enabled the close and back buttons
+					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, true, false);
+				}
+			}
 		}
 			
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
@@ -576,16 +628,6 @@ public class PanelBase : MonoBehaviour {
 		//
 		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
 			//FlipAround ();
-			if (currViewFacingForward == PanelView.Front) 
-			{
-				ActivateView (PanelView.Back, true);
-			}
-			if (currViewFacingForward == PanelView.Back) 
-			{
-				ActivateView (PanelView.Front, true);
-			}
-			FlipAround ();
-			//BackToGrid();
 		}
 
 		//panel in kiosk context that is background should close active kiosk
@@ -616,9 +658,17 @@ public class PanelBase : MonoBehaviour {
 		}
 	}
 
-	private void FlipAround()
+	public void FlipAround()
 	{
 		Debug.Log ("\t[FlipAround]");
+		if (currViewFacingForward == PanelView.Front) 
+		{
+			ActivateView (PanelView.Back, true);
+		}
+		if (currViewFacingForward == PanelView.Back) 
+		{
+			ActivateView (PanelView.Front, true);
+		}
 		panelState = PanelState.Animating;
 		//myKiosk.somePanelIsAnimating = true;
 		//SetAsThumbnail (); //this should happen elsewhere
@@ -636,6 +686,7 @@ public class PanelBase : MonoBehaviour {
 		}
 		panelState = PanelState.Animating;
 		myKiosk.somePanelIsAnimating = true;
+		myKiosk.ToggleTint (false);
 		Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
 		EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
@@ -654,10 +705,12 @@ public class PanelBase : MonoBehaviour {
 		myKiosk.userGrid.GetComponent<UserGrid> ().emptySpot = transform.localPosition;
 		Vector3 goTo = myKiosk.menu.localPosition;
 		goTo.z = 25f;
+		goTo.x = 0.16f;
 		transform.parent = myKiosk.transform;
 		EaseCurve.Instance.Vec3 (transform, transform.localPosition, goTo, 0.5f, delay, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, delay, EaseCurve.Instance.easeOut);
 		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * 0.9f, 0.6f, delay, EaseCurve.Instance.easeOut, PanelMovedToUserKiosk);
+		myKiosk.ToggleTint (true);
 	}
 
 	private void transformStartedHandler(object sender, EventArgs e)
@@ -721,9 +774,14 @@ public class PanelBase : MonoBehaviour {
 		panelState = PanelState.Active;
 		myKiosk = kiosk.GetComponent<UserKiosk> ();
 		myKiosk.activePanel = transform;
+		myKiosk.ToggleTint (true);
 		if (panelView == PanelView.Thumbnail) {
 			ActivateView (PanelView.Front, true);
 			FlipAround ();
+		} else {
+			if (front.GetComponentInChildren<PanelExtras> ()) {
+				front.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
+			}
 		}
 	}
 		

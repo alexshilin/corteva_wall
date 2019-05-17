@@ -6,11 +6,10 @@ using TouchScript.Gestures;
 using TouchScript.Gestures.TransformGestures;
 
 public class Rotate : MonoBehaviour {
+	private bool autoSpin = true;
+	private float rotationSpeed = -1f;
 
-	public float rotationSpeed = 10f;
-	public bool randomSpeed = false;
-
-	bool spinning = true;
+	bool flicking = true;
 	float spinVelocity = 0f;
 	Vector3 spinAxis = Vector3.up;
 	float spinDamp = 0.8f;
@@ -19,16 +18,14 @@ public class Rotate : MonoBehaviour {
 	private FlickGesture flickGesture;
 
 	void Start(){
-		if (randomSpeed) {
-			rotationSpeed = UnityEngine.Random.Range (-20, 20);
-		}
+		
 	}
 
 	void OnEnable(){
 		transformGesture = GetComponent<TransformGesture> ();
 		flickGesture = GetComponent<FlickGesture> ();
 
-		//transformGesture.TransformStarted += transformStartedHandler;
+		transformGesture.TransformStarted += transformStartedHandler;
 		transformGesture.Transformed += transformedHandler;
 		//transformGesture.TransformCompleted += transformCompletedHandler;
 
@@ -37,7 +34,7 @@ public class Rotate : MonoBehaviour {
 
 	void OnDisable(){
 
-		//transformGesture.TransformStarted -= transformStartedHandler;
+		transformGesture.TransformStarted -= transformStartedHandler;
 		transformGesture.Transformed -= transformedHandler;
 		//transformGesture.TransformCompleted -= transformCompletedHandler;
 
@@ -45,7 +42,10 @@ public class Rotate : MonoBehaviour {
 	}
 
 	void Update () {
-		if(spinning){
+		if (autoSpin) {
+			transform.RotateAround (transform.position, transform.up, rotationSpeed);
+		}
+		if(flicking){
 			if (spinVelocity > 0) {
 				transform.RotateAround (transform.position, spinAxis, spinVelocity);
 				spinVelocity *= spinDamp;
@@ -54,7 +54,8 @@ public class Rotate : MonoBehaviour {
 	}
 
 	private void transformStartedHandler(object sender, EventArgs e){
-		spinning = false;
+		flicking = false;
+		autoSpin = false;
 		spinVelocity = 0;
 	}
 	private void transformedHandler(object sender, EventArgs e){
@@ -68,7 +69,7 @@ public class Rotate : MonoBehaviour {
 	private void flickedHandler(object sender, EventArgs e){
 		spinVelocity = flickGesture.ScreenFlickTime * 500;
 		spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
-		spinning = true;
+		flicking = true;
 		Debug.Log ("FLICK " + spinAxis + " " + spinVelocity);
 	}
 }

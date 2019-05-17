@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.IO;
 using SimpleJSON;
+using YamlDotNet.RepresentationModel;
 
 [System.Serializable]
 public class Environment
@@ -112,6 +113,32 @@ public class AssetManager : MonoBehaviour {
 	}
 
 	private void SetUpAssetPaths(){
+		string userRoot;
+		string rootPath;
+		string rootYamlDocName = "corteva.config.yaml";
+		string environmentsJsonDocName = "environments.json";
+		string contentJsonDocName = "content_items.json";
+		string filesJsonDocName = "files.json";
+		string lastupdateJsonDocName = "last_update.json";
+		string messagingJsonDocName = "messaging_buckets.json";
+		string presentationsJsonDocName = "presentations.json";
+
+		/*
+		//get ref to user root
+		userRoot = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal)+"/";
+		ScreenManager.Instance.Log ("user root: " + userRoot);
+
+		//load root YAML file
+		var input = new StringReader(File.ReadAllText (userRoot+rootYamlDocName));
+		var yaml = new YamlStream();
+		yaml.Load(input);
+		var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
+
+		//get document paths from YAML
+		rootPath = mapping.Children [new YamlScalarNode ("root_path")] + "/";
+		ScreenManager.Instance.Log ("\troot_path: " + rootPath);
+
+		*/
 		//file prefix
 		filePrefix = "file://";
 		relativeFolderOffset = -2;

@@ -7,10 +7,10 @@
 	[
 		{
 			"title": "Globe",
-			"summary": "Globe Summary",
+			"summary": "From the sattelites in space to the soil beneath our feet, Corteva Agriscience™ is enriching the lives of those who consume through innovation on a global scale.",
 			"colorRGB": [0, 114, 206],
 			"iconPath": "misc/globe_title.png",
-			"idle_background_video_16x9": "videos/Sunset - 1280x720.mp4",
+			"idle_background_video_16x9": "videos/globe_1920x1080.mp4",
 			"idle_background_video_32x9": "videos/FogCrop.mp4",
 			"kiosk_background_image_16x9": "images/sample_02.jpg",
 			"beauty_panels": [
@@ -207,7 +207,7 @@
 		},
 		{
 			"title": "Farm",
-			"summary": "Farm Summary",
+			"summary": "Corteva Agriscience™ puts producers and consumers first by increasing sustainability and productivity for the entire value chain. Everything we do is to support the people who support us all.",
 			"colorRGB": [0, 191, 111],
 			"iconPath": "misc/farm_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",
@@ -371,8 +371,8 @@ anywhere, anytime.<br><br>Efficiency by avoiding images without relevant informa
 			]
 		},
 		{
-			"title": "Crop",
-			"summary": "Crop Summary",
+			"title": "Field",
+			"summary": "We're innovating farming practices to help make farmers use new technology, understand and take better care of their soil, and grow more from every field.",
 			"colorRGB": [252, 76, 2],
 			"iconPath": "misc/plant_title.png",
 			"idle_background_video_16x9": "videos/Autumn - 1280x720.mp4",
@@ -534,8 +534,8 @@ anywhere, anytime.<br><br>Efficiency by avoiding images without relevant informa
 			]
 		},
 		{
-			"title": "Seed",
-			"summary": "Seed Summary",
+			"title": "Crop",
+			"summary": "With stronger seeds, precise crop protection, and powerful digital tools and data-driven insights, Corteva Agriscience™ provides the products and services to help everyone keep growing.",
 			"colorRGB": [26, 26, 26],
 			"iconPath": "misc/seed_title.png",
 			"idle_background_video_16x9": "videos/Cornfield - 1280x720.mp4",

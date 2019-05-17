@@ -15,6 +15,7 @@ public class UserKiosk : MonoBehaviour {
 	public Transform menu;
 	public Transform closer;
 	public TextMeshPro countdown;
+	public Renderer tint;
 
 	private GameObject bgPanel;
 	private GameObject headerPanel;
@@ -107,9 +108,9 @@ public class UserKiosk : MonoBehaviour {
 		bgPanelOld.transform.localPosition += Vector3.forward * -10f;
 
 		//prepare to remove prev title
-		headerPanelOld = headerPanel;
-		headerPanel = null;
-		headerPanelOld.transform.localPosition += Vector3.forward * 10f;
+//		headerPanelOld = headerPanel;
+//		headerPanel = null;
+//		headerPanelOld.transform.localPosition += Vector3.forward * 10f;
 
 		//animate out the active panel (if applicable)
 		if (activePanel != null) {
@@ -149,7 +150,7 @@ public class UserKiosk : MonoBehaviour {
 		//animate
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 0.5f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 0.5f, 0f, EaseCurve.Instance.easeOut, null, "local");
-		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 0.5f, 0f, EaseCurve.Instance.easeInOut, null, "local");
+		//EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 0.5f, 0f, EaseCurve.Instance.easeInOut, null, "local");
 
 		//animate bg
 		Material bgMat = bgPanelOld.transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
@@ -173,6 +174,23 @@ public class UserKiosk : MonoBehaviour {
 		navMat.SetColor (prop, env.envColor);
 		navMat.SetFloat ("_position", start);
 		EaseCurve.Instance.GradientPos (navMat, start, end, 0.5f, 0f, EaseCurve.Instance.linear, null);
+
+		Material headerMat = headerPanel.transform.Find ("Front/1x1_kiosk_title/Bg").GetComponent<Renderer> ().material;
+		if (headerMat.GetFloat ("_position") < 0.5f) {
+			prop = "_color2";
+			start = 0;
+			end = 1;
+		} else {
+			prop = "_color1";
+			start = 1;
+			end = 0;
+		}
+		headerMat.SetColor (prop, env.envColor);
+		headerMat.SetFloat ("_position", start);
+		EaseCurve.Instance.GradientPos (headerMat, start, end, 0.5f, 0f, EaseCurve.Instance.linear, null);
+		headerPanel.transform.Find("Front/1x1_kiosk_title/Icon").GetComponent<Renderer> ().material.mainTexture = AssetManager.Instance.GetTexture (env.envIconPath);
+		headerPanel.transform.Find ("Front/1x1_kiosk_title/Title").GetComponent<TextMeshPro> ().text = env.envTitle;
+		headerPanel.transform.Find ("Front/1x1_kiosk_title/Body").GetComponent<TextMeshPro> ().text = env.envSummary;
 	}
 
 	/// <summary>
@@ -272,15 +290,18 @@ public class UserKiosk : MonoBehaviour {
 		bgPanel.GetComponent<PanelBase> ().myKiosk = transform.GetComponent<UserKiosk> ();
 		bgFinalPos = new Vector3(0, 0, 50);
 
-
-		headerPanel = Instantiate (AssetManager.Instance.panelPrefab, transform);
-		headerPanel.name = "headerPanel";
-		headerPanel.transform.localPosition = new Vector3 (0, 6, 20);
-		headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
-		headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
-		headerPanel.GetComponent<PanelObject> ().panelContext = PanelObject.PanelContext.Kiosk;
-		headerPanel.GetComponent<PanelObject> ().panelMode = PanelObject.PanelView.Background;
-		headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
+		if (headerPanel == null) {
+			headerPanel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);
+			headerPanel.name = "headerPanel";
+			headerPanel.transform.localPosition = new Vector3 (0, 6, 20);
+			//headerPanel.GetComponent<PanelObject> ().SetPanelColors (env.envColor);
+			//headerPanel.GetComponent<PanelObject> ().SetAsTitle (env.envTitle);
+			headerPanel.GetComponent<PanelBase>().environment = env;
+			headerPanel.GetComponent<PanelBase> ().AssembleBasic ("title_kiosk");
+			headerPanel.GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Kiosk;
+			headerPanel.GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
+			headerInitPos = headerPanel.transform.localPosition + (Vector3.down * 3);
+		}
 	}
 
 	/// <summary>
@@ -305,6 +326,8 @@ public class UserKiosk : MonoBehaviour {
 			if (panelInitPos.y < -3f){
 				panelInitPos.y = -3f;
 			}
+			//set active panel slighty to the right of center in kiosk to make nav more visible
+			panelInitPos.x = 0.16f;
 			EaseCurve.Instance.Vec3 (activePanel.transform, activePanel.transform.localPosition, panelInitPos, 1f, 0f, EaseCurve.Instance.easeInOut, null, "local");
 		}
 
@@ -328,6 +351,14 @@ public class UserKiosk : MonoBehaviour {
 	void FinishOpen(){
 		//toggle interaction active
 		somePanelIsAnimating = false;
+	}
+
+	public void ToggleTint(bool _show){
+		if (_show) {
+			EaseCurve.Instance.MatColor (tint.material, tint.material.color, new Color (0, 0, 0, 0.5f), 0.2f, 0.3f, EaseCurve.Instance.linear);
+		} else {
+			EaseCurve.Instance.MatColor (tint.material, tint.material.color, new Color (0, 0, 0, 0f), 0.2f, 0, EaseCurve.Instance.linear);
+		}
 	}
 
 	/// <summary>

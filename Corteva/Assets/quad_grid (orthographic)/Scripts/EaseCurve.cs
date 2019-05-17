@@ -184,10 +184,14 @@ public class EaseCurve : MonoBehaviour
 		float rate = 1 / _duration;
 		yield return new WaitForSeconds (_delay);
 		while (t < 1) {
-			t += rate * Time.deltaTime;
-			Color32 currentColor = Color32.Lerp(_startColor, _endColor, _curve.Evaluate (t));
-			_mat.color = currentColor;
-			yield return null;
+			if (_mat != null) {
+				t += rate * Time.deltaTime;
+				Color32 currentColor = Color32.Lerp (_startColor, _endColor, _curve.Evaluate (t));
+				_mat.color = currentColor;
+				yield return null;
+			} else {
+				yield break;
+			}
 		}
 		if(_callback!=null)
 			_callback ();

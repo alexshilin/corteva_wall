@@ -182,7 +182,7 @@ public class IdleStateController : MonoBehaviour {
 			bgPanels2.Add (environments [i].envBackgroundPanels [0].GetComponent<PanelBase> ());
 		}
 		//set the current background index
-		currBg = 0;
+		currBg = -1;
 	}
 
 	#region cleanup
@@ -257,17 +257,19 @@ public class IdleStateController : MonoBehaviour {
 				for (int n = 0; n < idleSequence.Count; n++) {
 					//if theres a panel in the column that the kiosk wants to open in
 					if (idleSequence [n].col == (int)_gridPos.x) {
-						//check if the cell cam for that panel is active
-						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
-							//if it is, disable it
-							Debug.Log ("\tdisabling idle cam at col " + n);
-							if (idleSequence [n].panelType == new Vector2 (2, 2)) {
-								//what to do with 2x2 panel when a kiosk is opened on top of it?
-							} else {
-								//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
-								StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
-							}
+						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ()) {
+							//check if the cell cam for that panel is active
+							if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+								//if it is, disable it
+								Debug.Log ("\tdisabling idle cam at col " + n);
+								if (idleSequence [n].panelType == new Vector2 (2, 2)) {
+									//what to do with 2x2 panel when a kiosk is opened on top of it?
+								} else {
+									//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
+									StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
+								}
 
+							}
 						}
 						//if this was activated by a content panel
 						if (_panel != null) {
@@ -301,7 +303,9 @@ public class IdleStateController : MonoBehaviour {
 	/// <param name="_wait">the amount of time to wait before disabling it</param>
 	private IEnumerator DisableCellCamUnderKiosk(int _cam, float _wait){
 		yield return new WaitForSeconds (_wait);
-		idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+		if (idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ()) {
+			idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+		}
 	}
 
 	/// <summary>
@@ -1014,18 +1018,23 @@ public class IdleStateController : MonoBehaviour {
 			nextBGi = 0;
 		bgPanels2 [nextBGi].transform.position = nextPosition;
 		bgPanels2 [nextBGi].PlayBgVideo ();
-		Material bgMat;
-		if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
-			bgMat = bgPanels2[currBg].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material;
-			bgPanels2 [nextBGi].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+		Debug.Log ("**** " + currBg);
+		if (currBg > -1) {
+			Material bgMat;
+			if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {
+				bgMat = bgPanels2 [currBg].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+				bgPanels2 [nextBGi].transform.Find ("Front/2x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+			} else {
+				bgMat = bgPanels2 [currBg].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+				bgPanels2 [nextBGi].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+			}
+			Color32 toColor = bgMat.color;
+			toColor.a = 0;
+			EaseCurve.Instance.Scl (bgPanels2 [currBg].transform, bgPanels2 [currBg].transform.localScale, bgPanels2 [currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG2);
+			EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
 		} else {
-			bgMat = bgPanels2[currBg].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
-			bgPanels2 [nextBGi].transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material.color = baseColor;
+			currBg = 0;
 		}
-		Color32 toColor = bgMat.color;
-		toColor.a = 0;
-		EaseCurve.Instance.Scl (bgPanels2[currBg].transform, bgPanels2[currBg].transform.localScale, bgPanels2[currBg].transform.localScale * 1.5f, 0.5f, 0, EaseCurve.Instance.linear, UpdateBG2);
-		EaseCurve.Instance.MatColor (bgMat, baseColor, toColor, 0.5f, 0, EaseCurve.Instance.linear);
 	}
 
 
