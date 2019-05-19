@@ -30,6 +30,9 @@ Shader "Earth"
 			sampler2D _DiffuseTex;
 			sampler2D _CloudAndNightTex;
 
+			float4 _DiffuseTex_ST;
+			float4 _CloudAndNightTex_ST;
+
 			float4 _AtmosphereColor;
 			float _AtmospherePow;
 			float _AtmosphereMultiply;
@@ -57,6 +60,7 @@ Shader "Earth"
 				vertexOutput output;
 				output.pos = UnityObjectToClipPos(input.pos);
 				output.uv = input.uv;
+				output.uv = TRANSFORM_TEX(input.uv, _DiffuseTex);
 
 				float3 localLightDir = normalize(ObjSpaceLightDir(input.pos));
 				output.diffuse = saturate(dot(localLightDir, input.normal) * 1.2);
@@ -73,12 +77,13 @@ Shader "Earth"
 			{
 				half3 colorSample = tex2D(_DiffuseTex, input.uv).rgb;
 
-				half3 cloudAndNightSample = tex2D(_CloudAndNightTex, input.uv).rgb;
-				half3 nightSample = cloudAndNightSample.ggb;
-				half cloudSample = cloudAndNightSample.r;
-
+//				half3 cloudAndNightSample = tex2D(_CloudAndNightTex, input.uv).rgb;
+//				half3 nightSample = cloudAndNightSample.ggb;
+//				half cloudSample = cloudAndNightSample.r;
+//
 				half4 result;
-				result.rgb = (colorSample + cloudSample) * input.diffuse + nightSample * input.night + input.atmosphere;
+//				result.rgb = (colorSample + cloudSample) * input.diffuse + nightSample * input.night + input.atmosphere;
+				result.rgb = colorSample;
 
 				result.a = 1;
 				return result;
