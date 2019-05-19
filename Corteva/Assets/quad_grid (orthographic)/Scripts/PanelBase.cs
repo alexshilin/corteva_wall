@@ -41,16 +41,17 @@ public class PanelBase : MonoBehaviour {
 	}
 
 	//settings for position and rotation of panel views when the panel gets flipped betwen views
-	public Vector3 forwardPos = new Vector3 (0, 0, -0.01f);
-	public Vector3 forwardRot = new Vector3 (0, 0, 0);
-	public Vector3 awayPos = new Vector3 (0, 0, 0.01f);
-	public Vector3 awayRot = new Vector3 (0, 180, 0);
+	private Vector3 forwardPos = new Vector3 (0, 0, -0.01f);
+	private Vector3 forwardRot = new Vector3 (0, 0, 0);
+	private Vector3 awayPos = new Vector3 (0, 0, 0.01f);
+	private Vector3 awayRot = new Vector3 (0, 180, 0);
 
+
+
+	[Header("Dont Edit in Inspector")]
 	//ref for current panel view
 	public PanelView currViewFacingForward;
 	public PanelView currViewFacingAway;
-
-	[Header("Dont Edit in Inspector")]
 	//panel states
 	public PanelState panelState;
 	public PanelContext panelContext = PanelContext.None;

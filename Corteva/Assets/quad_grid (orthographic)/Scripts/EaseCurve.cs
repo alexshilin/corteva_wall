@@ -15,15 +15,16 @@ public class EaseCurve : MonoBehaviour
 	public AnimationCurve custom;
 	public AnimationCurve custom2;
 
-	public static EaseCurve Instance { get; private set; }
-
-	void Awake()
+	private static EaseCurve _instance;
+	public static EaseCurve Instance { get { return _instance; } }
+	private void Awake()
 	{
-		Instance = this;
-	}
-
-	void Start(){
-
+		if (_instance != null && _instance != this)
+		{
+			Destroy(this.gameObject);
+		} else {
+			_instance = this;
+		}
 	}
 
 	public void CamRect(Camera _target, Rect _start, Rect _end, float _duration, AnimationCurve _curve, Action _callback){

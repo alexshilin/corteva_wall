@@ -6,7 +6,7 @@ Shader "Earth"
 	{
 		_AtmosphereColor ("Atmosphere Color", Color) = (0.1, 0.35, 1.0, 1.0)
 		_AtmospherePow ("Atmosphere Power", Range(1.5, 8)) = 2
-		_AtmosphereMultiply ("Atmosphere Multiply", Range(1, 3)) = 1.5
+		_AtmosphereMultiply ("Atmosphere Multiply", Range(1, 10)) = 1.5
 
 		_DiffuseTex("Diffuse", 2D) = "white" {}
 		
@@ -83,7 +83,7 @@ Shader "Earth"
 //
 				half4 result;
 //				result.rgb = (colorSample + cloudSample) * input.diffuse + nightSample * input.night + input.atmosphere;
-				result.rgb = colorSample;
+				result.rgb = colorSample * input.diffuse + input.night * input.atmosphere;
 
 				result.a = 1;
 				return result;

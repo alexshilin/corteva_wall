@@ -855,7 +855,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 			//animate the panel
-			float speed = group * 0.5f;
+			float speed = group * 0.3f;
 			float wait = group * 0.1f;
 			if (i < idleSequence.Count - 1) {
 				if (idleSequence [i + 1].distanceToOrigin != idleSequence [i].distanceToOrigin)
@@ -912,7 +912,9 @@ public class IdleStateController : MonoBehaviour {
 	void PlacingFinished(){
 		Debug.Log ("[PlacingFinished]");
 		foreach (CellAction p in idleSequence) {
-			p.panel.GetComponent<PanelBase>().panelState = PanelBase.PanelState.Active;
+			if (p.panel) {
+				p.panel.GetComponent<PanelBase> ().panelState = PanelBase.PanelState.Active;
+			}
 		}
 		timeElapsedSinceLastTransition = 0;
 		panelsInTransition = false;
