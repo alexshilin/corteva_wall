@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TouchScript.Gestures;
+using TouchScript.Gestures.TransformGestures;
 using System;
 using TMPro;
 
@@ -44,10 +45,12 @@ public class UserKiosk : MonoBehaviour {
 
 	public bool menuFollowPanel = false;
 
+	public bool dragNav = false;
 	public bool dragGrid = false;
 	public Vector3 dragDelta;
 
 	private PressGesture pressGesture;
+	private TransformGesture transformGesture;
 
 	private float timeSinceLastTouch = 0f;
 	private float maxWaitUntouched = 10f;
@@ -62,11 +65,16 @@ public class UserKiosk : MonoBehaviour {
 
 	void OnEnable(){
 		pressGesture = GetComponent<PressGesture> ();
+		transformGesture = GetComponent<TransformGesture> ();
 		pressGesture.Pressed += pressedHandler;
+		transformGesture.Transformed += transformHandler;
+		transformGesture.TransformCompleted += transformCompleteHandler;
 	}
 
 	void OnDisable(){
 		pressGesture.Pressed -= pressedHandler;
+		transformGesture.Transformed -= transformHandler;
+		transformGesture.TransformCompleted += transformCompleteHandler;
 	}
 
 	/// <summary>
@@ -79,6 +87,15 @@ public class UserKiosk : MonoBehaviour {
 		closer.gameObject.SetActive (false);
 		//reset idle clock
 		timeSinceLastTouch = 0f;
+	}
+
+	void transformHandler(object sender, EventArgs e){
+		dragDelta = transformGesture.DeltaPosition;
+		dragNav = true;
+	}
+
+	void transformCompleteHandler(object sender, EventArgs e){
+		dragNav = false;
 	}
 
 	/// <summary>
@@ -116,7 +133,10 @@ public class UserKiosk : MonoBehaviour {
 		if (activePanel != null) {
 			EaseCurve.Instance.Vec3 (activePanel, activePanel.localPosition, activePanel.localPosition + Vector3.right * 10, 0.3f, 0f, EaseCurve.Instance.easeIn, null, "local");
 			//activePanel.GetComponent<PanelBase>().BackToGrid();
+			ToggleTint (false);
 		}
+			
+
 
 		//animate the grid out
 		Vector3 gridLeave = userGrid.transform.localPosition;
@@ -407,13 +427,15 @@ public class UserKiosk : MonoBehaviour {
 			gridGoTo.x += dragDelta.x;
 			userGrid.localPosition = gridGoTo;
 
-			Vector3 menuGoTo = menu.localPosition;
-			menuGoTo.y += dragDelta.y;
-			menu.localPosition = menuGoTo;
-
 			Vector3 bgGoTo = bgPanel.transform.localPosition;
 			bgGoTo.x -= dragDelta.x * 0.25f;
 			bgPanel.transform.localPosition = bgGoTo;
+		}
+
+		if (dragNav) {
+			Vector3 menuGoTo = menu.localPosition;
+			menuGoTo.y += dragDelta.y;
+			menu.localPosition = menuGoTo;
 		}
 	}
 }

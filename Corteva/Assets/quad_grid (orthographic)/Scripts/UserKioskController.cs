@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class UserKioskController : MonoBehaviour {
 
@@ -36,29 +37,33 @@ public class UserKioskController : MonoBehaviour {
 
 	private void tryOpenKiosk(Vector2 _gridPos, Vector2 _screenPos, Environment _env, Transform _panel){
 		Debug.Log ("!![tryOpenKiosk] at col "+_gridPos.x);
-		Vector2 gridPos = _gridPos;
-		GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
-		uK.name = "UserKiosk_" + _gridPos.x;
-		uK.transform.parent = AssetManager.Instance.kiosks;
-		uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
-		if (_env == null) {
-			_env = AssetManager.Instance.environments [IdleStateController.Instance.currEnv];
-		}
-		UserKiosk uKkiosk = uK.GetComponent<UserKiosk> ();
-		uKkiosk.env = _env;
-		uKkiosk.column = (int)_gridPos.x;
-		uKkiosk.tapScreenPos = _screenPos;
-		if (_panel != null) {
-			uKkiosk.activePanel = _panel;
-		}
-		uKkiosk.userGrid.GetComponent<UserGrid> ().MakeGrid();
-		uKkiosk.SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
+		if (!kiosks.Any (x => (x.col == (int)_gridPos.x))) {
+			Vector2 gridPos = _gridPos;
+			GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
+			uK.name = "UserKiosk_" + _gridPos.x;
+			uK.transform.parent = AssetManager.Instance.kiosks;
+			uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
+			if (_env == null) {
+				_env = AssetManager.Instance.environments [IdleStateController.Instance.currEnv];
+			}
+			UserKiosk uKkiosk = uK.GetComponent<UserKiosk> ();
+			uKkiosk.env = _env;
+			uKkiosk.column = (int)_gridPos.x;
+			uKkiosk.tapScreenPos = _screenPos;
+			if (_panel != null) {
+				uKkiosk.activePanel = _panel;
+			}
+			uKkiosk.userGrid.GetComponent<UserGrid> ().MakeGrid ();
+			uKkiosk.SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;
-		UserKioskObject uKo = new UserKioskObject ();
-		uKo.col = (int)_gridPos.x;
-		uKo.kioskGO = uK;
-		kiosks.Add (uKo);
+			UserKioskObject uKo = new UserKioskObject ();
+			uKo.col = (int)_gridPos.x;
+			uKo.kioskGO = uK;
+			kiosks.Add (uKo);
+		} else {
+			Debug.Log ("\talready exists");
+		}
 	}
 
 

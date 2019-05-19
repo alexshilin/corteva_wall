@@ -245,53 +245,58 @@ public class IdleStateController : MonoBehaviour {
 	private void KioskOpenResponse (Vector2 _gridPos, Vector2 _screenPos, Environment _env, Transform _panel){
 		Debug.Log ("!![KioskOpenResponse] at col " + _gridPos.x);
 
-		//update which columns have kiosks
-		kioskColumns [(int)_gridPos.x] = 1;
-		//do we have any panels open?
-		if (idleSequence.Count > 0) {
-			//is there an active title cellcam and panel?
-			if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
-				//hide it
-				HideTitlePanel ();
-				//loop through current idle sequence
-				for (int n = 0; n < idleSequence.Count; n++) {
-					//if theres a panel in the column that the kiosk wants to open in
-					if (idleSequence [n].col == (int)_gridPos.x) {
-						if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ()) {
-							//check if the cell cam for that panel is active
-							if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
-								//if it is, disable it
-								Debug.Log ("\tdisabling idle cam at col " + n);
-								if (idleSequence [n].panelType == new Vector2 (2, 2)) {
-									//what to do with 2x2 panel when a kiosk is opened on top of it?
-								} else {
-									//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
-									StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
-								}
+		//check that we dont already have a kiosk open there
+		if (kioskColumns [(int)_gridPos.x] == 0) {
+			//update which columns have kiosks
+			kioskColumns [(int)_gridPos.x] = 1;
+			//do we have any panels open?
+			if (idleSequence.Count > 0) {
+				//is there an active title cellcam and panel?
+				if (idleSequence [0].cellCam.activeSelf && idleSequence [0].panel != null) {
+					//hide it
+					HideTitlePanel ();
+					//loop through current idle sequence
+					for (int n = 0; n < idleSequence.Count; n++) {
+						//if theres a panel in the column that the kiosk wants to open in
+						if (idleSequence [n].col == (int)_gridPos.x) {
+							if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ()) {
+								//check if the cell cam for that panel is active
+								if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+									//if it is, disable it
+									Debug.Log ("\tdisabling idle cam at col " + n);
+									if (idleSequence [n].panelType == new Vector2 (2, 2)) {
+										//what to do with 2x2 panel when a kiosk is opened on top of it?
+									} else {
+										//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
+										StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
+									}
 
+								}
 							}
-						}
-						//if this was activated by a content panel
-						if (_panel != null) {
-							//and if that panel is the current panel in the idle sequence
-							if (idleSequence [n].panel == _panel.gameObject) {
-								Debug.Log ("\tremoving panel from idleSequence");
-								//remove the reference to that panel from the idle sequence 
-								//so we dont try to animate somethething that no longer exists later on
-								idleSequence [n].panel = null;
+							//if this was activated by a content panel
+							if (_panel != null) {
+								//and if that panel is the current panel in the idle sequence
+								if (idleSequence [n].panel == _panel.gameObject) {
+									Debug.Log ("\tremoving panel from idleSequence");
+									//remove the reference to that panel from the idle sequence 
+									//so we dont try to animate somethething that no longer exists later on
+									idleSequence [n].panel = null;
+								}
 							}
 						}
 					}
-				}
 
-				//check if there are any columns that dont have a kiosk open
-				if (!kioskColumns.Contains (0)) {
-					//if all columns have kiosks
-					//disable the main and interstitial cameras
-					AM.mainCamera.enabled = false;
-					AM.userInitCamera.enabled = false;
+					//check if there are any columns that dont have a kiosk open
+					if (!kioskColumns.Contains (0)) {
+						//if all columns have kiosks
+						//disable the main and interstitial cameras
+						AM.mainCamera.enabled = false;
+						AM.userInitCamera.enabled = false;
+					}
 				}
 			}
+		} else {
+			Debug.Log ("\talready exists");
 		}
 	}
 

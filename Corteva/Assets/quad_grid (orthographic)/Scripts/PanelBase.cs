@@ -12,10 +12,12 @@ using SimpleJSON;
 public class PanelBase : MonoBehaviour {
 
 	[Header("Components")]
+	//references to the container game objects within the panelbase game object
 	public Transform front;
 	public Transform back;
 	public Transform thumbnail;
 
+	//enums for panel states
 	public enum PanelContext
 	{
 		None,
@@ -38,52 +40,66 @@ public class PanelBase : MonoBehaviour {
 		Back
 	}
 
+	//settings for position and rotation of panel views when the panel gets flipped betwen views
 	public Vector3 forwardPos = new Vector3 (0, 0, -0.01f);
 	public Vector3 forwardRot = new Vector3 (0, 0, 0);
 	public Vector3 awayPos = new Vector3 (0, 0, 0.01f);
 	public Vector3 awayRot = new Vector3 (0, 180, 0);
 
+	//ref for current panel view
 	public PanelView currViewFacingForward;
 	public PanelView currViewFacingAway;
 
 	[Header("Dont Edit in Inspector")]
+	//panel states
 	public PanelState panelState;
 	public PanelContext panelContext = PanelContext.None;
 	public PanelView panelView = PanelView.Blank;
 
+	//environment data for this panel
 	public Environment environment{ get; set; }
+	//id from JSON
 	public string panelID;
+	//gridID is to reference its physical position in idle state
 	public int gridID;
+	//ref to panels kiosk parent
 	public UserKiosk myKiosk;
+	//col,row of panel in idle state
 	public Vector2 panelGridPos;
 
+	//gesture component references
 	private TapGesture tapGesture;
 	private TransformGesture transformGesture;
 
+	//ref to pmp where panel module prefabs are referenced
 	private PanelModulePool PMP;
+
 
 	void Awake(){
 		panelState = PanelState.Ready;
 	}
 
+
 	private void OnEnable()
 	{
+		//get gesture components
 		tapGesture = GetComponent<TapGesture> ();
 		transformGesture = GetComponent<TransformGesture> ();
 
+		//register for their events
 		tapGesture.Tapped += tappedHandler;
 
 		transformGesture.TransformStarted += transformStartedHandler;
 		transformGesture.Transformed += transformedHandler;
 		transformGesture.TransformCompleted += transformCompletedHandler;
 
+		//get ref to pmp
 		PMP = PanelModulePool.Instance;
-		//string temp = UnityEngine.Random.Range (0, 2) == 0 ? "template_01" : "template_02";
-		//AssemblePanel (temp);
 	}
 
 	private void OnDisable()
 	{
+		//unregidter from events
 		tapGesture.Tapped -= tappedHandler;
 
 		transformGesture.TransformStarted -= transformStartedHandler;
@@ -100,9 +116,15 @@ public class PanelBase : MonoBehaviour {
 		
 	}
 
+	/// <summary>
+	/// Step 1 in panel assembly. Instantiates the required components based on templates/data received from JSON
+	/// </summary>
+	/// <param name="_panelData">JSON panel data.</param>
 	public void Assemble(JSONNode _panelData)
 	{
 		Debug.Log ("[Assemble] " + _panelData ["panelID"] + ": " + ((_panelData ["front"].Count > 0) ? "front" : "nil") + " , " + ((_panelData ["back"].Count > 0) ? "back" : "nil") + " , " + ((_panelData ["thumb"].Count > 0) ? "thumb" : "nil"));
+		//it is not necessary for a panel to have all three views
+		//this only generates those specified
 		if (_panelData ["front"].Count > 0) {
 			AssembleView (_panelData ["front"], PanelView.Front);
 		}
@@ -114,6 +136,12 @@ public class PanelBase : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Alternate to Assemble. This is used for one off templates that dont get definied in the JSON.
+	/// (e.g. backgrounds, titles, etc)
+	/// </summary>
+	/// <param name="_template">Template string name</param>
+	/// <param name="_path">Path to relevant image/view asset (if applicable)</param>
 	public void AssembleBasic(string _template, string _path = ""){
 		GameObject t;
 		Renderer panelRenderer;
@@ -167,6 +195,11 @@ public class PanelBase : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Step 2 of panel assembly. This grabs the necessary modules required for a template, assembles them, and populates with data.
+	/// </summary>
+	/// <param name="_templateData">Template data from JSON.</param>
+	/// <param name="_view">The view (front, back, thumb) this template belongs to.</param>
 	public void AssembleView(JSONNode _templateData, PanelView _view)
 	{
 		GameObject t;
@@ -617,6 +650,11 @@ public class PanelBase : MonoBehaviour {
 			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment, transform);
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
 		}
+
+		//the rest are all kiosk related
+		//so make sure this panels has a kiosk reference
+		if (!myKiosk)
+			return;
 
 		if(panelContext == PanelContext.Kiosk && myKiosk.somePanelIsAnimating)
 		{
