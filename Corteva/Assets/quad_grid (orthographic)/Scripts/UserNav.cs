@@ -33,7 +33,12 @@ public class UserNav : MonoBehaviour {
 	}
 
 	private void tapHandler(object sender, EventArgs e){
-		if(!myKiosk.somePanelIsAnimating)
-			myKiosk.SwitchEnvironment (envID);
+		if (!myKiosk.somePanelIsAnimating) {
+			if (envID == -1) {
+				myKiosk.StartPinDrop ();
+			} else {
+				myKiosk.SwitchEnvironment (envID);
+			}
+		}
 	}
 }

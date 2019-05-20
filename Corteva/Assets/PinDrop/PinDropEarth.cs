@@ -167,8 +167,8 @@ public class PinDropEarth : MonoBehaviour {
 		//apply scaling
 		transform.localScale *= twoFingerTransformGesture.DeltaScale;
 		//set scaling limits
-		if (transform.localScale.x > 1.5f)
-			transform.localScale = Vector3.one * 1.5f;
+		if (transform.localScale.x > 2f)
+			transform.localScale = Vector3.one * 2f;
 		if (transform.localScale.x < .5f)
 			transform.localScale = Vector3.one * .5f;
 	}

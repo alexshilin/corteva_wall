@@ -17,6 +17,8 @@ public class UserKiosk : MonoBehaviour {
 	public Transform closer;
 	public TextMeshPro countdown;
 	public Renderer tint;
+	public GameObject pinDropPrefab;
+	private GameObject pinDrop;
 
 	private GameObject bgPanel;
 	private GameObject headerPanel;
@@ -437,5 +439,43 @@ public class UserKiosk : MonoBehaviour {
 			menuGoTo.y += dragDelta.y;
 			menu.localPosition = menuGoTo;
 		}
+	}
+
+	public void StartPinDrop(){
+		somePanelIsAnimating = true;
+
+		//these should get animated out
+		menu.gameObject.SetActive (false);
+		tint.gameObject.SetActive (false);
+		headerPanel.gameObject.SetActive (false);
+		bgPanel.gameObject.SetActive (false);
+		if(activePanel!=null)
+			activePanel.gameObject.SetActive (false);
+
+
+		pinDrop = Instantiate (pinDropPrefab, transform);
+		pinDrop.SetActive (true);
+		PinDrop pd = pinDrop.GetComponent<PinDrop> ();
+		pd.initGlobeSize = 0.8f;
+		pd.initWindowSize = 1f;
+		pd.globeCam = userCam;
+		pd.Init ();
+
+		somePanelIsAnimating = false;
+	}
+
+	public void StopPinDrop(){
+		somePanelIsAnimating = true;
+
+		//these should get animated in
+		menu.gameObject.SetActive (true);
+		tint.gameObject.SetActive (true);
+		headerPanel.gameObject.SetActive (true);
+		bgPanel.gameObject.SetActive (true);
+		if(activePanel!=null)
+			activePanel.gameObject.SetActive (true);
+
+		pinDrop.SetActive (false);
+		somePanelIsAnimating = false;
 	}
 }
