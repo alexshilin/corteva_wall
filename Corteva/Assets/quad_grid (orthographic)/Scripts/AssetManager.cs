@@ -61,6 +61,8 @@ public class AssetManager : MonoBehaviour {
 	[HideInInspector]
 	public List<string> videoFiles = new List<string> ();
 	private List<string> usedVideoFiles = new List<string> ();
+
+	public JSONNode pins;
 	#endregion
 
 

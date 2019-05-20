@@ -33,7 +33,7 @@ public class LatLong : MonoBehaviour
 		float lat = Mathf.Asin (_v3.z / r) * Mathf.Rad2Deg;
 		float lon = Mathf.Atan2 (_v3.y, _v3.x) * Mathf.Rad2Deg * -1;
 //		Debug.Log (lat + ", " + -lon);
-		TextDisplay.text = "lat: "+lat+"\nlon: "+lon;
+		//TextDisplay.text = "lat: "+lat+"\nlon: "+lon;
 		latitude = lat;
 		longitude = lon;
 	}

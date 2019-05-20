@@ -152,9 +152,9 @@ public class EarthContols : MonoBehaviour {
 		float colAverage = (pixCol.r + pixCol.g + pixCol.b) / 3f;
 		Debug.Log (texCoord+" > "+pixelPos+" > "+pixCol+" ("+colAverage+")");
 		if (colAverage > 0.9f) {
-			displayText.text += "\nwater";
+			//displayText.text += "\nwater";
 		} else {
-			displayText.text += "\nland";
+			//displayText.text += "\nland";
 		}
 
 	}

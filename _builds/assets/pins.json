@@ -1,0 +1,28 @@
+{
+	"pins":[
+		{
+			"lat":40.712776,
+			"lon":-74.005974,
+			"person":"Enthusiast",
+			"interest":"Climate Change"
+		},
+		{
+			"lat":39.768402,
+			"lon":-86.158066,
+			"person":"Student",
+			"interest":"Feeding a Growing Population"
+		},
+		{
+			"lat":43.615021,
+			"lon":-116.202316,
+			"person":"Farmer",
+			"interest":"Increasing Pressure on Farmers"
+		},
+		{
+			"lat":28.394857,
+			"lon":84.124008,
+			"person":"Scientist",
+			"interest":"Food Security"
+		}
+	]
+}
