@@ -55,7 +55,7 @@ public class UserKiosk : MonoBehaviour {
 	private TransformGesture transformGesture;
 
 	private float timeSinceLastTouch = 0f;
-	private float maxWaitUntouched = 10f;
+	private float maxWaitUntouched = 60f;
 	private bool waitingForSave = false;
 	private float timeTillClose = 0f;
 	private float maxTimeTillClose = 5f;

@@ -40,25 +40,26 @@ public class PinDropEarth : MonoBehaviour {
 		Debug.Log ("[PinDropEarth] " + pins ["pins"].Count+" pins"); 
 
 		for (int i = 0; i < pins ["pins"].Count; i++) {
-			PlacePin (pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat);
+			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat));
 		}
 	}
 
 
-	public void XYZtoLatLon(Vector3 _v3){
+	public Vector2 XYZtoLatLon(Vector3 _v3){
 		float r = Mathf.Sqrt (_v3.x * _v3.x + _v3.y * _v3.y + _v3.z * _v3.z); 
 		float lat = Mathf.Asin (_v3.z / r) * Mathf.Rad2Deg;
 		float lon = Mathf.Atan2 (_v3.y, _v3.x) * Mathf.Rad2Deg * -1;
 		Debug.Log ("[XYZtoLatLong] ("+_v3+") > ("+ lat + ", " + lon +" )");
-		LatLonToXYZ (lat, lon);
+		LatLonToXYZ (new Vector2 (lat, lon));
+		return new Vector2 (lat, lon);
 	}
 
 
-	public Vector3 LatLonToXYZ(float _lat, float _lon){
+	public Vector3 LatLonToXYZ(Vector2 _latlon){
 		float earthRadius = 6367; 
 		float radius = earthSphere.localScale.x * 0.5f;
-		float lat = _lat * Mathf.Deg2Rad;
-		float lon = _lon * Mathf.Deg2Rad;
+		float lat = _latlon.x * Mathf.Deg2Rad;
+		float lon = _latlon.y * Mathf.Deg2Rad;
 		float xPos = earthRadius * Mathf.Cos (lat) * Mathf.Cos (lon);
 		float yPos = earthRadius * Mathf.Cos (lat) * Mathf.Sin (lon);
 		float zPos = earthRadius * Mathf.Sin (lat);
@@ -70,7 +71,7 @@ public class PinDropEarth : MonoBehaviour {
 	}
 
 
-	void LandOrWater(Vector2 texCoord){
+	bool IsItLand(Vector2 texCoord){
 		bool isLand = false;
 		Vector2 pixelPos = texCoord;
 
@@ -93,13 +94,14 @@ public class PinDropEarth : MonoBehaviour {
 			isLand = true;
 		}
 		Debug.Log ("[LandOrWater] " + (isLand ? "land" : "water"));
+		return isLand;
 
 	}
 
-	void PlacePin(float _lat, float _lon){
+	void PlacePin(Vector2 _latlon){
 		GameObject p = Instantiate (pin.gameObject, pinContainer);
-		p.transform.localPosition = LatLonToXYZ (_lat, _lon);
-		p.transform.rotation = Quaternion.LookRotation((p.transform.position - earthSphere.position), earthSphere.forward);
+		p.transform.localPosition = LatLonToXYZ (_latlon);
+		//p.transform.rotation = Quaternion.LookRotation((p.transform.position - earthSphere.position), earthSphere.forward);
 	}
 
 	void OnEnable(){
@@ -147,8 +149,8 @@ public class PinDropEarth : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e){
 		if (!twoFingerRotate) {
-			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x);
-			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y);
+			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * 0.2f);
+			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * 0.2f);
 		}
 	}
 
@@ -162,7 +164,7 @@ public class PinDropEarth : MonoBehaviour {
 	private void twoFingerTransformHandler(object sender, System.EventArgs e)
 	{
 		//apply rotation on global z axis
-		transform.localRotation *= Quaternion.AngleAxis(twoFingerTransformGesture.DeltaRotation, Vector3.forward);
+		transform.Rotate(Vector3.forward, twoFingerTransformGesture.DeltaRotation, Space.World);
 
 		//apply scaling
 		transform.localScale *= twoFingerTransformGesture.DeltaScale;
@@ -178,7 +180,7 @@ public class PinDropEarth : MonoBehaviour {
 	}
 
 	private void flickedHandler(object sender, EventArgs e){
-		spinVelocity = flickGesture.ScreenFlickTime * 500;
+		spinVelocity = flickGesture.ScreenFlickTime * 200;
 		spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
 		flicking = true;
 		//Debug.Log ("FLICK " + spinAxis + " " + spinVelocity);
@@ -188,7 +190,9 @@ public class PinDropEarth : MonoBehaviour {
 		if (Physics.Raycast (cam.ScreenPointToRay (tapGesture.ScreenPosition), out hit)) {
 			Debug.Log ("[tapHandler] "+hit.transform.name+" (" + hit.point + ") | (" + earthSphere.InverseTransformPoint (hit.point) + " )");
 			XYZtoLatLon (earthSphere.InverseTransformPoint(hit.point));
-			LandOrWater (hit.textureCoord);
+			if(IsItLand (hit.textureCoord)){
+				PlacePin (XYZtoLatLon (earthSphere.InverseTransformPoint (hit.point)));
+			}
 		} 
 	}
 	
@@ -199,5 +203,6 @@ public class PinDropEarth : MonoBehaviour {
 				spinVelocity *= spinDamp;
 			}
 		}
+		Debug.DrawLine (transform.position, transform.position + Vector3.forward * 100);
 	}
 }

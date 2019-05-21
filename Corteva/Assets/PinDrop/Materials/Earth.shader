@@ -22,7 +22,9 @@ Shader "Earth"
 
 		pass
 		{
-		CGPROGRAM
+			Tags {"LightMode"="ForwardBase"}
+
+			CGPROGRAM
 			#include "UnityCG.cginc"
 			#pragma vertex vert 
 			#pragma fragment frag
@@ -59,33 +61,30 @@ Shader "Earth"
 			{
 				vertexOutput output;
 				output.pos = UnityObjectToClipPos(input.pos);
-				output.uv = input.uv;
 				output.uv = TRANSFORM_TEX(input.uv, _DiffuseTex);
 
 				float3 localLightDir = normalize(ObjSpaceLightDir(input.pos));
-				output.diffuse = saturate(dot(localLightDir, input.normal) * 1.2);
-				output.night = 1 - saturate(output.diffuse * 2);
 
 				half3 viewDir = normalize(ObjSpaceViewDir(input.pos));
+
 				half3 normalDir = input.normal;
+
+				output.diffuse = saturate(dot(localLightDir, input.normal) * 1.2);
+				output.night = 1 - saturate(output.diffuse * 2);
 				output.atmosphere = output.diffuse * _AtmosphereColor.rgb * pow(1 - saturate(dot(viewDir, normalDir)), _AtmospherePow) * _AtmosphereMultiply;
 
 				return output;
 			}
 
-			half4 frag(vertexOutput input) : Color
+
+			fixed4 frag(vertexOutput input) : SV_Target
 			{
 				half3 colorSample = tex2D(_DiffuseTex, input.uv).rgb;
 
-//				half3 cloudAndNightSample = tex2D(_CloudAndNightTex, input.uv).rgb;
-//				half3 nightSample = cloudAndNightSample.ggb;
-//				half cloudSample = cloudAndNightSample.r;
-//
-				half4 result;
-//				result.rgb = (colorSample + cloudSample) * input.diffuse + nightSample * input.night + input.atmosphere;
+				fixed4 result;
 				result.rgb = colorSample * input.diffuse + input.night * input.atmosphere;
-
 				result.a = 1;
+
 				return result;
 			}
 		ENDCG
@@ -94,3 +93,21 @@ Shader "Earth"
 	
 	Fallback "Diffuse"
 }
+
+
+//half4 frag(vertexOutput input) : Color
+//			{
+//				half3 colorSample = tex2D(_DiffuseTex, input.uv).rgb;
+//
+////				half3 cloudAndNightSample = tex2D(_CloudAndNightTex, input.uv).rgb;
+////				half3 nightSample = cloudAndNightSample.ggb;
+////				half cloudSample = cloudAndNightSample.r;
+////
+//				half4 result;
+////				result.rgb = (colorSample + cloudSample) * input.diffuse + nightSample * input.night + input.atmosphere;
+//				result.rgb = colorSample * input.diffuse + input.night * input.atmosphere;
+////				result.rgb = colorSample * input.atmosphere;
+//
+//				result.a = 1;
+//				return result;
+//			}

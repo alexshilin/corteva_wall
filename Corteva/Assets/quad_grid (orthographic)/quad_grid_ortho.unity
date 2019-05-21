@@ -840,14 +840,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4053674844855696, guid: 601c7fa1565f74394ab28f0e0f997ca4, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 33786073783786442, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+    - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
-      propertyPath: m_Mesh
+      propertyPath: m_fontMaterial
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 33148202995604858, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+      objectReference: {fileID: 861812447}
+    - target: {fileID: 33760141689173560, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_Mesh
       value: 
@@ -857,18 +857,18 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 33760141689173560, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+    - target: {fileID: 33148202995604858, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33786073783786442, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
-      propertyPath: m_fontMaterial
-      value: 
-      objectReference: {fileID: 861812447}
-    - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -885,16 +885,6 @@ Prefab:
     - target: {fileID: 114796145874997724, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114704240465244412, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114169063670796844, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3121,8 +3111,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1648684421}
-  - {fileID: 347950968}
   - {fileID: 143487721}
+  - {fileID: 347950968}
   m_Father: {fileID: 846936179}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
