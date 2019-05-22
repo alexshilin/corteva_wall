@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using TMPro;
 
 public class EaseCurve : MonoBehaviour
 {
@@ -59,8 +60,22 @@ public class EaseCurve : MonoBehaviour
 		while (t < 1) {
 			t += rate * Time.deltaTime;
 			_mat.SetFloat ("_position", Mathf.Lerp (_start, _end, _curve.Evaluate (t)));
-			//Color32 currentColor = Color32.Lerp(_startColor, _endColor, _curve.Evaluate (t));
-			//_mat.color = currentColor;
+			yield return null;
+		}
+		if(_callback!=null)
+			_callback ();
+	}
+
+	public void TextAlpha(TextMeshPro _tmp, float _start, float _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		StartCoroutine (EaseTextAlpha (_tmp, _start, _end, _duration, _delay, _curve, _callback));
+	}
+	private IEnumerator EaseTextAlpha(TextMeshPro _tmp, float _start, float _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			t += rate * Time.deltaTime;
+			_tmp.alpha = Mathf.Lerp (_start, _end, _curve.Evaluate (t));
 			yield return null;
 		}
 		if(_callback!=null)

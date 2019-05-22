@@ -7,17 +7,18 @@ public class PinDrop : MonoBehaviour {
 	public float initGlobeSize = 1f;
 	public float maxGlobeSize = 2f;
 	public float initWindowSize = 3f;
-	public Transform menu;
-	public Transform globe;
+	public PinDropMenu menu;
+	public PinDropEarth globe;
 	public Camera globeCam;
 
 	void Start(){
-		Init ();
+
 	}
 
 	public void Init(){
-		globe.localScale = Vector3.one * initGlobeSize;
-		menu.localScale = Vector3.one * initWindowSize;
-		globe.GetComponent<PinDropEarth> ().cam = globeCam;
+		globe.transform.localScale = Vector3.one * initGlobeSize;
+		menu.transform.localScale = Vector3.one * initWindowSize;
+		globe.cam = globeCam;
+		menu.ToggleWelcome (1);
 	}
 }

@@ -8,6 +8,7 @@ using SimpleJSON;
 
 public class PinDropEarth : MonoBehaviour {
 
+	public PinDrop PD;
 	public Transform earthSphere;
 	public Camera cam;
 	public Transform pinContainer;
@@ -30,6 +31,8 @@ public class PinDropEarth : MonoBehaviour {
 
 	private bool twoFingerRotate = false;
 
+	public GameObject newUserPin;
+
 	// Use this for initialization
 	void Start () {
 		tex = earthSphere.GetComponent<Renderer> ().material.GetTexture ("_CloudAndNightTex") as Texture2D;
@@ -39,8 +42,10 @@ public class PinDropEarth : MonoBehaviour {
 
 		Debug.Log ("[PinDropEarth] " + pins ["pins"].Count+" pins"); 
 
+
 		for (int i = 0; i < pins ["pins"].Count; i++) {
-			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat));
+			string txt = "<b>"+pins["pins"][i]["interest"] +"</b><br>"+pins["pins"][i]["person"];
+			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat), txt);
 		}
 	}
 
@@ -98,9 +103,19 @@ public class PinDropEarth : MonoBehaviour {
 
 	}
 
-	void PlacePin(Vector2 _latlon){
+	void PlacePin(Vector2 _latlon, string _text, bool _newUser = false){
+		if (newUserPin != null) {
+			Destroy (newUserPin);
+		}
 		GameObject p = Instantiate (pin.gameObject, pinContainer);
 		p.transform.localPosition = LatLonToXYZ (_latlon);
+		p.GetComponent<Pin> ().SetPinText (_text);
+		if (_newUser) {
+			p.GetComponent<Pin> ().SetPinColor (new Color32 (252, 76, 2, 255));
+			p.GetComponent<Pin> ().baseSize *= 2f;
+			p.GetComponent<Pin> ().SetConfirm ();
+			newUserPin = p;
+		}
 		//p.transform.rotation = Quaternion.LookRotation((p.transform.position - earthSphere.position), earthSphere.forward);
 	}
 
@@ -145,12 +160,13 @@ public class PinDropEarth : MonoBehaviour {
 	private void transformStartedHandler(object sender, EventArgs e){
 		flicking = false;
 		spinVelocity = 0;
+		PD.menu.ToggleWelcome (0);
 	}
 
 	private void transformedHandler(object sender, EventArgs e){
 		if (!twoFingerRotate) {
-			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * 0.2f);
-			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * 0.2f);
+			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * 0.5f);
+			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * 0.5f);
 		}
 	}
 
@@ -159,6 +175,7 @@ public class PinDropEarth : MonoBehaviour {
 
 	private void twoFingerTransformStartHandler(object sender, EventArgs e){
 		twoFingerRotate = true;
+		PD.menu.ToggleWelcome (0);
 	}
 
 	private void twoFingerTransformHandler(object sender, System.EventArgs e)
@@ -190,8 +207,12 @@ public class PinDropEarth : MonoBehaviour {
 		if (Physics.Raycast (cam.ScreenPointToRay (tapGesture.ScreenPosition), out hit)) {
 			Debug.Log ("[tapHandler] "+hit.transform.name+" (" + hit.point + ") | (" + earthSphere.InverseTransformPoint (hit.point) + " )");
 			XYZtoLatLon (earthSphere.InverseTransformPoint(hit.point));
-			if(IsItLand (hit.textureCoord)){
-				PlacePin (XYZtoLatLon (earthSphere.InverseTransformPoint (hit.point)));
+			if (IsItLand (hit.textureCoord)) {
+				PlacePin (XYZtoLatLon (earthSphere.InverseTransformPoint (hit.point)), "CONFIRM", true);
+			} else {
+				if (newUserPin != null) {
+					Destroy (newUserPin);
+				}
 			}
 		} 
 	}
