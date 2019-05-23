@@ -104,6 +104,11 @@ public class UserKiosk : MonoBehaviour {
 	/// Activates the "are you still there?" overlay
 	/// </summary>
 	private void AreYouStillThere(){
+		if (activePanel != null) {
+			closer.localPosition = new Vector3 (closer.localPosition.x, activePanel.localPosition.y, closer.localPosition.z);
+		} else {
+			closer.localPosition = new Vector3 (closer.localPosition.x, menu.localPosition.y, closer.localPosition.z);
+		}
 		closer.gameObject.SetActive (true);
 		timeTillClose = maxTimeTillClose;
 		waitingForSave = true;
