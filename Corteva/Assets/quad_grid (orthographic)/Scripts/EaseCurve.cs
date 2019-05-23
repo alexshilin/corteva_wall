@@ -160,6 +160,40 @@ public class EaseCurve : MonoBehaviour
 	}
 
 
+	public void RotTo(Transform _target, Quaternion _end, float _duration, float _delay, AnimationCurve _curve){
+		StartCoroutine (EaseRotTo (_target, _end, _duration, _delay, _curve, null));
+	}
+	public void RotTo(Transform _target, Quaternion _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		StartCoroutine (EaseRotTo (_target, _end, _duration, _delay, _curve, _callback));
+	}
+	private IEnumerator EaseRotTo(Transform _target, Quaternion _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		Quaternion fromTo;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			if (_target != null) {
+				t += rate * Time.deltaTime;
+				fromTo = Quaternion.RotateTowards(_target.localRotation, _end, 45f);
+				_target.localRotation = Quaternion.Lerp (_target.localRotation, fromTo, _curve.Evaluate (t));
+				//fromTo =  Quaternion.FromToRotation (_target.localRotation, _end);
+				//_target.localRotation = Quaternion.Lerp (_target.localRotation, fromTo, _curve.Evaluate (t));
+				//_target.localRotation = _start * Quaternion.AngleAxis (_curve.Evaluate (t) * _rotDegrees, _axis);
+				yield return null;
+			} else {
+				Debug.LogWarning ("[EaseRotTo] target object not found");
+				yield break;
+			}
+		}
+		if (_target != null) {
+			_target.localRotation = _end;
+		}
+		//Debug.Log ("EaseVec3 finished "+_target.name+" in " + t + " sec. (" + _target.position + " =?= " + _end);
+		if(_callback!=null)
+			_callback ();
+	}
+
+
 
 	public void Scl(Transform _target, Vector3 _start, Vector3 _end, float _duration, float _delay, AnimationCurve _curve){
 		StartCoroutine (EaseScl (_target, _start, _end, _duration, _delay, _curve, null));

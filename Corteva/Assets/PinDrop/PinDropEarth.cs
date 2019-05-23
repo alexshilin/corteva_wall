@@ -30,10 +30,15 @@ public class PinDropEarth : MonoBehaviour {
 	public TransformGesture twoFingerTransformGesture;
 	private FlickGesture flickGesture;
 	private TapGesture tapGesture;
+	private PressGesture pressGesture;
 
 	private bool twoFingerRotate = false;
 
 	public GameObject newUserPin;
+
+	private float maxTimeToWait = 10f;
+	private float timeWaited = 0f;
+	private bool idling = true;
 
 	void Awake () {
 		tex = earthSphere.GetComponent<Renderer> ().material.GetTexture ("_CloudAndNightTex") as Texture2D;
@@ -54,6 +59,7 @@ public class PinDropEarth : MonoBehaviour {
 
 		flickGesture = GetComponent<FlickGesture> ();
 		tapGesture = GetComponent<TapGesture> ();
+		pressGesture = GetComponent<PressGesture> ();
 
 		transformGesture.TransformStarted += transformStartedHandler;
 		transformGesture.Transformed += transformedHandler;
@@ -66,6 +72,8 @@ public class PinDropEarth : MonoBehaviour {
 		flickGesture.Flicked += flickedHandler;
 
 		tapGesture.Tapped += tapHandler;
+
+		pressGesture.Pressed += pressedHandler;
 	}
 
 	void OnDisable(){
@@ -81,6 +89,8 @@ public class PinDropEarth : MonoBehaviour {
 		flickGesture.Flicked -= flickedHandler;
 
 		tapGesture.Tapped -= tapHandler;
+
+		pressGesture.Pressed += pressedHandler;
 	}
 
 	public IEnumerator LoadPins(){
@@ -238,17 +248,44 @@ public class PinDropEarth : MonoBehaviour {
 			Debug.Log ("[tapHandler] "+hit.transform.name+" (" + hit.point + ") | (" + earthSphere.InverseTransformPoint (hit.point) + " )");
 			XYZtoLatLon (earthSphere.InverseTransformPoint(hit.point));
 			if (IsItLand (hit.textureCoord)) {
+				PD.menu.CloseQuestions ();
 				PlacePin (XYZtoLatLon (earthSphere.InverseTransformPoint (hit.point)), "CONFIRM", true);
 			} else {
 				if (newUserPin != null) {
 					Destroy (newUserPin);
+					PD.menu.CloseQuestions ();
 					PD.menu.instruct.text = "Tap to drop a pin in your home location";
 				}
 			}
 		} 
 	}
+
+	private void pressedHandler(object sender, EventArgs e){
+		timeWaited = 0f;
+		idling = false;
+	}
+
+	private void GoIdle(){
+		idling = true;
+		PD.menu.CloseQuestions ();
+		PD.menu.ToggleWelcome (1, 0f);
+		PD.menu.icons.SetActive (true);
+		PD.menu.instruct.text = "Explore and Drop a Pin";
+		EaseCurve.Instance.RotTo(transform, Quaternion.identity, 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
+	}
+
+	void GoIdle2(){
+		spinning = true;
+	}
 	
 	void Update () {
+		if (!idling) {
+			timeWaited += Time.deltaTime;
+			if (timeWaited > maxTimeToWait) {
+				GoIdle ();
+			}
+		}
+
 		if(flicking){
 			if (spinVelocity > 0) {
 				transform.RotateAround (transform.position, spinAxis, spinVelocity);
@@ -257,7 +294,7 @@ public class PinDropEarth : MonoBehaviour {
 		}
 
 		if (spinning) {
-			transform.Rotate (Vector3.up, -spinSpeed * Time.deltaTime);
+			transform.Rotate (transform.up, -spinSpeed * Time.deltaTime);
 		}
 	}
 }

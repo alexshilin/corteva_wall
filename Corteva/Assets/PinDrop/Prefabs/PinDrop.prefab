@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 114680445289583496}
   - component: {fileID: 114953176994550708}
   - component: {fileID: 114098356640417946}
+  - component: {fileID: 114121367814214388}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -3472,6 +3473,41 @@ MonoBehaviour:
   distanceLimit: Infinity
   combinePointers: 0
   combinePointersInterval: 0.3
+--- !u!114 &114121367814214388
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1200138231058040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6be551879cd14d739b0188844ef2c60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnStateChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  basicEditor: 1
+  generalProps: 0
+  limitsProps: 0
+  advancedProps: 0
+  minPointers: 0
+  maxPointers: 0
+  useSendMessage: 0
+  sendStateChangeMessages: 0
+  sendMessageTarget: {fileID: 0}
+  useUnityEvents: 0
+  sendStateChangeEvents: 0
+  requireGestureToFail: {fileID: 0}
+  friendlyGestures: []
+  OnPress:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  ignoreChildren: 0
 --- !u!114 &114142724420171474
 MonoBehaviour:
   m_ObjectHideFlags: 1
