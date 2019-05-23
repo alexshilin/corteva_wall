@@ -441,25 +441,48 @@ public class UserKiosk : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Starts the transition to open Pin Drop.
+	/// </summary>
 	public void StartPinDrop(){
 		somePanelIsAnimating = true;
 
+		//initialize the pin drop
+		pinDrop = Instantiate (pinDropPrefab, transform);
+		pinDrop.GetComponent<PinDrop> ().initGlobeSize = 0.8f;
+		pinDrop.GetComponent<PinDrop> ().initWindowSize = 1f;
+		pinDrop.GetComponent<PinDrop> ().globeCam = userCam;
+		pinDrop.GetComponent<PinDrop> ().myKiosk = GetComponent<UserKiosk> ();
+		pinDrop.GetComponent<PinDrop>().Init ();
+
 		//these should get animated out
+		//animate nav
+		EaseCurve.Instance.Vec3(nav.transform, nav.transform.localPosition, nav.transform.localPosition+Vector3.left, 0.5f, 0, EaseCurve.Instance.easeIn, null, "local");
+		//animate grid
+		Vector3 gridGoTo = userGrid.localPosition;
+		gridGoTo.x = 3f;
+		EaseCurve.Instance.Vec3(userGrid, userGrid.localPosition, gridGoTo, 0.5f, 0, EaseCurve.Instance.easeIn, null, "local");
+		//animate header
+		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerPanel.transform.localPosition + Vector3.up * 3f, 0.5f, 0, EaseCurve.Instance.easeIn, null, "local");
+		//animate active panel (if applicable
+		if (activePanel != null) {
+			EaseCurve.Instance.Vec3 (activePanel, activePanel.localPosition, activePanel.localPosition + Vector3.right * 10, 0.3f, 0f, EaseCurve.Instance.easeIn, null, "local");
+		}
+		//animate bg
+		Material bgMat = bgPanel.transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+		Color32 toColor = bgMat.color;
+		toColor.a = 0;
+		EaseCurve.Instance.Scl (bgPanel.transform, bgPanel.transform.localScale, bgPanel.transform.localScale * 1.5f, 0.51f, 0.5f, EaseCurve.Instance.linear, StartPinDrop2);
+		EaseCurve.Instance.MatColor (bgMat, Color.white, toColor, 0.5f, 0.5f, EaseCurve.Instance.linear);
+	}
+
+	private void StartPinDrop2(){
 		menu.gameObject.SetActive (false);
 		tint.gameObject.SetActive (false);
 		headerPanel.gameObject.SetActive (false);
 		bgPanel.gameObject.SetActive (false);
 		if(activePanel!=null)
 			activePanel.gameObject.SetActive (false);
-
-
-		pinDrop = Instantiate (pinDropPrefab, transform);
-		pinDrop.SetActive (true);
-		PinDrop pd = pinDrop.GetComponent<PinDrop> ();
-		pd.initGlobeSize = 0.8f;
-		pd.initWindowSize = 1f;
-		pd.globeCam = userCam;
-		pd.Init ();
 
 		somePanelIsAnimating = false;
 	}
@@ -475,7 +498,32 @@ public class UserKiosk : MonoBehaviour {
 		if(activePanel!=null)
 			activePanel.gameObject.SetActive (true);
 
-		pinDrop.SetActive (false);
-		somePanelIsAnimating = false;
+		pinDrop.GetComponent<PinDrop> ().Off ();
+
+		//animate bg
+		Material bgMat = bgPanel.transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
+		Color32 toColor = bgMat.color;
+		toColor.a = 255;
+		EaseCurve.Instance.Scl (bgPanel.transform, bgPanel.transform.localScale, bgPanel.transform.localScale * 0.666666f, 0.5f, 0f, EaseCurve.Instance.linear, null);
+		EaseCurve.Instance.MatColor (bgMat, bgMat.color, toColor, 0.5f, 0f, EaseCurve.Instance.linear);
+
+		//animate nav
+		EaseCurve.Instance.Vec3(nav.transform, nav.transform.localPosition, nav.transform.localPosition-Vector3.left, 0.5f, 0.5f, EaseCurve.Instance.easeOut, null, "local");
+		//animate grid
+		Vector3 gridGoTo = userGrid.localPosition;
+		gridGoTo.x = 0f;
+		EaseCurve.Instance.Vec3(userGrid, userGrid.localPosition, gridGoTo, 0.5f, 0.5f, EaseCurve.Instance.easeOut, null, "local");
+		//animate header
+		EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerPanel.transform.localPosition - Vector3.up * 3f, 0.51f, 0.5f, EaseCurve.Instance.easeOut, StopPinDrop2, "local");
+		//animate active panel (if applicable
+		if (activePanel != null) {
+			EaseCurve.Instance.Vec3 (activePanel, activePanel.localPosition, activePanel.localPosition - Vector3.right * 10, 0.5f, 0.5f, EaseCurve.Instance.easeOut, null, "local");
+		}
+
+	}
+
+	private void StopPinDrop2(){
+		Destroy (pinDrop);
+		somePanelIsAnimating =	 false;
 	}
 }

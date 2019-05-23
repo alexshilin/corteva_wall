@@ -6,30 +6,30 @@ using TouchScript.Gestures;
 
 public class Pin : MonoBehaviour {
 
+	private bool ready = false;
 	private bool active = true;
 	public Transform icon;
 	public Transform info;
 	public BoxCollider bc;
 	public LayerMask globeLayer;
-	private TextMeshPro label;
-	private SpriteRenderer bg;
+	public TextMeshPro label;
+	public SpriteRenderer bg;
 	private TapGesture tapGesture;
 
 	[HideInInspector]
 	public float baseSize;
 
-	void Start(){
-		
+	void Awake(){
 	}
 
 	void OnEnable(){
 		baseSize = 0.2f;
-		UpdatePinView ();
-		label = info.GetComponentInChildren<TextMeshPro> ();
-		bg = info.GetComponentInChildren<SpriteRenderer> ();
 	}
 
 	void Update(){
+		if (!ready)
+			return;
+		
 		if (transform.position.z>100f) {
 			if (active) {
 				TogglePin(false);
@@ -50,7 +50,7 @@ public class Pin : MonoBehaviour {
 		tapGesture.Tapped += tapHandler;
 	}
 
-	void UnsetConfirm(){
+	public void UnsetConfirm(){
 		if (tapGesture != null) {
 			bc.enabled = false;
 			tapGesture.Tapped -= tapHandler;
@@ -63,17 +63,14 @@ public class Pin : MonoBehaviour {
 
 	void tapHandler(object sender, System.EventArgs e){
 		Debug.Log ("QUESTION TIME");
-		UnsetConfirm ();
-		SetPinText ("<b>Farming</b><br>Farmer");
-		SetPinColor (new Color32 (0, 191, 111, 255));
-		baseSize *= 0.5f;
-		transform.parent.parent.GetComponent<PinDropEarth> ().newUserPin = null;
+		transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.ShowQuestionOne ();
 	}
 		
 	public void SetPinText(string _text){
 		label.text = _text;
 		label.ForceMeshUpdate ();
 		bg.size = new Vector2 (bg.size.y + (label.textBounds.size.x * 5.5f), bg.size.y);
+		ready = true;
 	}
 
 	public void SetPinColor(Color _color){
@@ -81,13 +78,14 @@ public class Pin : MonoBehaviour {
 	}
 
 	void UpdatePinView(){
-		transform.rotation = Quaternion.identity;
-		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.one * (0.02f / (transform.parent.parent.localScale.x * 0.02f)) * baseSize, 0.75f);
-		if (transform.parent.parent.localScale.x < 1) {
+		//WARN if you got here from a console error, its likely all those parent.parent... traversals
+		if (transform.parent.parent.localScale.x < transform.parent.parent.GetComponent<PinDropEarth>().PD.initGlobeSize) {
 			ToggleInfo (false);
 		} else {
 			ToggleInfo (true);
 		}
+		transform.rotation = Quaternion.identity;
+		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.one * (0.02f / (transform.parent.parent.localScale.x * 0.02f)) * baseSize, 0.75f);
 	}
 
 	void TogglePin(bool _on){
@@ -96,7 +94,8 @@ public class Pin : MonoBehaviour {
 	}
 
 	void ToggleInfo(bool _on){
-		if(active)
+		if (active) {
 			info.gameObject.SetActive (_on);
+		}
 	}
 }

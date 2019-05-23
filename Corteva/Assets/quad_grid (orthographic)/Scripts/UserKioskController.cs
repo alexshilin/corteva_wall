@@ -42,7 +42,7 @@ public class UserKioskController : MonoBehaviour {
 			GameObject uK = Instantiate (AssetManager.Instance.userKioskPrefab);
 			uK.name = "UserKiosk_" + _gridPos.x;
 			uK.transform.parent = AssetManager.Instance.kiosks;
-			uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 20f;
+			uK.transform.localPosition = Vector3.zero + Vector3.right * _gridPos.x * 30f;
 			if (_env == null) {
 				_env = AssetManager.Instance.environments [IdleStateController.Instance.currEnv];
 			}

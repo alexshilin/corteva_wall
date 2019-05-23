@@ -123,7 +123,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1452841905065622}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 44.7}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4509939764676954}
@@ -215,7 +215,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  type: 7
+  type: 1
   screenTransformThreshold: 0.1
   minScreenPointsDistance: 0.5
   projectionProps: 0
@@ -235,16 +235,13 @@ MonoBehaviour:
   front: {fileID: 4255852751102080}
   back: {fileID: 4664057513898534}
   thumbnail: {fileID: 4509939764676954}
-  forwardPos: {x: 0, y: 0, z: -0.01}
-  forwardRot: {x: 0, y: 0, z: 0}
-  awayPos: {x: 0, y: 0, z: 0.01}
-  awayRot: {x: 0, y: 180, z: 0}
   currViewFacingForward: 0
   currViewFacingAway: 0
   panelState: 0
   panelContext: 0
   panelView: 0
   panelID: 0
+  gridID: 0
   myKiosk: {fileID: 0}
   panelGridPos: {x: 0, y: 0}
 --- !u!114 &114920151117532488

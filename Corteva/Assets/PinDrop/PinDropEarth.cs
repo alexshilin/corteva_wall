@@ -14,6 +14,8 @@ public class PinDropEarth : MonoBehaviour {
 	public Transform pinContainer;
 	public Transform pin;
 
+	private bool spinning = false;
+	private float spinSpeed = 2f;
 	private bool flicking = true;
 	private float spinVelocity = 0f;
 	private Vector3 spinAxis = Vector3.up;
@@ -33,22 +35,68 @@ public class PinDropEarth : MonoBehaviour {
 
 	public GameObject newUserPin;
 
-	// Use this for initialization
-	void Start () {
+	void Awake () {
 		tex = earthSphere.GetComponent<Renderer> ().material.GetTexture ("_CloudAndNightTex") as Texture2D;
+		spinning = true;
 
+		if (GetComponentInParent<Camera> ()) {
+			cam = GetComponentInParent<Camera> ();
+		}
+	}
+
+	void Start(){
+		//Invoke("LoadPins", 1f);
+		StartCoroutine(LoadPins());
+	}
+
+	void OnEnable(){
+		transformGesture.AddFriendlyGesture (twoFingerTransformGesture);
+
+		flickGesture = GetComponent<FlickGesture> ();
+		tapGesture = GetComponent<TapGesture> ();
+
+		transformGesture.TransformStarted += transformStartedHandler;
+		transformGesture.Transformed += transformedHandler;
+		transformGesture.TransformCompleted += transformCompletedHandler;
+
+		twoFingerTransformGesture.TransformStarted += twoFingerTransformStartHandler;
+		twoFingerTransformGesture.Transformed += twoFingerTransformHandler;
+		twoFingerTransformGesture.TransformCompleted += twoFingerTransformEndHandler;
+
+		flickGesture.Flicked += flickedHandler;
+
+		tapGesture.Tapped += tapHandler;
+	}
+
+	void OnDisable(){
+
+		transformGesture.TransformStarted -= transformStartedHandler;
+		transformGesture.Transformed -= transformedHandler;
+		transformGesture.TransformCompleted -= transformCompletedHandler;
+
+		twoFingerTransformGesture.TransformStarted -= twoFingerTransformStartHandler;
+		twoFingerTransformGesture.Transformed -= twoFingerTransformHandler;
+		twoFingerTransformGesture.TransformCompleted -= twoFingerTransformEndHandler;
+
+		flickGesture.Flicked -= flickedHandler;
+
+		tapGesture.Tapped -= tapHandler;
+	}
+
+	public IEnumerator LoadPins(){
+		yield return new WaitForSeconds (0.5f);
 		string dataAsJson = System.IO.File.ReadAllText ("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/"+"pins.json");
 		pins = JSON.Parse(dataAsJson);
 
 		Debug.Log ("[PinDropEarth] " + pins ["pins"].Count+" pins"); 
 
-
 		for (int i = 0; i < pins ["pins"].Count; i++) {
 			string txt = "<b>"+pins["pins"][i]["interest"] +"</b><br>"+pins["pins"][i]["person"];
 			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat), txt);
 		}
-	}
 
+		pinContainer.localPosition = Vector3.zero;
+	}
 
 	public Vector2 XYZtoLatLon(Vector3 _v3){
 		float r = Mathf.Sqrt (_v3.x * _v3.x + _v3.y * _v3.y + _v3.z * _v3.z); 
@@ -106,61 +154,32 @@ public class PinDropEarth : MonoBehaviour {
 	void PlacePin(Vector2 _latlon, string _text, bool _newUser = false){
 		if (newUserPin != null) {
 			Destroy (newUserPin);
+			PD.menu.instruct.text = "Tap to drop a pin in your home location";
 		}
 		GameObject p = Instantiate (pin.gameObject, pinContainer);
 		p.transform.localPosition = LatLonToXYZ (_latlon);
 		p.GetComponent<Pin> ().SetPinText (_text);
 		if (_newUser) {
+			p.GetComponent<Pin> ().SetConfirm ();
 			p.GetComponent<Pin> ().SetPinColor (new Color32 (252, 76, 2, 255));
 			p.GetComponent<Pin> ().baseSize *= 2f;
-			p.GetComponent<Pin> ().SetConfirm ();
 			newUserPin = p;
+			PD.menu.ToggleWelcome (0);
+			PD.menu.icons.SetActive (false);
+			PD.menu.instruct.text = "Tap CONFIRM to continue";
 		}
+
 		//p.transform.rotation = Quaternion.LookRotation((p.transform.position - earthSphere.position), earthSphere.forward);
-	}
-
-	void OnEnable(){
-		if (GetComponentInParent<Camera> ()) {
-			cam = GetComponentInParent<Camera> ();
-		}
-
-		transformGesture.AddFriendlyGesture (twoFingerTransformGesture);
-
-		flickGesture = GetComponent<FlickGesture> ();
-		tapGesture = GetComponent<TapGesture> ();
-
-		transformGesture.TransformStarted += transformStartedHandler;
-		transformGesture.Transformed += transformedHandler;
-		transformGesture.TransformCompleted += transformCompletedHandler;
-
-		twoFingerTransformGesture.TransformStarted += twoFingerTransformStartHandler;
-		twoFingerTransformGesture.Transformed += twoFingerTransformHandler;
-		twoFingerTransformGesture.TransformCompleted += twoFingerTransformEndHandler;
-
-		flickGesture.Flicked += flickedHandler;
-
-		tapGesture.Tapped += tapHandler;
-	}
-
-	void OnDisable(){
-
-		transformGesture.TransformStarted -= transformStartedHandler;
-		transformGesture.Transformed -= transformedHandler;
-		transformGesture.TransformCompleted -= transformCompletedHandler;
-
-		twoFingerTransformGesture.TransformStarted -= twoFingerTransformStartHandler;
-		twoFingerTransformGesture.Transformed -= twoFingerTransformHandler;
-		twoFingerTransformGesture.TransformCompleted -= twoFingerTransformEndHandler;
-
-		flickGesture.Flicked -= flickedHandler;
-
-		tapGesture.Tapped -= tapHandler;
 	}
 
 	private void transformStartedHandler(object sender, EventArgs e){
 		flicking = false;
+		spinning = false;
 		spinVelocity = 0;
 		PD.menu.ToggleWelcome (0);
+		PD.menu.icons.SetActive (false);
+		if(newUserPin==null)
+			PD.menu.instruct.text = "Tap to drop a pin in your home location";
 	}
 
 	private void transformedHandler(object sender, EventArgs e){
@@ -174,8 +193,13 @@ public class PinDropEarth : MonoBehaviour {
 	}
 
 	private void twoFingerTransformStartHandler(object sender, EventArgs e){
+		flicking = false;
+		spinning = false;
 		twoFingerRotate = true;
 		PD.menu.ToggleWelcome (0);
+		PD.menu.icons.SetActive (false);
+		if(newUserPin==null)
+			PD.menu.instruct.text = "Tap to drop a pin in your home location";
 	}
 
 	private void twoFingerTransformHandler(object sender, System.EventArgs e)
@@ -199,12 +223,18 @@ public class PinDropEarth : MonoBehaviour {
 	private void flickedHandler(object sender, EventArgs e){
 		spinVelocity = flickGesture.ScreenFlickTime * 200;
 		spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
+		spinning = false;
 		flicking = true;
+		PD.menu.ToggleWelcome (0);
+		PD.menu.icons.SetActive (false);
+		if(newUserPin==null)
+			PD.menu.instruct.text = "Tap to drop a pin in your home location";
 		//Debug.Log ("FLICK " + spinAxis + " " + spinVelocity);
 	}
 
 	private void tapHandler(object sender, EventArgs e){
 		if (Physics.Raycast (cam.ScreenPointToRay (tapGesture.ScreenPosition), out hit)) {
+			spinning = false;
 			Debug.Log ("[tapHandler] "+hit.transform.name+" (" + hit.point + ") | (" + earthSphere.InverseTransformPoint (hit.point) + " )");
 			XYZtoLatLon (earthSphere.InverseTransformPoint(hit.point));
 			if (IsItLand (hit.textureCoord)) {
@@ -212,6 +242,7 @@ public class PinDropEarth : MonoBehaviour {
 			} else {
 				if (newUserPin != null) {
 					Destroy (newUserPin);
+					PD.menu.instruct.text = "Tap to drop a pin in your home location";
 				}
 			}
 		} 
@@ -224,6 +255,9 @@ public class PinDropEarth : MonoBehaviour {
 				spinVelocity *= spinDamp;
 			}
 		}
-		Debug.DrawLine (transform.position, transform.position + Vector3.forward * 100);
+
+		if (spinning) {
+			transform.Rotate (Vector3.up, -spinSpeed * Time.deltaTime);
+		}
 	}
 }
