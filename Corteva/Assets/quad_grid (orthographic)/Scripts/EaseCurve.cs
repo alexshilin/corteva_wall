@@ -174,11 +174,7 @@ public class EaseCurve : MonoBehaviour
 		while (t < 1) {
 			if (_target != null) {
 				t += rate * Time.deltaTime;
-				fromTo = Quaternion.RotateTowards(_target.localRotation, _end, 45f);
-				_target.localRotation = Quaternion.Lerp (_target.localRotation, fromTo, _curve.Evaluate (t));
-				//fromTo =  Quaternion.FromToRotation (_target.localRotation, _end);
-				//_target.localRotation = Quaternion.Lerp (_target.localRotation, fromTo, _curve.Evaluate (t));
-				//_target.localRotation = _start * Quaternion.AngleAxis (_curve.Evaluate (t) * _rotDegrees, _axis);
+				_target.localRotation = Quaternion.Lerp (_target.localRotation, _end, _curve.Evaluate (t));
 				yield return null;
 			} else {
 				Debug.LogWarning ("[EaseRotTo] target object not found");

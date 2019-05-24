@@ -99,8 +99,18 @@ public class PinDropEarth : MonoBehaviour {
 
 		Debug.Log ("[PinDropEarth] " + pins ["pins"].Count+" pins"); 
 
-		for (int i = 0; i < pins ["pins"].Count; i++) {
-			string txt = "<b>"+pins["pins"][i]["challenge"] +"</b><br>"+pins["pins"][i]["role"];
+		Dictionary<string, string> lookup = new Dictionary<string, string> ();
+		for (int i = 0; i < pins ["roles"].Count; i++) {
+			lookup.Add (pins ["roles"] [i] ["machine_name"], pins ["roles"] [i] ["title"]);
+		}
+		for (int i = 0; i < pins ["challenges"].Count; i++) {
+			lookup.Add (pins ["challenges"] [i] ["machine_name"], pins ["challenges"] [i] ["title"]);
+		}
+
+		for (int i = 0; i < pins ["pins"].Count; i++) { 
+			string role = lookup [pins ["pins"] [i] ["role"]];
+			string chal = lookup [pins ["pins"] [i] ["challenge"]];
+			string txt = "<b>" + chal + "</b><br>" + role;
 			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat), txt);
 		}
 
@@ -272,6 +282,7 @@ public class PinDropEarth : MonoBehaviour {
 		PD.menu.icons.SetActive (true);
 		PD.menu.instruct.text = "Explore and Drop a Pin";
 		EaseCurve.Instance.RotTo(transform, Quaternion.identity, 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
+		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * PD.initGlobeSize, 1.5f, 0f, EaseCurve.Instance.easeIn);
 	}
 
 	void GoIdle2(){

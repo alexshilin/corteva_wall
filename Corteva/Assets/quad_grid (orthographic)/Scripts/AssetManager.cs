@@ -25,6 +25,8 @@ public class Environment
 	public List<int> bty1x2Indeces = new List<int> ();
 	public int env1x1Count;
 }
+
+
 public class AssetManager : MonoBehaviour {
 	#region class variables
 	private string basePath;
@@ -101,8 +103,13 @@ public class AssetManager : MonoBehaviour {
 	string messagingJsonDocName = "messaging_buckets.json";
 	string presentationsJsonDocName = "presentations.json";
 
+	public string ParsePath(string _path){
+		return (Application.platform == RuntimePlatform.WindowsPlayer) ? _path.Replace ("/", "\\") : _path;
+	}
 
-
+	private IEnumerator CheckForUpdates(){
+		yield return new WaitForSecondsRealtime (5f * 60f);
+	}
 
 	public void Init(){
 		SM = ScreenManager.Instance;
@@ -110,12 +117,6 @@ public class AssetManager : MonoBehaviour {
 		ParseYamlConfig ();
 	}
 
-
-
-
-	public string ParsePath(string _path){
-		return (Application.platform == RuntimePlatform.WindowsPlayer) ? _path.Replace ("/", "\\") : _path;
-	}
 
 	private void ParseYamlConfig(){
 		//FUTURE NOTE: if you're updatng these, make sure to make updates to PinData.cs as well.
@@ -159,6 +160,10 @@ public class AssetManager : MonoBehaviour {
 		string filesJSON = File.ReadAllText (dataDir + filesJsonDocName);
 		var Nfiles = JSON.Parse(filesJSON);
 		SM.Log ("filesJSON: (" + Nfiles.Count + ") " + (dataDir + filesJsonDocName));
+
+		if (imageTextures.Count > 0) {
+			//we've already loaded some textures, this must be an update
+		}
 
 		for (int i = 0; i < Nfiles.Count; i++) 
 		{
@@ -216,8 +221,6 @@ public class AssetManager : MonoBehaviour {
 			int eI = environments.FindIndex (x => x.envKey == envKey);
 			environments [eI].envPanelData.Add(Ncp ["data"] [i].ToString());
 		}
-
-		//TODO match content panels to their environments
 
 		//presentations (which content panels / beauty panels to use in the idle state for each environment)
 		string presentationsJSON = File.ReadAllText (dataDir + presentationsJsonDocName);
@@ -290,14 +293,6 @@ public class AssetManager : MonoBehaviour {
 	}
 
 	#region PUBLIC methods
-
-//	public void LoadAssets(){
-//		StartCoroutine (LoadImages ());
-//	}
-//
-//	public void LoadScene(string _scene){
-//		StartCoroutine (LoadNewScene (_scene));
-//	}
 
 	public Texture GetTexture(string _name){
 		//Debug.Log ("Getting: " + _name);
