@@ -1,97 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using System.IO;
 using SimpleJSON;
 using YamlDotNet.RepresentationModel;
 
-[System.Serializable]
-public class Environment
-{
-	public int envID;
-	public string envKey;
-	public string envTitle;
-	public string envSummary;
-	public string envIconPath;
-	public string envKioskBg;
-	public string envBg;
-	public Color32 envColor;
-	public GameObject envBgVid;
-	public JSONNode envPanelData = new JSONArray();
-	public JSONNode btyPanelData;
-	public List<int> bty1x1Indeces = new List<int> ();
-	public List<int> bty1x2Indeces = new List<int> ();
-	public int env1x1Count;
-}
-public class AssetManager : MonoBehaviour {
-	#region class variables
-	private string basePath;
-	//private string filePrefix;
-	private int relativeFolderOffset;
-	private string assetsFolder;
-
-
-	public List<string> imageFiles = new List<string>();
-	[HideInInspector]
-	public List<Texture2D> imageTextures = new List<Texture2D>();
-
-
-	public List<string> videoFiles = new List<string> ();
-	private List<string> usedVideoFiles = new List<string> ();
-
-	public JSONNode pins;
-	#endregion
-
-
-	#region game object references
-	[Header("GameObject references")]
-	public Camera mainCamera;
-	public Camera userInitCamera;
-	public Camera userPanelCamera;
-	public Transform panels;
-	public Transform cams;
-	public Transform kiosks;
-	public Transform idleBackgrounds;
-	public PanelObject bgPanel1;
-	public PanelObject bgPanel2;
-	#endregion
-
-
-	#region prefabs
-	[Header("Prefabs")]
-	public GameObject panelPrefab;
-	public GameObject NEWpanelPrefab;
-	public GameObject cellCameraPrefab;
-	public GameObject userKioskPrefab;
-	public List<GameObject> panelPool = new List<GameObject> ();
-	public List<Environment> environments = new List<Environment>();
-	#endregion
-
-
-	private static AssetManager _instance;
-	public static AssetManager Instance { get { return _instance; } }
-	private void Awake()
-	{
-		if (_instance != null && _instance != this)
-		{
-			Destroy(this.gameObject);
-		} else {
-			_instance = this;
-		}
-	}
-
-
+public class DataManager : MonoBehaviour {
 
 	private ScreenManager SM;
 
 	private string userRoot;
-	public string rootDir;
-	public string dataDir;
-	public string mediaDir;
+	private string rootDir;
+	private string dataDir;
+	private string mediaDir;
 
-	public string filePrefix;
+	private string filePrefix;
 
 	const string rootYamlDocName = "corteva.config.yaml";
 	const string environmentsJsonDocName = "environments.json";
@@ -101,18 +24,25 @@ public class AssetManager : MonoBehaviour {
 	const string messagingJsonDocName = "messaging_buckets.json";
 	const string presentationsJsonDocName = "presentations.json";
 
+	[HideInInspector]
+	public List<Texture2D> imageTextures = new List<Texture2D>();
+	private List<string> imageFiles = new List<string>();
 
+	[HideInInspector]
+	public List<string> videoFiles = new List<string> ();
 
+	public List<Environment> environments = new List<Environment>();
+
+	void Start(){
+		//Init ();
+	}
 
 	public void Init(){
 		SM = ScreenManager.Instance;
 		filePrefix = (Application.platform == RuntimePlatform.WindowsPlayer) ? "" : "file://";
-		ParseYamlConfig ();
+		//ParseYamlConfig ();
 	}
-
-
-
-
+		
 	public string ParsePath(string _path){
 		return (Application.platform == RuntimePlatform.WindowsPlayer) ? _path.Replace ("/", "\\") : _path;
 	}
@@ -203,7 +133,7 @@ public class AssetManager : MonoBehaviour {
 		for (int i = 0; i < Ncp ["data"].Count; i++) {
 			string envKey = Ncp ["data"] [i] ["environment"];
 			int eI = environments.FindIndex (x => x.envKey == envKey);
-			environments [eI].envPanelData.Add(Ncp ["data"] [i].ToString());
+			environments [eI].envPanelData.Add(Ncp ["data"] [i]);
 		}
 
 		//TODO match content panels to their environments
@@ -216,8 +146,8 @@ public class AssetManager : MonoBehaviour {
 		for (int i = 0; i < scenes.Count; i++) 
 		{
 			SM.Log ("\t" + scenes [i] ["environment"] +
-				": " + scenes [i] ["content_panels"].Count + " content panels" +
-				", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
+					": " + scenes [i] ["content_panels"].Count + " content panels" +
+					", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
 			string envKey = scenes [i] ["environment"];
 			int eI = environments.FindIndex (x => x.envKey == envKey);
 			environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
@@ -262,7 +192,6 @@ public class AssetManager : MonoBehaviour {
 			environments[i].envBgVid = panelBaseGO;
 
 			environments[i].env1x1Count = environments[i].envPanelData.Count;
-			Debug.Log ("- "+environments [i].btyPanelData.Count);
 			for (int a = 0; a < environments[i].btyPanelData.Count; a++) {
 				if (environments[i].btyPanelData [a]["front"]["template"] == "beauty_1x2") {
 					environments[i].bty1x2Indeces.Add (a);
@@ -270,150 +199,6 @@ public class AssetManager : MonoBehaviour {
 					environments[i].bty1x1Indeces.Add (a);
 				}
 			}
-			Debug.Log ("\t- "+environments[i].bty1x1Indeces.Count);
-			Debug.Log ("\t- "+environments[i].bty1x2Indeces.Count);
 		}
-
-		ScreenManager.Instance.ToggleAdmin ();
-		IdleStateController.Instance.Init ();
 	}
-
-	#region PUBLIC methods
-
-//	public void LoadAssets(){
-//		StartCoroutine (LoadImages ());
-//	}
-//
-//	public void LoadScene(string _scene){
-//		StartCoroutine (LoadNewScene (_scene));
-//	}
-
-	public Texture GetTexture(string _name){
-		//Debug.Log ("Getting: " + _name);
-		int i = imageFiles.FindIndex (x => x.Contains (_name));
-		return imageTextures [i];
-	}
-
-	public Texture GetRandomTexture(){
-		return imageTextures [Random.Range (0, imageTextures.Count)];
-	}
-
-
-	public string GetVideo(string _name){
-		int i = videoFiles.FindIndex (x => x.Contains (_name));
-		return videoFiles [i];
-	}
-
-	public string GetRandomVideo(){
-		int r = Random.Range (0, videoFiles.Count);
-		string vid = videoFiles [r];
-		videoFiles.RemoveAt (r);
-		if (videoFiles.Count == 0) {
-			videoFiles = new List<string> (usedVideoFiles);
-			usedVideoFiles.Clear ();
-		}
-		usedVideoFiles.Add (vid);
-		return vid;
-	}
-	#endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-
-
-	public void Init(){
-		Debug.Log ("AssetManager [Init]");
-		SetUpAssetPaths ();
-		LoadAssets ();
-		//ParseAppData ();
-	}
-
-	private void SetUpAssetPaths(){
-		//file prefix
-		filePrefix = "file://";
-		relativeFolderOffset = -2;
-		//returns absolute path of app on hd, backing up 2 directories to reach the folder containing this app. 
-		basePath = Application.dataPath;
-		ScreenManager.Instance.Log("app path: " + Application.dataPath);
-
-		ScreenManager.Instance.Log ("platform: "+Application.platform.ToString());
-		if (Application.platform == RuntimePlatform.WindowsPlayer) {
-			relativeFolderOffset = -1;
-			filePrefix = "";
-		}
-		basePath = basePath.Substring (0, GetNthIndex (basePath, char.Parse("/"), relativeFolderOffset));
-
-		//asset folder name
-		assetsFolder = basePath + "/assets/";
-		if (Application.isEditor) {
-			assetsFolder = basePath + "/_builds/assets/";
-		}
-		ScreenManager.Instance.Log("assets folder: "+assetsFolder);
-	}
-
-
-	/// <summary>
-	/// Returns the index of the nth instance of a char in a string.
-	/// </summary>
-	/// <returns>The nth index.</returns>
-	/// <param name="s">string to parse</param>
-	/// <param name="t">char to find [try char.Parse(<string>)]</param>
-	/// <param name="n">pos int nth, neg int for nth from last</param>
-	public int GetNthIndex(string s, char t, int n){
-		int count = 0;
-		if (n > 0) {
-			for (int i = 0; i < s.Length; i++) {
-				if (s [i] == t) {
-					count++;
-					if (count == n) {
-						return i;
-					}
-				}
-			}
-		} else if (n < 0) {
-			count = 0;
-			for (int i = s.Length - 1; i > 0; i--) {
-				if (s [i] == t) {
-					count--;
-					if (count == n) {
-						return i;
-					}
-				}
-			}
-		}
-		return -1;
-	}
-
-
-
-	#region PRIVATE methods
-
-	private IEnumerator LoadNewScene(string _scene) {
-		ScreenManager.Instance.Log("Loading scene: "+_scene);
-
-		AsyncOperation async = SceneManager.LoadSceneAsync(_scene, LoadSceneMode.Additive);
-
-		while (!async.isDone) {
-			yield return null;
-		}
-
-		ScreenManager.Instance.Log(" "+_scene+" scene loaded.");
-
-		EventsManager.Instance.SceneFinishedLoading (_scene);
-	}
-	#endregion
-
-*/
 }

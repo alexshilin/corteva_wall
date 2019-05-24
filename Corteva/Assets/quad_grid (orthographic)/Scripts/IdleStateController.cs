@@ -172,14 +172,14 @@ public class IdleStateController : MonoBehaviour {
 		//loop through all environments
 		for (int i = 0; i < environments.Count; i++) {
 			//position background panel
-			environments[i].envBackgroundPanels[0].transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
+			environments[i].envBgVid.transform.position = new Vector3 (0f, i == 0 ? 0f : 100f, 100f);
 			//scale it
-			environments[i].envBackgroundPanels[0].transform.localScale *= 3; //??
+			environments[i].envBgVid.transform.localScale *= 3; //??
 			//update its context and view
-			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Idle;
-			environments[i].envBackgroundPanels[0].GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
+			environments[i].envBgVid.GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Idle;
+			environments[i].envBgVid.GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
 			//add it to the backgrounds list
-			bgPanels2.Add (environments [i].envBackgroundPanels [0].GetComponent<PanelBase> ());
+			bgPanels2.Add (environments [i].envBgVid.GetComponent<PanelBase> ());
 		}
 		//set the current background index
 		currBg = -1;
@@ -502,6 +502,7 @@ public class IdleStateController : MonoBehaviour {
 
 		//decide allowed panel types based on remaining cells
 		int allowedTypes = colsRemainL == 1 ? 2 : 3;
+
 		//if theres a kiosk open, ignore previous, only allow one type
 		if (kioskColumns.Contains(1))
 			allowedTypes = 1;
@@ -584,6 +585,13 @@ public class IdleStateController : MonoBehaviour {
 		//this takes care of the AT MOST part
 		if ((r == "1x2" && usedTypes.Contains ("1x2")) || (r == "2x2" && usedTypes.Contains ("2x2"))) {
 			r = "1x1";
+		}
+
+		//make sure there are actual 1x2 panels available
+		if (r == "1x2") {
+			if (environments [currEnv].bty1x2Indeces.Count == 0) {
+				r = "1x1";
+			}
 		}
 
 		usedTypes.Add (r);
@@ -801,7 +809,7 @@ public class IdleStateController : MonoBehaviour {
 					//if desired type is 2x2, grab a beauty panel
 					r = Random.Range(0, environments[currEnv].bty1x1Indeces.Count);
 					panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x1Indeces[r]];
-					po.Assemble (panelData);
+					po.AssembleBeauty (panelData);
 					po.ActivateView (PanelBase.PanelView.Front, false);
 
 
@@ -811,9 +819,8 @@ public class IdleStateController : MonoBehaviour {
 					toPos.x += (5.33333f / 4f);
 					r = Random.Range(0, environments[currEnv].bty1x2Indeces.Count);
 					panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x2Indeces[r]];
-					po.Assemble (panelData);
+					po.AssembleBeauty (panelData);
 					po.ActivateView (PanelBase.PanelView.Front, false);
-				
 				
 				} else {
 					
@@ -830,11 +837,11 @@ public class IdleStateController : MonoBehaviour {
 						panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
 					}
 
-					po.panelID = panelData ["panelID"];
-					usedContentPanels.Add(panelData["panelID"]);
+					po.panelID = panelData ["reference_title"];
+					usedContentPanels.Add(panelData["reference_title"]);
 
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
-					po.Assemble (panelData);
+					po.Assemble (JSON.Parse(panelData));
 					//TEMP show either the front of thumbnail view
 					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
 					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);

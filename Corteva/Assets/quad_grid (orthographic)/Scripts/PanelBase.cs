@@ -75,6 +75,8 @@ public class PanelBase : MonoBehaviour {
 	//ref to pmp where panel module prefabs are referenced
 	private PanelModulePool PMP;
 
+	private AssetManager AM;
+
 
 	void Awake(){
 		panelState = PanelState.Ready;
@@ -96,6 +98,7 @@ public class PanelBase : MonoBehaviour {
 
 		//get ref to pmp
 		PMP = PanelModulePool.Instance;
+		AM = AssetManager.Instance;
 	}
 
 	private void OnDisable()
@@ -123,17 +126,29 @@ public class PanelBase : MonoBehaviour {
 	/// <param name="_panelData">JSON panel data.</param>
 	public void Assemble(JSONNode _panelData)
 	{
-		Debug.Log ("[Assemble] " + _panelData ["panelID"] + ": " + ((_panelData ["front"].Count > 0) ? "front" : "nil") + " , " + ((_panelData ["back"].Count > 0) ? "back" : "nil") + " , " + ((_panelData ["thumb"].Count > 0) ? "thumb" : "nil"));
+		//Debug.Log (_panelData);
+		Debug.Log ("[Assemble] " + _panelData ["reference_title"] + ": " + ((_panelData ["views"]["front"].Count > 0) ? "front" : "nil") + " , " + ((_panelData ["views"]["back"].Count > 0) ? "back" : "nil") + " , " + ((_panelData ["views"]["thumbnail"].Count > 0) ? "thumb" : "nil"));
 		//it is not necessary for a panel to have all three views
 		//this only generates those specified
-		if (_panelData ["front"].Count > 0) {
+		if (_panelData["views"]["front"].Count > 0) {
+			AssembleView (_panelData ["views"]["front"], PanelView.Front);
+		}
+		if (_panelData ["views"]["back"].Count > 0) {
+			AssembleView (_panelData ["views"]["back"], PanelView.Back);
+		}
+		if (_panelData ["views"]["thumbnail"].Count > 0) {
+			AssembleView (_panelData ["views"]["thumbnail"], PanelView.Thumbnail);
+		}
+	}
+
+	public void AssembleBeauty(JSONNode _panelData)
+	{
+		//Debug.Log (_panelData);
+		Debug.Log ("[AssembleBeauty] " + _panelData ["reference_title"] + ": " + ((_panelData ["front"].Count > 0) ? "front" : "nil") );
+		//it is not necessary for a panel to have all three views
+		//this only generates those specified
+		if (_panelData["front"].Count > 0) {
 			AssembleView (_panelData ["front"], PanelView.Front);
-		}
-		if (_panelData ["back"].Count > 0) {
-			AssembleView (_panelData ["back"], PanelView.Back);
-		}
-		if (_panelData ["thumbnail"].Count > 0) {
-			AssembleView (_panelData ["thumbnail"], PanelView.Thumbnail);
 		}
 	}
 
@@ -208,7 +223,11 @@ public class PanelBase : MonoBehaviour {
 		TextMeshPro text;
 		Color txtColor;
 
+
+
 		string template = _templateData ["template"];
+		string bgPath = AM.ParsePath (AM.rootDir + _templateData ["content"] ["bg_path"]);
+		Debug.Log ("[AssembleView] "+template +" "+ _view+" "+bgPath);
 
 		if (template == "beauty_1x1") {
 			t = LoadModule ("1x1_texture_color", _view);
@@ -216,14 +235,14 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				if (_view == PanelView.Front)
 					vid.Play ();
 			} else {
 				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 			}
 			return;
 		}
@@ -236,14 +255,14 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				if (_view == PanelView.Front)
 					vid.Play ();
 			} else {
 				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 			}
 			return;
 		}
@@ -257,7 +276,7 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				if (_view == PanelView.Front)
@@ -266,10 +285,10 @@ public class PanelBase : MonoBehaviour {
 				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
 				if (isImage) {
 					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 				} else {
-					if (_templateData ["content"] ["bg_color"].Count == 3) {
-						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					if (_templateData ["content"]["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
 					} else {
 						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 					}
@@ -285,7 +304,7 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				vid.Play ();
@@ -293,10 +312,10 @@ public class PanelBase : MonoBehaviour {
 				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
 				if (isImage) {
 					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 				} else {
-					if (_templateData ["content"] ["bg_color"].Count == 3) {
-						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					if (_templateData ["content"]["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
 					} else {
 						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 					}
@@ -307,10 +326,10 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x1_txt_layout_02", _view);
 
 			txtColor = Color.white;
-			if (_templateData ["content"] ["txt_color"].Count == 3) {
-				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
 			}
-			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
 			//
@@ -332,18 +351,18 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				if (_view == PanelView.Front)
 					vid.Play ();
 			} else {
 				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 			}
 
-			if (_templateData ["content"] ["bg_color"].Count == 3) {
-				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+			if (_templateData ["content"]["bg_color"].Count == 3) {
+				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
 			} else {
 				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
@@ -354,10 +373,10 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x2_txt_layout_l", _view);
 
 			txtColor = Color.white;
-			if (_templateData ["content"] ["txt_color"].Count == 3) {
-				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
 			}
-			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
 
@@ -379,7 +398,7 @@ public class PanelBase : MonoBehaviour {
 			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
 			if (isVideo) {
 				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (_templateData ["content"] ["bg_path"]);
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
 				vid.enabled = true;
 				vid.Prepare ();
 				vid.Play ();
@@ -387,10 +406,10 @@ public class PanelBase : MonoBehaviour {
 				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
 				if (isImage) {
 					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (_templateData ["content"] ["bg_path"]);
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 				} else {
-					if (_templateData ["content"] ["bg_color"].Count == 3) {
-						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);;
+					if (_templateData ["content"]["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
 					} else {
 						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 					}
@@ -401,10 +420,10 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x1_txt_layout_03", _view);
 
 			txtColor = Color.white;
-			if (_templateData ["content"] ["txt_color"].Count == 3) {
-				txtColor = new Color32 ((byte)_templateData ["content"] ["txt_color"][0].AsInt, (byte)_templateData ["content"] ["txt_color"][1].AsInt, (byte)_templateData ["content"] ["txt_color"][2].AsInt, 255);
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
 			}
-			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"] ["title"], _templateData ["content"] ["body"], txtColor);
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
 
@@ -422,15 +441,15 @@ public class PanelBase : MonoBehaviour {
 		//standard back view template
 		if (template == "template_04") {
 			t = LoadModule ("1x1_texture_color", _view);
-			if (_templateData ["content"] ["bg_color"].Count == 3) {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);
+			if (_templateData ["content"]["bg_color"].Count == 3) {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);
 			} else {
 				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
 
 			t = LoadModule ("1x1_txt_layout_04", _view);
-			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
-			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"]["title"];
+			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"]["body"];
 			return;
 		}
 
@@ -439,19 +458,19 @@ public class PanelBase : MonoBehaviour {
 
 		if (template == "infographic_01") {
 			t = LoadModule ("1x1_texture_color", _view);
-			if (_templateData ["content"] ["bg_color"].Count == 3) {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"] ["bg_color"][0].AsInt, (byte)_templateData ["content"] ["bg_color"][1].AsInt, (byte)_templateData ["content"] ["bg_color"][2].AsInt, 255);
+			if (_templateData ["content"]["bg_color"].Count == 3) {
+				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);
 			} else {
 				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
 
 			//
 			t = LoadModule ("1x1_txt_layout_02", _view);
-			if (_templateData ["content"] ["title"] != "") {
-				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["title"];
+			if (_templateData ["content"]["title"] != "") {
+				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"]["title"];
 			}
-			if (_templateData ["content"] ["body"] != "") {
-				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"] ["body"];
+			if (_templateData ["content"]["body"] != "") {
+				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"]["body"];
 			}
 			t.transform.localPosition += transform.forward * -0.01f;
 

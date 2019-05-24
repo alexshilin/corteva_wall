@@ -408,7 +408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5793c07df3aa7404a9fef84d1957b4d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadedTextures: []
+  imageFiles: []
+  imageTextures: []
   videoFiles: []
   mainCamera: {fileID: 1937405590}
   userInitCamera: {fileID: 1721195345}
@@ -429,6 +430,10 @@ MonoBehaviour:
     type: 2}
   panelPool: []
   environments: []
+  rootDir: 
+  dataDir: 
+  mediaDir: 
+  filePrefix: 
 --- !u!4 &221888337
 Transform:
   m_ObjectHideFlags: 0
@@ -885,6 +890,16 @@ Prefab:
     - target: {fileID: 114796145874997724, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114169063670796844, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114704240465244412, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+        type: 2}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4936,6 +4951,16 @@ Prefab:
     - target: {fileID: 114925140130833024, guid: 790cac165bcd34f6a805875591c506b9,
         type: 2}
       propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114729990285198272, guid: 790cac165bcd34f6a805875591c506b9,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114911242639551882, guid: 790cac165bcd34f6a805875591c506b9,
+        type: 2}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

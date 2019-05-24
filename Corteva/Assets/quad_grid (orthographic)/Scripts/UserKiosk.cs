@@ -311,7 +311,7 @@ public class UserKiosk : MonoBehaviour {
 		bgPanel.name = "bgPanel";
 		bgPanel.transform.localPosition = new Vector3 (0, 0, 50);
 		bgPanel.transform.localScale = new Vector3 (3, 3, 1);
-		bgPanel.GetComponent<PanelBase> ().AssembleBasic ("kiosk_bg", env.kioskBg);
+		bgPanel.GetComponent<PanelBase> ().AssembleBasic ("kiosk_bg", env.envKioskBg);
 		bgPanel.GetComponent<PanelBase> ().panelContext = PanelBase.PanelContext.Kiosk;
 		bgPanel.GetComponent<PanelBase> ().panelView = PanelBase.PanelView.Background;
 		bgPanel.GetComponent<PanelBase> ().myKiosk = transform.GetComponent<UserKiosk> ();
