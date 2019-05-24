@@ -1,28 +1,123 @@
 {
-	"pins":[
-		{
-			"lat":40.712776,
-			"lon":-74.005974,
-			"person":"Enthusiast",
-			"interest":"Climate Change"
-		},
-		{
-			"lat":39.768402,
-			"lon":-86.158066,
-			"person":"Student",
-			"interest":"Feeding a Growing Population"
-		},
-		{
-			"lat":43.615021,
-			"lon":-116.202316,
-			"person":"Farmer",
-			"interest":"Increasing Pressure on Farmers"
-		},
-		{
-			"lat":28.394857,
-			"lon":84.124008,
-			"person":"Scientist",
-			"interest":"Food Security"
-		}
-	]
+    "pins": [
+        {
+            "lat": 40.712776,
+            "lon": -74.005974,
+            "role": "enthusiast",
+            "challenge": "feeding_growing_population"
+        },
+        {
+            "lat": 40.712776,
+            "lon": -74.005974,
+            "role": "student",
+            "challenge": "food_security"
+        },
+        {
+            "lat": 40.712776,
+            "lon": -74.005974,
+            "role": "farmer",
+            "challenge": "feeding_growing_population"
+        },
+        {
+            "lat": 40.712776,
+            "lon": -74.005974,
+            "role": "scientist",
+            "challenge": "increasing_pressure"
+        }
+    ],
+    "roles": [
+        {
+            "_key": "machine_name",
+            "machine_name": "farmer",
+            "title": "Farmer",
+            "link": "\/taxonomy\/term\/57",
+            "changed": "1558712655",
+            "drupal_type": "pindrop_roles",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "0d99f4ac-868f-46ab-bd7e-17c85f77d861"
+        },
+        {
+            "_key": "machine_name",
+            "machine_name": "government_official",
+            "title": "Government Official",
+            "link": "\/taxonomy\/term\/58",
+            "changed": "1558712665",
+            "drupal_type": "pindrop_roles",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "7e0de9a5-013d-40dd-95ca-10336005ecd7"
+        },
+        {
+            "_key": "machine_name",
+            "machine_name": "scientist",
+            "title": "Scientist",
+            "link": "\/taxonomy\/term\/56",
+            "changed": "1558712630",
+            "drupal_type": "pindrop_roles",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "3f5ac77a-2f08-465e-a3d6-8ed1ebde9087"
+        },
+        {
+            "_key": "machine_name",
+            "machine_name": "student",
+            "title": "Student",
+            "link": "\/taxonomy\/term\/55",
+            "changed": "1558712619",
+            "drupal_type": "pindrop_roles",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "8fe73fcb-b329-4a0f-b61b-091daef5fcf0"
+        }
+    ],
+    "challenges": [
+        {
+            "_key": "machine_name",
+            "machine_name": "feeding_growing_population",
+            "title": "Feeding a Growing Population",
+            "link": "\/taxonomy\/term\/53",
+            "changed": "1558712590",
+            "drupal_type": "pindrop_challenges",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "eed430a1-6629-4096-9b1d-fc81a00b3faf"
+        },
+        {
+            "_key": "machine_name",
+            "machine_name": "food_security",
+            "title": "Food Security",
+            "link": "\/taxonomy\/term\/54",
+            "changed": "1558712605",
+            "drupal_type": "pindrop_challenges",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "122e04e7-e78a-4c45-8ce0-936f4ee844c3"
+        },
+        {
+            "_key": "machine_name",
+            "machine_name": "increasing_pressure",
+            "title": "Increasing Pressure on Farmers",
+            "link": "\/taxonomy\/term\/52",
+            "changed": "1558712567",
+            "drupal_type": "pindrop_challenges",
+            "funfact": {
+                "title": "Fun Facts",
+                "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+            },
+            "uuid": "f342b7d2-2a31-4fdc-a13d-038b2b37f885"
+        }
+    ]
 }

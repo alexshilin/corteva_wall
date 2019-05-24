@@ -227,7 +227,7 @@ public class PanelBase : MonoBehaviour {
 
 		string template = _templateData ["template"];
 		string bgPath = AM.ParsePath (AM.rootDir + _templateData ["content"] ["bg_path"]);
-		Debug.Log ("[AssembleView] "+template +" "+ _view+" "+bgPath);
+		//Debug.Log ("[AssembleView] "+template +" "+ _view+" "+bgPath);
 
 		if (template == "beauty_1x1") {
 			t = LoadModule ("1x1_texture_color", _view);

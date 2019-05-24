@@ -150,7 +150,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4496902312744720, guid: acfe5d3cbe5324554ab95102bccedb6f, type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 114248962580134922, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
@@ -217,7 +217,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4489331935699560, guid: be9df754388944b288209d11486889db, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 33221106061237922, guid: be9df754388944b288209d11486889db,
         type: 2}
@@ -241,6 +241,47 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: be9df754388944b288209d11486889db, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &953175434
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 953175436}
+  - component: {fileID: 953175435}
+  m_Layer: 0
+  m_Name: PinSaver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &953175435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 953175434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e583ac95f18d4ec7ad1d9b124c41f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oldPinsLoad: 
+--- !u!4 &953175436
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 953175434}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 18.180908, y: -39.80127, z: 12.6953125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1080796542
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +478,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4440597809320946, guid: 5f4564ce06daa48c6ae1ea45edcf1c0d, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 33743350397266872, guid: 5f4564ce06daa48c6ae1ea45edcf1c0d,
         type: 2}

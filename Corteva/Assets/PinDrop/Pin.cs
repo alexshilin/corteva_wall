@@ -8,6 +8,7 @@ public class Pin : MonoBehaviour {
 
 	private bool ready = false;
 	private bool active = true;
+	private bool user = false;
 	public Transform icon;
 	public Transform info;
 	public BoxCollider bc;
@@ -15,6 +16,8 @@ public class Pin : MonoBehaviour {
 	public TextMeshPro label;
 	public SpriteRenderer bg;
 	private TapGesture tapGesture;
+
+	public Vector2 latLon;
 
 	[HideInInspector]
 	public float baseSize;
@@ -45,6 +48,7 @@ public class Pin : MonoBehaviour {
 	}
 
 	public void SetConfirm(){
+		user = true;
 		bc.enabled = true;
 		tapGesture = GetComponent<TapGesture> ();
 		tapGesture.Tapped += tapHandler;
@@ -52,6 +56,7 @@ public class Pin : MonoBehaviour {
 
 	public void UnsetConfirm(){
 		if (tapGesture != null) {
+			user = false;
 			bc.enabled = false;
 			tapGesture.Tapped -= tapHandler;
 		}
@@ -94,7 +99,7 @@ public class Pin : MonoBehaviour {
 	}
 
 	void ToggleInfo(bool _on){
-		if (active) {
+		if (active && !user) {
 			info.gameObject.SetActive (_on);
 		}
 	}

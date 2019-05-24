@@ -95,13 +95,12 @@ public class PinDropEarth : MonoBehaviour {
 
 	public IEnumerator LoadPins(){
 		yield return new WaitForSeconds (0.5f);
-		string dataAsJson = System.IO.File.ReadAllText ("/Users/user/Documents/WORK/Baji/Corteva/_repo/_builds/assets/"+"pins.json");
-		pins = JSON.Parse(dataAsJson);
+		pins = PinData.Instance.pinData;
 
 		Debug.Log ("[PinDropEarth] " + pins ["pins"].Count+" pins"); 
 
 		for (int i = 0; i < pins ["pins"].Count; i++) {
-			string txt = "<b>"+pins["pins"][i]["interest"] +"</b><br>"+pins["pins"][i]["person"];
+			string txt = "<b>"+pins["pins"][i]["challenge"] +"</b><br>"+pins["pins"][i]["role"];
 			PlacePin (new Vector2(pins ["pins"][i]["lat"].AsFloat, pins ["pins"][i]["lon"].AsFloat), txt);
 		}
 
@@ -169,6 +168,7 @@ public class PinDropEarth : MonoBehaviour {
 		GameObject p = Instantiate (pin.gameObject, pinContainer);
 		p.transform.localPosition = LatLonToXYZ (_latlon);
 		p.GetComponent<Pin> ().SetPinText (_text);
+		p.GetComponent<Pin> ().latLon = _latlon;
 		if (_newUser) {
 			p.GetComponent<Pin> ().SetConfirm ();
 			p.GetComponent<Pin> ().SetPinColor (new Color32 (252, 76, 2, 255));

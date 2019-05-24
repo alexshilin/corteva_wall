@@ -59,8 +59,10 @@ public class PinDropMenu : MonoBehaviour {
 		p.SetPinText ("<b>"+q2a+"</b><br>"+q1a);
 		p.SetPinColor (new Color32 (0, 191, 111, 255));
 		p.baseSize *= 0.5f;
-		PD.globe.GetComponent<PinDropEarth> ().newUserPin = null;
+		PinData.Instance.SavePin (p.latLon, q1a, q2a);
+		PD.globe.newUserPin = null;
 		PD.menu.instruct.text = "THANK YOU";
+
 		//save to json
 	}
 

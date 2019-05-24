@@ -94,12 +94,12 @@ public class AssetManager : MonoBehaviour {
 	public string filePrefix;
 
 	const string rootYamlDocName = "corteva.config.yaml";
-	const string environmentsJsonDocName = "environments.json";
-	const string contentJsonDocName = "content_items.json";
-	const string filesJsonDocName = "files.json";
-	const string lastupdateJsonDocName = "last_update.json";
-	const string messagingJsonDocName = "messaging_buckets.json";
-	const string presentationsJsonDocName = "presentations.json";
+	string environmentsJsonDocName = "environments.json";
+	string contentJsonDocName = "content_items.json";
+	string filesJsonDocName = "files.json";
+	string lastupdateJsonDocName = "last_update.json";
+	string messagingJsonDocName = "messaging_buckets.json";
+	string presentationsJsonDocName = "presentations.json";
 
 
 
@@ -118,6 +118,8 @@ public class AssetManager : MonoBehaviour {
 	}
 
 	private void ParseYamlConfig(){
+		//FUTURE NOTE: if you're updatng these, make sure to make updates to PinData.cs as well.
+
 		//get ref to user root
 		userRoot = ParsePath(System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal)+"/");
 		SM.Log ("user root: " + userRoot);
@@ -136,9 +138,18 @@ public class AssetManager : MonoBehaviour {
 		dataDir = ParsePath (rootDir + dataNode.Children [new YamlScalarNode ("directory")] + "/");
 		SM.Log ("\tdataDir: " + dataDir);
 
+		lastupdateJsonDocName = (string)dataNode.Children [new YamlScalarNode ("last_updated_file")];
+
 		var mediaNode = (YamlMappingNode)rootNode.Children [new YamlScalarNode ("media")];
 		mediaDir = ParsePath (rootDir + mediaNode.Children [new YamlScalarNode ("directory")] + "/");
 		SM.Log ("\tmediaDir: " + mediaDir);
+
+		var filesNode = (YamlMappingNode)dataNode.Children [new YamlScalarNode ("files")];
+		environmentsJsonDocName = (string)filesNode.Children [new YamlScalarNode ("environments")];
+		contentJsonDocName = (string)filesNode.Children [new YamlScalarNode ("content_items")];
+		filesJsonDocName = (string)filesNode.Children [new YamlScalarNode ("media")];
+		messagingJsonDocName = (string)filesNode.Children [new YamlScalarNode ("messaging_buckets")];
+		presentationsJsonDocName = (string)filesNode.Children [new YamlScalarNode ("presentations")];
 
 		ParseJsonConfigs ();
 	}
