@@ -290,6 +290,17 @@ public class PinDropEarth : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (Input.GetKey (KeyCode.UpArrow)) {
+			if (transform.localScale.x > 0.5f) {
+				transform.localScale *= 0.9f;
+			}
+		}
+		if (Input.GetKey (KeyCode.DownArrow)) {
+			if (transform.localScale.x < 2f) {
+				transform.localScale *= 1.1f;
+			}
+		}
+
 		if (!idling) {
 			timeWaited += Time.deltaTime;
 			if (timeWaited > maxTimeToWait) {

@@ -830,18 +830,18 @@ public class IdleStateController : MonoBehaviour {
 						r = Random.Range (0, availableContentPanels.Count);
 						//grab data from json based on that index
 						Debug.Log ("grabbing panel at index: " + r + " | " + (availableContentPanels.Count - 1));
-						panelData = environments [currEnv].envPanelData [availableContentPanels [r]];
+						panelData = JSON.Parse(environments [currEnv].envPanelData [availableContentPanels [r]]);
 						availableContentPanels.RemoveAt (r);
 					}else{
 						Debug.Log ("grabbing random panel");
-						panelData = environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)];
+						panelData = JSON.Parse(environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)]);
 					}
 
 					po.panelID = panelData ["reference_title"];
 					usedContentPanels.Add(panelData["reference_title"]);
 
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
-					po.Assemble (JSON.Parse(panelData));
+					po.Assemble (panelData);
 					//TEMP show either the front of thumbnail view
 					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
 					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);

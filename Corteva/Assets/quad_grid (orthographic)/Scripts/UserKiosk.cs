@@ -54,7 +54,7 @@ public class UserKiosk : MonoBehaviour {
 	private PressGesture pressGesture;
 	private TransformGesture transformGesture;
 
-	private float timeSinceLastTouch = 0f;
+	public float timeSinceLastTouch = 0f;
 	private float maxWaitUntouched = 20f;
 	private bool waitingForSave = false;
 	private float timeTillClose = 0f;
@@ -92,8 +92,12 @@ public class UserKiosk : MonoBehaviour {
 	}
 
 	void transformHandler(object sender, EventArgs e){
-		dragDelta = transformGesture.DeltaPosition;
-		dragNav = true;
+		if (activePanel == null) {
+			dragDelta = transformGesture.DeltaPosition;
+			dragNav = true;
+		}
+		//reset idle clock
+		timeSinceLastTouch = 0f;
 	}
 
 	void transformCompleteHandler(object sender, EventArgs e){
@@ -104,10 +108,14 @@ public class UserKiosk : MonoBehaviour {
 	/// Activates the "are you still there?" overlay
 	/// </summary>
 	private void AreYouStillThere(){
-		if (activePanel != null) {
-			closer.localPosition = new Vector3 (closer.localPosition.x, activePanel.localPosition.y, closer.localPosition.z);
+		if (pinDrop != null) {
+			closer.localPosition = Vector3.zero + Vector3.forward * closer.localPosition.z;
 		} else {
-			closer.localPosition = new Vector3 (closer.localPosition.x, menu.localPosition.y, closer.localPosition.z);
+			if (activePanel != null) {
+				closer.localPosition = new Vector3 (closer.localPosition.x, activePanel.localPosition.y, closer.localPosition.z);
+			} else {
+				closer.localPosition = new Vector3 (closer.localPosition.x, menu.localPosition.y, closer.localPosition.z);
+			}
 		}
 		closer.gameObject.SetActive (true);
 		timeTillClose = maxTimeTillClose;
@@ -443,6 +451,11 @@ public class UserKiosk : MonoBehaviour {
 			Vector3 menuGoTo = menu.localPosition;
 			menuGoTo.y += dragDelta.y;
 			menu.localPosition = menuGoTo;
+			if (menu.localPosition.y < -3f)
+				menu.localPosition = new Vector3 (menu.localPosition.x, -3f, menu.localPosition.z);
+			if (menu.localPosition.y > 0f)
+				menu.localPosition = new Vector3 (menu.localPosition.x, -0, menu.localPosition.z);
+			//
 		}
 	}
 

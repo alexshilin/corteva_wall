@@ -21,8 +21,7 @@ public class PinButton : MonoBehaviour{
 	public bool isSelected = false;
 
 	void Awake(){
-		SetBtnColor (btnColor);
-		bg.color = btnColorOff;
+		
 	}
 
 	void OnEnable(){
@@ -32,6 +31,8 @@ public class PinButton : MonoBehaviour{
 	}
 		
 	void Start () {
+		SetBtnColor (btnColor);
+		bg.color = btnColorOff;
 		if (labelText != null) {
 			SetBtnText (labelText);
 		}

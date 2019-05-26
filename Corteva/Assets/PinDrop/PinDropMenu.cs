@@ -42,7 +42,7 @@ public class PinDropMenu : MonoBehaviour {
 		float row = 0;
 
 		q1.SetActive (true);
-		Transform q1btns = q1.transform.Find ("Btns");
+		Transform q1btns = q1.transform.Find("Btns");
 		for (int i = 0; i < data ["roles"].Count; i++) {
 			GameObject b = Instantiate (btn, q1btns);
 			PinButton pb = b.GetComponent<PinButton> ();
@@ -51,13 +51,18 @@ public class PinDropMenu : MonoBehaviour {
 			pb.onInteraction.AddListener (() => AnswerQuestionOne(pb.labelText));
 			Vector3 pos = Vector3.zero;
 			if (Q1B.Count > 0) {
-				pos.x = Q1B [i - 1].transform.localPosition.x + (Q1B [i - 1].GetComponent<PinButton>().bc.bounds.extents.x * 0.7f);
+				if (PD.myKiosk != null) {
+					pos.x = Q1B [i - 1].transform.localPosition.x + (Q1B [i - 1].GetComponent<PinButton> ().bc.bounds.size.x + 0.03f);
+				} else {
+					pos.x = Q1B [i - 1].transform.localPosition.x + (Q1B [i - 1].GetComponent<PinButton>().bc.bounds.extents.x * 0.7f);
+				}
 				if (pos.x > 2f) {
 					pos.x = 0f;
 					row++;
 				}
 			}
 			pos.y = -0.25f * row;
+			Debug.Log ("Q1 "+i+": " + row+" ("+Q1B.Count+")");
 			b.transform.localPosition = pos;
 			Q1B.Add (b);
 		}
@@ -74,7 +79,11 @@ public class PinDropMenu : MonoBehaviour {
 			pb.onInteraction.AddListener (() => AnswerQuestionTwo(pb.labelText));
 			Vector3 pos = Vector3.zero;
 			if (Q2B.Count > 0) {
-				pos.x = Q2B [i - 1].transform.localPosition.x + (Q2B [i - 1].GetComponent<PinButton>().bc.bounds.extents.x * 0.7f);
+				if (PD.myKiosk != null) {
+					pos.x = Q2B [i - 1].transform.localPosition.x + (Q2B [i - 1].GetComponent<PinButton> ().bc.bounds.size.x + 0.03f);
+				} else {
+					pos.x = Q2B [i - 1].transform.localPosition.x + (Q2B [i - 1].GetComponent<PinButton> ().bc.bounds.extents.x * 0.7f);
+				}
 				if (pos.x > 2f) {
 					pos.x = 0f;
 					row++;

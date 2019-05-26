@@ -382,8 +382,17 @@ public class PanelBase : MonoBehaviour {
 
 			//
 			t = LoadModule ("1x1_extras", _view);
-
-			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			if ((template == "template_02_tl" && _view == PanelView.Front)
+				|| (template == "template_02_tr" && _view == PanelView.Back)) 
+			{
+				//buttons are image-side
+				t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			} else if ((template == "template_02_tl" && _view == PanelView.Back)
+						|| (template == "template_02_tr" && _view == PanelView.Front)) 
+			{
+				//buttons are text-siz\de
+				t.GetComponent<PanelExtras> ().ColorBtns (new Color32(230, 231, 232, 255), environment.envColor);
+			}
 			t.transform.localPosition += transform.forward * -0.02f;
 
 			return;
@@ -450,6 +459,54 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x1_txt_layout_04", _view);
 			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"]["title"];
 			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"]["body"];
+			return;
+		}
+
+
+
+
+		//image with infocard
+		if (template == "template_05") {
+			//
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
+				if (isImage) {
+					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
+				} else {
+					if (_templateData ["content"]["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
+					} else {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+					}
+				}
+			}
+
+			//
+			t = LoadModule ("1x1_txt_layout_05", _view);
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponentInChildren<InfoCard> ().SetText (_templateData ["content"]["title"], _templateData ["content"]["body"], environment.envColor, new Color(0,0,0,0.75f), txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
+
 			return;
 		}
 
@@ -791,7 +848,18 @@ public class PanelBase : MonoBehaviour {
 
 		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active && myKiosk.activePanel == transform) {
 			transform.position += transformGesture.DeltaPosition;
+			if (transform.localPosition.y < -3f)
+				transform.localPosition = new Vector3 (transform.localPosition.x, -3f, transform.localPosition.z);
+			if (transform.localPosition.y > 0f)
+				transform.localPosition = new Vector3 (transform.localPosition.x, -0, transform.localPosition.z);
+			if (transform.localPosition.x < -1f)
+				transform.localPosition = new Vector3 (-1, transform.localPosition.y, transform.localPosition.z);
+			if (transform.localPosition.x > 1f)
+				transform.localPosition = new Vector3 (1, transform.localPosition.y, transform.localPosition.z);
+			//
 			myKiosk.menuFollowPanel = true;
+			//reset idle clock
+			myKiosk.timeSinceLastTouch = 0f;
 
 			/*
 			transform.localScale *= transformGesture.DeltaScale;
