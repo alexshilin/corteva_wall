@@ -9,9 +9,10 @@ public class UserGrid : MonoBehaviour {
 	private int maxPanelsPerColumn = 3;
 	private float panelSpacing = 0.1f;
 
-	private int currColumn = 1;
-	private int currRow = 1;
-	private int currPanelsInColumn = 0;
+	private float currColumn = 0;
+	private float currRow = 0;
+	private int currPanels = 0;
+	private bool flip = false;
 
 	public Vector3 emptySpot;
 
@@ -20,6 +21,14 @@ public class UserGrid : MonoBehaviour {
 	void Start () {
 		//adjust vertical position of grid container so its centered with menu
 		transform.localPosition += Vector3.down * -1.85f;
+		flip = Random.Range (0, 2) == 0 ? true : false;
+		if (Random.Range (0, 2) == 0) {
+			currPanels = 0;
+			currColumn = 0;
+		} else {
+			currPanels = 3;
+			currColumn = -1.5f;
+		}
 	}
 
 	/// <summary>
@@ -32,9 +41,19 @@ public class UserGrid : MonoBehaviour {
 			Destroy (child.gameObject);
 		}
 		//reset grid position calc variables
-		currColumn = 1;
-		currRow = 1;
-		currPanelsInColumn = 0;
+		currColumn = 0;
+		currRow = 0;
+		currPanels = 0;
+		flip = Random.Range (0, 2) == 0 ? true : false;
+		if (Random.Range (0, 2) == 0) {
+			currPanels = 0;
+			currColumn = 0;
+		} else {
+			currPanels = 3;
+			currColumn = -1.5f;
+		}
+
+		//currPanels = Random.Range (0, 2) == 0 ? 0 : 3;
 		gridCells.Clear ();
 	}
 
@@ -47,26 +66,56 @@ public class UserGrid : MonoBehaviour {
 		Debug.Log ("\ttotal panels" + myKiosk.env.envPanelData.Count);
 
 		//set up positioning vars
-		float panelX, panelY;
+		float panelX, panelY, panelScale;
 		Vector3 panelPostion;
 
 		 
 
 		//loop through enviroment panels JSON
 		for (int i = 0; i < myKiosk.env.envPanelData.Count; i++) {
+			panelScale = 1f;
+			//update position vars
+			currPanels++;
+			//currRow++;
+			if (currPanels / 3f <= 1) {
+				
+				currRow += 1;
+				Debug.Log (i + ": " + currPanels + " " + (currPanels / 3f) + " " +currRow+", "+currColumn);
+
+			} else if (currPanels / 4f <= 1) {
+				currRow = flip ? 2.5f : 1.5f;
+				currColumn += 1.5f;
+				panelScale = 2.03f;
+				Debug.Log (i + ": " + currPanels + " " + (currPanels / 4f) + " " +currRow+", "+currColumn);
+
+			} else if (currPanels / 5f <= 1) {
+				currRow = flip ? 1f : 3f;
+				currColumn -= 0.5f;
+				Debug.Log (i + ": " + currPanels + " " + (currPanels / 5f) + " " +currRow+", "+currColumn);
+
+			} else if (currPanels / 6f <= 1) {
+				currRow = flip ? 1f : 3f;
+				currColumn++;
+				Debug.Log (i + ": " + currPanels + " " + (currPanels / 6f) + " " +currRow+", "+currColumn);
+
+			}
+
+
+
 			//calculate panel position
 			panelX = (currColumn * 5.333333f) + (currColumn * panelSpacing);
 			panelY = -((currRow * 3) + (currRow * panelSpacing));
 			panelPostion = new Vector3 (panelX, panelY, 0);
 			JSONNode panelData = JSON.Parse (myKiosk.env.envPanelData[i]);
 
-			//update position vars
-			currPanelsInColumn++;
-			currRow++;
-			if (currPanelsInColumn == maxPanelsPerColumn) {
-				currPanelsInColumn = 0;
-				currRow = 1;
+
+			if (currPanels / 6f == 1) {
+				currRow = 0f;
 				currColumn++;
+				currPanels = 0;
+				flip = !flip;
+				Debug.Log (i + ": " + currPanels + " " + (currPanels / 6f) + " " +currRow+", "+currColumn);
+
 			}
 
 			//leave empty spot is theres an active panel (from activtion from idle)
@@ -87,6 +136,7 @@ public class UserGrid : MonoBehaviour {
 			//instantiate panel and make child of user grid
 			GameObject panel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);
 			panel.transform.localPosition = panelPostion;
+			panel.transform.localScale = Vector3.one * panelScale;
 			panel.name = "p"+i;
 
 			//update panel contentd
