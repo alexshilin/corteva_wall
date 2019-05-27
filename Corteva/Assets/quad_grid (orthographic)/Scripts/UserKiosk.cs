@@ -150,8 +150,6 @@ public class UserKiosk : MonoBehaviour {
 			//activePanel.GetComponent<PanelBase>().BackToGrid();
 			ToggleTint (false);
 		}
-			
-
 
 		//animate the grid out
 		Vector3 gridLeave = userGrid.transform.localPosition;
