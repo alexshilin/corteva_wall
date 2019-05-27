@@ -88,6 +88,11 @@ public class ScreenManager : MonoBehaviour {
 			ToggleAdmin ();
 		}
 
+		if (Input.GetKeyDown (KeyCode.L)) {
+			logText.gameObject.SetActive (!logText.gameObject.activeSelf);
+		}
+
+
 		//toggle fullscreen
 		if (Input.GetKeyDown (KeyCode.F)) {
 			Screen.fullScreen = !Screen.fullScreen;
@@ -143,6 +148,7 @@ public class ScreenManager : MonoBehaviour {
 	}
 
 	public void ToggleAdmin(){
+		logText.gameObject.SetActive (false);
 		admin.SetActive (!admin.activeSelf);
 		adminOn = !adminOn;
 	}

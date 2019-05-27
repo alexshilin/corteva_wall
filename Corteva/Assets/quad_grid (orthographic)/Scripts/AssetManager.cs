@@ -21,6 +21,8 @@ public class Environment
 	public GameObject envBgVid;
 	public JSONNode envPanelData = new JSONArray();
 	public JSONNode btyPanelData;
+	public JSONNode bty1x1PanelData = new JSONArray ();
+	public JSONNode bty1x2PanelData = new JSONArray ();
 	public List<int> bty1x1Indeces = new List<int> ();
 	public List<int> bty1x2Indeces = new List<int> ();
 	public int env1x1Count;
@@ -232,10 +234,32 @@ public class AssetManager : MonoBehaviour {
 			SM.Log ("\t" + scenes [i] ["environment"] +
 				": " + scenes [i] ["content_panels"].Count + " content panels" +
 				", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
+
+			//match "scene" environment from json and match to environment object
 			string envKey = scenes [i] ["environment"];
 			int eI = environments.FindIndex (x => x.envKey == envKey);
 			environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
+
+			/*
+			for (int n = 0; n < scenes [i] ["beauty_panels"].Count; n++) {
+				
+				if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x1") 
+				{
+					environments [eI].bty1x1PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
+				}
+
+				if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x2") 
+				{
+					environments [eI].bty1x2PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
+				}
+			
+			}
+			Debug.Log (">>>>");
+			Debug.Log (environments [eI].bty1x1PanelData.Count+" | "+environments [eI].bty1x2PanelData.Count);
+			*/
 		}
+
+
 
 		StartCoroutine(LoadImages ());
 	}
@@ -276,7 +300,7 @@ public class AssetManager : MonoBehaviour {
 			environments[i].envBgVid = panelBaseGO;
 
 			environments[i].env1x1Count = environments[i].envPanelData.Count;
-			Debug.Log ("- "+environments [i].btyPanelData.Count);
+			//Debug.Log ("- "+environments [i].btyPanelData.Count);
 			for (int a = 0; a < environments[i].btyPanelData.Count; a++) {
 				if (environments[i].btyPanelData [a]["front"]["template"] == "beauty_1x2") {
 					environments[i].bty1x2Indeces.Add (a);
@@ -284,12 +308,14 @@ public class AssetManager : MonoBehaviour {
 					environments[i].bty1x1Indeces.Add (a);
 				}
 			}
-			Debug.Log ("\t- "+environments[i].bty1x1Indeces.Count);
-			Debug.Log ("\t- "+environments[i].bty1x2Indeces.Count);
+			//Debug.Log ("\t- "+environments[i].bty1x1Indeces.Count);
+			//Debug.Log ("\t- "+environments[i].bty1x2Indeces.Count);
 		}
 
+		//START APP IDLE LOOP
 		ScreenManager.Instance.ToggleAdmin ();
 		IdleStateController.Instance.Init ();
+		IdleStateController.Instance.StartIdleLoop ();
 	}
 
 	#region PUBLIC methods

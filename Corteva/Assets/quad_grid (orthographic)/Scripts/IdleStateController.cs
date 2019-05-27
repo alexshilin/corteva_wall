@@ -53,15 +53,13 @@ public class IdleStateController : MonoBehaviour {
 	List<Environment> environments;
 	public int currEnv = -1;
 
-	string[] availableTypes = new string[]{"1x1","1x1","1x1","1x1","1x2","2x2"};
-
 	List<string> usedTypes = new List<string>();
 
 	List<string> availableBeautyPanels = new List<string> ();
 	List<string> usedBeautyPanels = new List<string> ();
 	List<int> availableContentPanels = new List<int> ();
 	List<int> usedContentPanels = new List<int> ();
-
+	 
 	Transform currTitleCam;
 	Transform currTitlePanel;
 
@@ -476,7 +474,9 @@ public class IdleStateController : MonoBehaviour {
 		AllocatePanelPlacement (1, startColumn, "1x1", Vector3.down);
 
 		//in mid row, go outwards
+		//check all columns to the left
 		CheckLeft (1, startColumn);
+		//check all columns to the right
 		CheckRight (1, startColumn);
 
 		StartCoroutine(PlaceCellCameras());
@@ -568,21 +568,32 @@ public class IdleStateController : MonoBehaviour {
 	string CheckAvailable(int _row, int _col, int _panelType){
 		string r;
 		int coin;
-		if (_panelType == 3) {
-			//r = availableTypes [Random.Range (0, availableTypes.Length)];
+
+		//panel type disctates which types of panels are accaptable
+		if (_panelType == 3) 
+		{
+			//type 3 means 2x2 is ok
+			//coin flip to see if we use a 2x2
+			//choose btw 0,1,2, anything over 0 gets a 2x2 (66% chance)
 			coin = Random.Range(0, 3);
-			r = (coin == 0) ? "2x2" : "1x1";
-		} else if (_panelType == 2) {
-			//r = availableTypes [Random.Range (0, availableTypes.Length - 1)];
+			r = (coin > 0) ? "2x2" : "1x1";
+
+		} else if (_panelType == 2) 
+		{
+			//type 2 meant 1x2 is ok
+			//coin flip to see if we use a 1x2
+			//choose btw 0,1,2, anything over 0 gets a 1x2 (66% chance)
 			coin = Random.Range(0, 3);
-			r = (coin == 0) ? "1x2" : "1x1";
-		} else {
-			//r = availableTypes [Random.Range (0, availableTypes.Length - 2)];
+			r = (coin > 0) ? "1x2" : "1x1";
+
+		} else 
+		{
+			//type 1 means only 1x1 is ok
 			r = "1x1";
+
 		}
-		//r = availableTypes [Random.Range (0, availableTypes.Length - 2)];
-		//TODO make sure there is AT LEAST + AT MOST 1 instance of a 1x2 and 2x2 panel type
-		//this takes care of the AT MOST part
+
+		//make sure we have AT MOST one of each 1x2 & 2x2
 		if ((r == "1x2" && usedTypes.Contains ("1x2")) || (r == "2x2" && usedTypes.Contains ("2x2"))) {
 			r = "1x1";
 		}
@@ -619,8 +630,6 @@ public class IdleStateController : MonoBehaviour {
 
 	bool TestFit(int _row, int _col, string _type, Vector3 _dir){
 //		Debug.Log("\t\t[TestFit] "+_type+" in cell ["+_row+","+_col+"]");
-
-		bool canPlace = true;
 
 		//rule 1: make sure cell isnt already occupied
 		if (layoutGrid [_row] [_col] != 0) {
@@ -737,8 +746,6 @@ public class IdleStateController : MonoBehaviour {
 	IEnumerator PlaceCellCameras(){
 		Debug.Log ("[PlaceCellCameras]");
 		idleSequence.Sort(SortByDistanceFromOrigin);
-		float zDepth = 50;
-		float layerDepth = 0;
 		float group = 2;
 		float titlePauseTime = 0;
 		//int activePanels = 0;
@@ -931,8 +938,6 @@ public class IdleStateController : MonoBehaviour {
 	void UnPlaceCameras(){
 		Debug.Log ("[UnPlaceCameras]");
 		panelsInTransition = true;
-		float zDepth = 50;
-		float layerDepth = 0;
 		float group = 2;
 		float duration = 0;
 		float delay = 0;
@@ -989,8 +994,6 @@ public class IdleStateController : MonoBehaviour {
 
 	Rect CreateCameraCell(int _row, int _col, Vector2 _size, Vector3 _dir){
 		Rect camRect;
-		int col = _col;
-		int row = _row;
 
 		float cellW = 1f / GM.desiredGrid.x;
 		float cellH = 1f / GM.desiredGrid.y;

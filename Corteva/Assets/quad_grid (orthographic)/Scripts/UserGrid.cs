@@ -81,23 +81,19 @@ public class UserGrid : MonoBehaviour {
 			if (currPanels / 3f <= 1) {
 				
 				currRow += 1;
-				Debug.Log (i + ": " + currPanels + " " + (currPanels / 3f) + " " +currRow+", "+currColumn);
 
 			} else if (currPanels / 4f <= 1) {
 				currRow = flip ? 2.5f : 1.5f;
 				currColumn += 1.5f;
 				panelScale = 2.03f;
-				Debug.Log (i + ": " + currPanels + " " + (currPanels / 4f) + " " +currRow+", "+currColumn);
 
 			} else if (currPanels / 5f <= 1) {
 				currRow = flip ? 1f : 3f;
 				currColumn -= 0.5f;
-				Debug.Log (i + ": " + currPanels + " " + (currPanels / 5f) + " " +currRow+", "+currColumn);
 
 			} else if (currPanels / 6f <= 1) {
 				currRow = flip ? 1f : 3f;
 				currColumn++;
-				Debug.Log (i + ": " + currPanels + " " + (currPanels / 6f) + " " +currRow+", "+currColumn);
 
 			}
 
@@ -115,7 +111,6 @@ public class UserGrid : MonoBehaviour {
 				currColumn++;
 				currPanels = 0;
 				flip = !flip;
-				Debug.Log (i + ": " + currPanels + " " + (currPanels / 6f) + " " +currRow+", "+currColumn);
 
 			}
 
@@ -133,7 +128,6 @@ public class UserGrid : MonoBehaviour {
 			}
 			//}
 
-			Debug.Log ("\ti: " + panelPostion);
 
 			//instantiate panel and make child of user grid
 			GameObject panel = Instantiate (AssetManager.Instance.NEWpanelPrefab, transform);

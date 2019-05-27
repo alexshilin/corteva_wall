@@ -71,6 +71,7 @@ public class PanelBase : MonoBehaviour {
 	//gesture component references
 	private TapGesture tapGesture;
 	private TransformGesture transformGesture;
+	private FlickGesture flickGesture;
 
 	//ref to pmp where panel module prefabs are referenced
 	private PanelModulePool PMP;
@@ -88,6 +89,7 @@ public class PanelBase : MonoBehaviour {
 		//get gesture components
 		tapGesture = GetComponent<TapGesture> ();
 		transformGesture = GetComponent<TransformGesture> ();
+		flickGesture = GetComponent<FlickGesture> ();
 
 		//register for their events
 		tapGesture.Tapped += tappedHandler;
@@ -95,6 +97,8 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.TransformStarted += transformStartedHandler;
 		transformGesture.Transformed += transformedHandler;
 		transformGesture.TransformCompleted += transformCompletedHandler;
+
+		flickGesture.Flicked += flickHandler;
 
 		//get ref to pmp
 		PMP = PanelModulePool.Instance;
@@ -109,6 +113,8 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.TransformStarted -= transformStartedHandler;
 		transformGesture.Transformed -= transformedHandler;
 		transformGesture.TransformCompleted -= transformCompletedHandler;
+
+		flickGesture.Flicked -= flickHandler;
 	}
 
 	void Start(){
@@ -885,6 +891,12 @@ public class PanelBase : MonoBehaviour {
 		
 		if (myKiosk != null) {
 			myKiosk.menuFollowPanel = false;
+		}
+	}
+
+	private void flickHandler(object sender, EventArgs e){
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Ready && myKiosk.activePanel == null) {
+			//fling grid
 		}
 	}
 	#endregion

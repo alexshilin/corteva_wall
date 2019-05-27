@@ -169,7 +169,6 @@ public class EaseCurve : MonoBehaviour
 	private IEnumerator EaseRotTo(Transform _target, Quaternion _end, float _duration, float _delay, AnimationCurve _curve, Action _callback){
 		float t = 0.0f;
 		float rate = 1 / _duration;
-		Quaternion fromTo;
 		yield return new WaitForSeconds (_delay);
 		while (t < 1) {
 			if (_target != null) {

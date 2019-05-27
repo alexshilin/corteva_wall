@@ -36,9 +36,7 @@ public class PinButton : MonoBehaviour{
 		if (labelText != null) {
 			SetBtnText (labelText);
 		}
-		if (btnColor != null) {
-			SetBtnColor (btnColor);
-		}
+		SetBtnColor (btnColor);
 		SetBtnState (isSelected);
 	}
 
