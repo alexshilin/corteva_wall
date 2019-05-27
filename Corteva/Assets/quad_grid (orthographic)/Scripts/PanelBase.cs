@@ -639,7 +639,8 @@ public class PanelBase : MonoBehaviour {
 	void PanelMovedToUserGrid(){
 		UpdatePanelView ();
 		transform.parent = myKiosk.userGrid;
-		transform.localScale = Vector3.one;
+		transform.SetParent (myKiosk.userGrid, false);
+		//transform.localScale = Vector3.one;
 		myKiosk.somePanelIsAnimating = false;
 		myKiosk.activePanel = null;
 		panelState = PanelState.Ready;
@@ -803,9 +804,10 @@ public class PanelBase : MonoBehaviour {
 		myKiosk.somePanelIsAnimating = true;
 		myKiosk.ToggleTint (false);
 		Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
+		float scaleTo = myKiosk.GetComponentInChildren<UserGrid> ().emptySize;
 		EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
-		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one*0.3f, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
+		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * scaleTo, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
 	}
 
 	private void ActivateFromGrid(bool _waitForActiveToClose){
@@ -818,6 +820,7 @@ public class PanelBase : MonoBehaviour {
 		myKiosk.somePanelIsAnimating = true;
 		myKiosk.activePanel = transform;
 		myKiosk.userGrid.GetComponent<UserGrid> ().emptySpot = transform.localPosition;
+		myKiosk.userGrid.GetComponent<UserGrid> ().emptySize = transform.localScale.x < 1.1f ? 0.3f : 0.609f;
 		Vector3 goTo = myKiosk.menu.localPosition;
 		goTo.z = 25f;
 		goTo.x = 0.16f;

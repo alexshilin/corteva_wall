@@ -32,14 +32,14 @@ public class UserNav : MonoBehaviour {
 		tapGesture.Tapped += tapHandler;
 
 		if(hasRing)
-			EventsManager.Instance.OnEnvironmentSwitch += envSwitchHandler;
+			EventsManager.Instance.OnUserKioskEnvironmentSwitch += envSwitchHandler;
 	}
 
 	void OnDisable(){
 		tapGesture.Tapped -= tapHandler;
 
 		if(hasRing)
-			EventsManager.Instance.OnEnvironmentSwitch -= envSwitchHandler;
+			EventsManager.Instance.OnUserKioskEnvironmentSwitch -= envSwitchHandler;
 	}
 	
 	// Update is called once per frame
@@ -49,13 +49,17 @@ public class UserNav : MonoBehaviour {
 		}
 	}
 
-	void envSwitchHandler(int _env){
-		if (_env != envID) {
-			ring.fillClockwise = false;
-			goPos = 0f;
-		} else {
-			ring.fillClockwise = true;
-			goPos = 1f;
+	void envSwitchHandler(UserKiosk _kiosk, int _env){
+		if (_kiosk == myKiosk) { 
+			if (hasRing) {
+				if (_env != envID) {
+					ring.fillClockwise = false;
+					goPos = 0f;
+				} else {
+					ring.fillClockwise = true;
+					goPos = 1f;
+				}
+			}
 		}
 	}
 
@@ -64,7 +68,7 @@ public class UserNav : MonoBehaviour {
 			if (envID == -1) {
 				myKiosk.StartPinDrop ();
 			} else {
-				EventsManager.Instance.EnvironmentSwitchRequest (envID);
+				EventsManager.Instance.UserKioskEnvironmentSwitchRequest (myKiosk, envID);
 				myKiosk.SwitchEnvironment (envID);
 			}
 		}

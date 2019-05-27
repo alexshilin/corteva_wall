@@ -55,6 +55,7 @@ public class UserKioskController : MonoBehaviour {
 			}
 			uKkiosk.userGrid.GetComponent<UserGrid> ().MakeGrid ();
 			uKkiosk.SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
+
 //		if (_gridPos.x > 2)
 //			_gridPos.x -= 3;
 			UserKioskObject uKo = new UserKioskObject ();

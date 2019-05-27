@@ -45,9 +45,9 @@ public class EventsManager : MonoBehaviour {
 	public event UserKioskActivatePanelInGrid OnUserKioskActivatePanelInGrid;
 	public void UserKioskActivatePanelInGridRequest(){ OnUserKioskActivatePanelInGrid (); }
 
-	public delegate void EnvironmentSwitch(int _env);
-	public event EnvironmentSwitch OnEnvironmentSwitch;
-	public void EnvironmentSwitchRequest(int _env){ OnEnvironmentSwitch (_env); }
+	public delegate void UserKioskEnvironmentSwitch(UserKiosk _kiosk, int _env);
+	public event UserKioskEnvironmentSwitch OnUserKioskEnvironmentSwitch;
+	public void UserKioskEnvironmentSwitchRequest(UserKiosk _kiosk, int _env){ OnUserKioskEnvironmentSwitch (_kiosk, _env); }
 
 	public delegate void ClearEverything();
 	public event ClearEverything OnClearEverything;

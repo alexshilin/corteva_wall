@@ -15,6 +15,7 @@ public class UserGrid : MonoBehaviour {
 	private bool flip = false;
 
 	public Vector3 emptySpot;
+	public float emptySize;
 
 	private List<int> gridCells = new List<int>();
 
@@ -125,6 +126,7 @@ public class UserGrid : MonoBehaviour {
 					Debug.Log ("\ti: " + panelPostion + " (reserved)");
 					//save its position in the grid
 					emptySpot = panelPostion;
+					emptySize = panelScale < 1.1f ? 0.3f : 0.609f;
 					//go to next item
 					continue;
 				}

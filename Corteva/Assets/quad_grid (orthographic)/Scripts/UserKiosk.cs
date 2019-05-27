@@ -342,6 +342,8 @@ public class UserKiosk : MonoBehaviour {
 	/// This is responsible for positioning the active panel (if applicable) and menu at the location where the user tapped the screen.
 	/// </summary>
 	void Next(){
+		EventsManager.Instance.UserKioskEnvironmentSwitchRequest (GetComponent<UserKiosk>(), env.envID);
+
 		Vector3 tapOffset = userCam.ScreenToViewportPoint (tapScreenPos);
 		Vector3 menuFinalPos = Vector3.forward * 30f;
 		if (tapOffset.y < 0.5f) {
