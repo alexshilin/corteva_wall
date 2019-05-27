@@ -10,6 +10,7 @@ public class UserNav : MonoBehaviour {
 	public UserKiosk myKiosk;
 	public int envID;
 	public bool hasRing = false;
+	public bool selected = false;
 	private Image ring;
 	private float currPos;
 	public float goPos = 0f;
@@ -21,7 +22,7 @@ public class UserNav : MonoBehaviour {
 	void Start () {
 		if (hasRing) {
 			ring = transform.Find ("ring").GetComponent<Image> ();
-			ring.fillAmount = 0;
+			goPos = selected ? 1f : 0f;
 		}
 	}
 
@@ -52,6 +53,9 @@ public class UserNav : MonoBehaviour {
 		if (_env != envID) {
 			ring.fillClockwise = false;
 			goPos = 0f;
+		} else {
+			ring.fillClockwise = true;
+			goPos = 1f;
 		}
 	}
 
@@ -60,8 +64,6 @@ public class UserNav : MonoBehaviour {
 			if (envID == -1) {
 				myKiosk.StartPinDrop ();
 			} else {
-				ring.fillClockwise = true;
-				goPos = 1f;
 				EventsManager.Instance.EnvironmentSwitchRequest (envID);
 				myKiosk.SwitchEnvironment (envID);
 			}

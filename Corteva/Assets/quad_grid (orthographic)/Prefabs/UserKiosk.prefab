@@ -1140,6 +1140,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: 1
   hasRing: 1
+  selected: 0
   goPos: 0
 --- !u!114 &114255197113691966
 MonoBehaviour:
@@ -1584,6 +1585,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: 3
   hasRing: 1
+  selected: 0
   goPos: 0
 --- !u!114 &114492780013081412
 MonoBehaviour:
@@ -1716,6 +1718,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: 2
   hasRing: 1
+  selected: 0
   goPos: 0
 --- !u!114 &114636356715267324
 MonoBehaviour:
@@ -1731,6 +1734,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: -1
   hasRing: 0
+  selected: 0
   goPos: 0
 --- !u!114 &114640304266765464
 MonoBehaviour:
@@ -1869,6 +1873,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: 0
   hasRing: 1
+  selected: 1
   goPos: 0
 --- !u!114 &114913072885167028
 MonoBehaviour:

@@ -107,7 +107,8 @@ public class PinDropEarth : MonoBehaviour {
 			lookup.Add (pins ["challenges"] [i] ["machine_name"], pins ["challenges"] [i] ["title"]);
 		}
 
-		for (int i = 0; i < pins ["pins"].Count; i++) { 
+		int maxPins = pins ["pins"].Count > 100 ? 100 : pins ["pins"].Count;
+		for (int i = 0; i < maxPins; i++) { 
 			string role = lookup [pins ["pins"] [i] ["role"]];
 			string chal = lookup [pins ["pins"] [i] ["challenge"]];
 			string txt = "<b>" + chal + "</b><br>" + role;
