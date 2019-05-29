@@ -14,6 +14,7 @@ public class InfoCard : MonoBehaviour {
 	public void SetText(string _title, string _body, Color _barColor, Color _bgColor, Color _txtColor){
 		title.text = _title;
 		title.color = _txtColor;
+		float titleHeight = 0.1f;
 		if (_body != "") {
 			//get updated mesh (so textInfo param is accurate)
 			title.ForceMeshUpdate ();
@@ -22,9 +23,13 @@ public class InfoCard : MonoBehaviour {
 			body.color = _txtColor;
 			body.ForceMeshUpdate ();
 			//reposition it to be directly under the title
-			body.rectTransform.localPosition = title.transform.localPosition + Vector3.down * (title.bounds.size.y + titleMarginBottom);
+			if (_title != "") {
+				titleHeight = title.bounds.size.y;
+			}
+			body.transform.localPosition = title.transform.localPosition + Vector3.down * (titleHeight + titleMarginBottom);
+
 		}
-		bg.size = new Vector2(bg.size.x, 0 + title.bounds.size.y + body.bounds.size.y + 0.1f);
+		bg.size = new Vector2(bg.size.x, 0 + titleHeight + body.bounds.size.y + 0.1f);
 		topBar.color = _barColor;
 		bg.color = _bgColor;
 	}

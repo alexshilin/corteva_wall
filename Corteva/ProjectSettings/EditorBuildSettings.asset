@@ -5,9 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/quad_grid (orthographic)/quad_grid_ortho.unity
-    guid: fadde2c4319114d31a238a3d2428e9fb
   - enabled: 1
-    path: Assets/PinDrop/PinDrop.unity
+    path: Assets/_wall/wall.unity
+    guid: fadde2c4319114d31a238a3d2428e9fb
+  - enabled: 0
+    path: Assets/_pindrop/pindrop.unity
     guid: 2c82cc18acd664ab78dfc2cf494d0994

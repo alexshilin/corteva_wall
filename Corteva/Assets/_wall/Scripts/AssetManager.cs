@@ -276,7 +276,9 @@ public class AssetManager : MonoBehaviour {
 			{
 				yield return null;
 			}
-			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, false);
+			//the mipmap flag being set to true may throw an assertion error, but app will run fine.
+			//this seems to be a unity bug.
+			Texture2D t = new Texture2D(2, 2, TextureFormat.DXT5, true);
 			www.LoadImageIntoTexture(t);
 			imageTextures.Add (t);
 		}

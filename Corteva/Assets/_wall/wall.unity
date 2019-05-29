@@ -604,17 +604,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_fontMaterial
-      value: 
-      objectReference: {fileID: 861812447}
-    - target: {fileID: 33760141689173560, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 33528635696900542, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+    - target: {fileID: 33786073783786442, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_Mesh
       value: 
@@ -624,13 +614,23 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 33786073783786442, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+    - target: {fileID: 33528635696900542, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33760141689173560, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
         type: 2}
+      propertyPath: m_fontMaterial
+      value: 
+      objectReference: {fileID: 861812447}
+    - target: {fileID: 114440475876319622, guid: 601c7fa1565f74394ab28f0e0f997ca4,
+        type: 2}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -648,16 +648,6 @@ Prefab:
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114169063670796844, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114704240465244412, guid: 601c7fa1565f74394ab28f0e0f997ca4,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 601c7fa1565f74394ab28f0e0f997ca4, type: 2}
@@ -1733,6 +1723,10 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 0.16000009
       objectReference: {fileID: 0}
+    - target: {fileID: 1476538622296814, guid: 52922933ad9614f5a934d19a4df1123a, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 52922933ad9614f5a934d19a4df1123a, type: 2}
   m_IsPrefabParent: 0
@@ -1962,7 +1956,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1451945108
 Transform:
   m_ObjectHideFlags: 0

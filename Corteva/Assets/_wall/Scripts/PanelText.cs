@@ -31,7 +31,11 @@ public class PanelText : MonoBehaviour {
 				body.text = _body;
 				body.color = _color;
 				//reposition it to be directly under the title
-				body.rectTransform.localPosition = title.transform.localPosition + Vector3.down * (title.bounds.size.y + titleMarginBottom);
+				float titleHeight = 0f;
+				if (_title != "") {
+					titleHeight = title.bounds.size.y;
+				}
+				body.rectTransform.localPosition = title.transform.localPosition + Vector3.down * (titleHeight + titleMarginBottom);
 			} else {
 				//otherwise just hide the gameObject
 				body.gameObject.SetActive (false);

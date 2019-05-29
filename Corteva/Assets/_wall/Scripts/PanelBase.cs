@@ -228,6 +228,7 @@ public class PanelBase : MonoBehaviour {
 		Renderer panelRenderer;
 		TextMeshPro text;
 		Color txtColor;
+		Color bgColor;
 
 
 
@@ -342,6 +343,7 @@ public class PanelBase : MonoBehaviour {
 			t = LoadModule ("1x1_extras", _view);
 
 			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+
 			t.transform.localPosition += transform.forward * -0.02f;
 
 			return;
@@ -503,7 +505,11 @@ public class PanelBase : MonoBehaviour {
 			if (_templateData ["content"]["txt_color"].Count == 3) {
 				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
 			}
-			t.GetComponentInChildren<InfoCard> ().SetText (_templateData ["content"]["title"], _templateData ["content"]["body"], environment.envColor, new Color(0,0,0,0.75f), txtColor);
+			bgColor = environment.envColor;
+			if (_templateData ["content"]["bg_color"].Count == 3) {
+				bgColor = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
+			}
+			t.GetComponentInChildren<InfoCard> ().SetText (_templateData ["content"]["title"], _templateData ["content"]["body"], bgColor, new Color(0,0,0,0.75f), txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
 
@@ -603,14 +609,16 @@ public class PanelBase : MonoBehaviour {
 			viewToShow.GetComponentInChildren<VideoPlayer> ().Play ();
 		}
 
-		//make sure this panel is in kiosk
-		if (panelContext == PanelContext.Kiosk) {
+		//make sure this panel is in kiosk and is active panel
+		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
 			//check if this view has panel buttons
 			if (viewToShow.GetComponentInChildren<PanelExtras> ()) {
 				//if this is a front view and there is a back view
 				if (_viewToShow == PanelView.Front && back.childCount > 0) {
 					//enable the close and more buttons
 					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
+				} else {
+					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, false);
 				}
 				//if this is the back view
 				if (_viewToShow == PanelView.Back) {
