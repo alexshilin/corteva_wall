@@ -42,6 +42,7 @@ public class PinButton : MonoBehaviour{
 
 	void OnDisable(){
 		tapGesture.Tapped -= tapHandler;
+		SetBtnState (false);
 	}
 
 	public void SetBtnText(string _text){

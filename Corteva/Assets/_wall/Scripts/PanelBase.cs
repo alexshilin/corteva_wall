@@ -610,15 +610,13 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		//make sure this panel is in kiosk and is active panel
-		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active) {
+		if (panelContext == PanelContext.Kiosk) {
 			//check if this view has panel buttons
 			if (viewToShow.GetComponentInChildren<PanelExtras> ()) {
 				//if this is a front view and there is a back view
 				if (_viewToShow == PanelView.Front && back.childCount > 0) {
 					//enable the close and more buttons
 					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
-				} else {
-					viewToShow.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, false);
 				}
 				//if this is the back view
 				if (_viewToShow == PanelView.Back) {
@@ -647,7 +645,7 @@ public class PanelBase : MonoBehaviour {
 
 	void PanelFlipped(){
 		UpdatePanelView ();
-		//myKiosk.somePanelIsAnimating = false;
+		myKiosk.somePanelIsAnimating = false;
 		panelState = PanelState.Active;
 	}
 	void PanelMovedToUserGrid(){
@@ -697,6 +695,11 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		panelView = currViewFacingForward;
+
+		if(panelView == PanelView.Front && back.childCount == 0){
+			front.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, false);
+		}
+
 		Debug.Log ("[PanelFlipped] " + prevViewFacingFront + " | " + prevViewFacingAway + " >> " + currViewFacingForward + " | " + currViewFacingAway);
 	}
 
@@ -800,7 +803,7 @@ public class PanelBase : MonoBehaviour {
 			ActivateView (PanelView.Front, true);
 		}
 		panelState = PanelState.Animating;
-		//myKiosk.somePanelIsAnimating = true;
+		myKiosk.somePanelIsAnimating = true;
 		//SetAsThumbnail (); //this should happen elsewhere
 		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.5f, 0f, EaseCurve.Instance.easeOut, PanelFlipped);
 		//EaseCurve.Instance.Rot (transform, transform.localRotation, 360f, transform.up, 1f, 0f, EaseCurve.Instance.linear);

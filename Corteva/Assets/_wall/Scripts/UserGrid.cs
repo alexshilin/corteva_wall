@@ -22,14 +22,15 @@ public class UserGrid : MonoBehaviour {
 	void Start () {
 		//adjust vertical position of grid container so its centered with menu
 		transform.localPosition += Vector3.down * -1.85f;
-		flip = Random.Range (0, 2) == 0 ? true : false;
-		if (Random.Range (0, 2) == 0) {
-			currPanels = 0;
-			currColumn = 0;
-		} else {
-			currPanels = 3;
-			currColumn = -1.5f;
-		}
+
+//		flip = Random.Range (0, 2) == 0 ? true : false;
+//		if (Random.Range (0, 2) == 0) {
+//			currPanels = 0;
+//			currColumn = 0;
+//		} else {
+//			currPanels = 3;
+//			currColumn = -1.5f;
+//		}
 	}
 
 	/// <summary>
@@ -45,14 +46,15 @@ public class UserGrid : MonoBehaviour {
 		currColumn = 0;
 		currRow = 0;
 		currPanels = 0;
-		flip = Random.Range (0, 2) == 0 ? true : false;
-		if (Random.Range (0, 2) == 0) {
-			currPanels = 0;
-			currColumn = 0;
-		} else {
-			currPanels = 3;
-			currColumn = -1.5f;
-		}
+
+//		flip = Random.Range (0, 2) == 0 ? true : false;
+//		if (Random.Range (0, 2) == 0) {
+//			currPanels = 0;
+//			currColumn = 0;
+//		} else {
+//			currPanels = 3;
+//			currColumn = -1.5f;
+//		}
 
 		//currPanels = Random.Range (0, 2) == 0 ? 0 : 3;
 		gridCells.Clear ();
@@ -70,6 +72,8 @@ public class UserGrid : MonoBehaviour {
 		float panelX, panelY, panelScale;
 		Vector3 panelPostion;
 
+		currPanels = 3;
+		currColumn = 0.5f;//-1.5f;
 		 
 
 		//loop through enviroment panels JSON
@@ -83,21 +87,24 @@ public class UserGrid : MonoBehaviour {
 				currRow += 1;
 
 			} else if (currPanels / 4f <= 1) {
+				
 				currRow = flip ? 2.5f : 1.5f;
-				currColumn += 1.5f;
+				currColumn += 0.5f;//1.5f;
 				panelScale = 2.03f;
 
 			} else if (currPanels / 5f <= 1) {
+				
 				currRow = flip ? 1f : 3f;
 				currColumn -= 0.5f;
 
 			} else if (currPanels / 6f <= 1) {
+				
 				currRow = flip ? 1f : 3f;
 				currColumn++;
 
 			}
 
-
+			Debug.Log ("----- "+currPanels + " " + flip+" "+currColumn);
 
 			//calculate panel position
 			panelX = (currColumn * 5.333333f) + (currColumn * panelSpacing);
@@ -109,7 +116,7 @@ public class UserGrid : MonoBehaviour {
 			if (currPanels / 6f == 1) {
 				currRow = 0f;
 				currColumn++;
-				currPanels = 0;
+				currPanels = 3;//0;
 				flip = !flip;
 
 			}

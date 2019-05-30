@@ -12,9 +12,10 @@ public class PinDrop : MonoBehaviour {
 	public PinDropEarth globe;
 	public Camera globeCam;
 	public UserKiosk myKiosk;
+	private Vector3 baseRotation;
 
 	void Start(){
-		if(SceneManager.GetActiveScene().name == "PinDrop"){
+		if(SceneManager.GetActiveScene().name == "pindrop"){
 			Init ();	
 		}
 	}

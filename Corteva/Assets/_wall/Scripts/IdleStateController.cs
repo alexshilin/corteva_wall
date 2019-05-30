@@ -1035,7 +1035,7 @@ public class IdleStateController : MonoBehaviour {
 			nextBGi = 0;
 		bgPanels2 [nextBGi].transform.position = nextPosition;
 		bgPanels2 [nextBGi].PlayBgVideo ();
-		Debug.Log ("**** " + currBg);
+		//Debug.Log ("**** " + currBg);
 		if (currBg > -1) {
 			Material bgMat;
 			if (ScreenManager.Instance.currAspect == ScreenManager.Aspect.is329) {

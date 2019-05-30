@@ -114,8 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: {fileID: 114440475876319622}
   body: {fileID: 0}
-  titleSizer: {fileID: 0}
-  titleHeightCalcMod: 1
 --- !u!114 &114440475876319622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -163,8 +161,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 5
-  m_fontSizeBase: 5
+  m_fontSize: 4.5
+  m_fontSizeBase: 4.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -212,7 +210,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}

@@ -56,7 +56,7 @@ public class Pin : MonoBehaviour {
 
 	public void UnsetConfirm(){
 		if (tapGesture != null) {
-			user = false;
+			//user = false;
 			bc.enabled = false;
 			tapGesture.Tapped -= tapHandler;
 		}

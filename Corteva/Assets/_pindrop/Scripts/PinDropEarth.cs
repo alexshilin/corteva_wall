@@ -282,7 +282,7 @@ public class PinDropEarth : MonoBehaviour {
 		PD.menu.ToggleWelcome (1, 0f);
 		PD.menu.icons.SetActive (true);
 		PD.menu.instruct.text = "Explore and Drop a Pin";
-		EaseCurve.Instance.RotTo(transform, Quaternion.identity, 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
+		EaseCurve.Instance.RotTo (transform, Quaternion.Euler (0, -10f, 0), 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
 		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * PD.initGlobeSize, 1.5f, 0f, EaseCurve.Instance.easeIn);
 	}
 
