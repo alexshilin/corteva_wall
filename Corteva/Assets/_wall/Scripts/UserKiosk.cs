@@ -178,7 +178,7 @@ public class UserKiosk : MonoBehaviour {
 		userGrid.GetComponent<UserGrid> ().MakeGrid ();
 
 		//calculate where new grid should animate to
-		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 1.25f;
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3f;
 
 		//animate
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 0.5f, 0f, EaseCurve.Instance.easeOut, null, "local");
@@ -375,7 +375,7 @@ public class UserKiosk : MonoBehaviour {
 	/// Animates the grid and background in
 	/// </summary>
 	void Next2(){
-		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 2f;
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3f;
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, FinishOpen, "local");
 	}

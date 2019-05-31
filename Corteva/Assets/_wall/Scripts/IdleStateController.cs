@@ -556,7 +556,7 @@ public class IdleStateController : MonoBehaviour {
 	void CheckDown(int _row, int _col){
 //		Debug.Log ("\t[CheckDown] from ["+_row+","+_col+"]");
 
-		if (!kioskColumns.Contains(1)) {
+		if (!kioskColumns.Contains (1)) {
 			int nextRow = _row + 1;
 			string p = CheckAvailable (nextRow, _col, 1); 
 			bool ok = TestFit (nextRow, _col, "1x1", Vector3.down); 
@@ -887,7 +887,7 @@ public class IdleStateController : MonoBehaviour {
 				EaseCurve.Instance.Vec3 (panel.transform, panel.transform.localPosition, toPos, speed, wait, EaseCurve.Instance.custom, null, "local");
 				Invoke ("ZoomBG2", 0.5f);
 				titlePauseTime = Time.time;
-				yield return new WaitForSecondsRealtime (1f);
+				yield return new WaitForSecondsRealtime (2f);
 			} else {
 				//Debug.Log (i + " < " + (idleSequence.Count - 1));
 				if (i < idleSequence.Count - 1) {

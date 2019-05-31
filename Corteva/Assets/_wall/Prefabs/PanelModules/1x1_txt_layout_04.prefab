@@ -38,6 +38,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4053674844855696}
+  - component: {fileID: 114611760704563130}
   m_Layer: 0
   m_Name: 1x1_txt_layout_04
   m_TagString: Untagged
@@ -275,6 +276,19 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
+--- !u!114 &114611760704563130
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1911294450542466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d397a6c71a54933849b5e4cf7cb51b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: {fileID: 114440475876319622}
+  body: {fileID: 114796145874997724}
 --- !u!114 &114796145874997724
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -371,11 +385,11 @@ MonoBehaviour:
     lineCount: 0
     pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 23109070871731170}

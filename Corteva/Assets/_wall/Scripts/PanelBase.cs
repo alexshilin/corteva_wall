@@ -465,8 +465,12 @@ public class PanelBase : MonoBehaviour {
 			}
 
 			t = LoadModule ("1x1_txt_layout_04", _view);
-			t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"]["title"];
-			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"]["body"];
+
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
 			return;
 		}
 
