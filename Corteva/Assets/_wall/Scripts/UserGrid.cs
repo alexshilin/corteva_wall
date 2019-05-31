@@ -124,7 +124,7 @@ public class UserGrid : MonoBehaviour {
 			//leave empty spot is theres an active panel (from activtion from idle)
 			//if (i == 0) {
 			if (myKiosk.activePanel != null) {
-				if (panelData ["reference_title"] == myKiosk.activePanel.GetComponent<PanelBase> ().panelID) {
+				if (panelData ["nid"] == myKiosk.activePanel.GetComponent<PanelBase> ().panelID) {
 					Debug.Log ("\ti: " + panelPostion + " (reserved)");
 					//save its position in the grid
 					emptySpot = panelPostion;

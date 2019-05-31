@@ -474,10 +474,18 @@ public class IdleStateController : MonoBehaviour {
 		AllocatePanelPlacement (1, startColumn, "1x1", Vector3.down);
 
 		//in mid row, go outwards
-		//check all columns to the left
-		CheckLeft (1, startColumn);
-		//check all columns to the right
-		CheckRight (1, startColumn);
+		int coin = Random.Range(0,2);
+		if (coin == 0) {
+			//check all columns to the left
+			CheckLeft (1, startColumn);
+			//check all columns to the right
+			CheckRight (1, startColumn);
+		} else {
+			//check all columns to the right
+			CheckRight (1, startColumn);
+			//check all columns to the left
+			CheckLeft (1, startColumn);
+		}
 
 		StartCoroutine(PlaceCellCameras());
 	}
@@ -556,12 +564,16 @@ public class IdleStateController : MonoBehaviour {
 	void CheckDown(int _row, int _col){
 //		Debug.Log ("\t[CheckDown] from ["+_row+","+_col+"]");
 
+		//no bottom panels when a kiosk is active (middle row only for cleanliness)
 		if (!kioskColumns.Contains (1)) {
-			int nextRow = _row + 1;
-			string p = CheckAvailable (nextRow, _col, 1); 
-			bool ok = TestFit (nextRow, _col, "1x1", Vector3.down); 
-			if (ok)
-				AllocatePanelPlacement (nextRow, _col, "1x1", Vector3.down);
+			//ok to add bottom panel if there are enough content panels
+			if (environments [currEnv].env1x1Count >= GM.desiredGrid.x) {
+				int nextRow = _row + 1;
+				string p = CheckAvailable (nextRow, _col, 1); 
+				bool ok = TestFit (nextRow, _col, "1x1", Vector3.down); 
+				if (ok)
+					AllocatePanelPlacement (nextRow, _col, "1x1", Vector3.down);
+			}
 		}
 	}
 
@@ -574,17 +586,22 @@ public class IdleStateController : MonoBehaviour {
 		{
 			//type 3 means 2x2 is ok
 			//coin flip to see if we use a 2x2
-			//choose btw 0,1,2, anything over 0 gets a 2x2 (66% chance)
-			coin = Random.Range(0, 3);
+			//choose btw 0,1, anything over 0 gets a 2x2 (50% chance)
+			coin = Random.Range(0, 2);
 			r = (coin > 0) ? "2x2" : "1x1";
 
 		} else if (_panelType == 2) 
 		{
-			//type 2 meant 1x2 is ok
-			//coin flip to see if we use a 1x2
-			//choose btw 0,1,2, anything over 0 gets a 1x2 (66% chance)
-			coin = Random.Range(0, 3);
-			r = (coin > 0) ? "1x2" : "1x1";
+			//type 2 means 1x2 is ok
+			//if there are less content panels that columns, force a beauty panel
+			if (environments [currEnv].env1x1Count < GM.desiredGrid.x) {
+				r = "1x2";
+			} else {
+				//coin flip to see if we use a 1x2
+				//choose btw 0,1,2, anything over 0 gets a 1x2 (66% chance)
+				coin = Random.Range (0, 3);
+				r = (coin > 0) ? "1x2" : "1x1";
+			}
 
 		} else 
 		{
@@ -760,7 +777,7 @@ public class IdleStateController : MonoBehaviour {
 			if (i == 1) {
 				Debug.Log ("\twaited " + (Time.time - titlePauseTime) + " after title");
 			}
-
+				
 			if ((i == 0 && currEnv > 0) && !kioskColumns.Contains (1) && currTitlePanel != null) {
 				//this is the title panel
 //				Debug.Log (currEnv+"...adjusting current title panel in existing title cam");
@@ -844,8 +861,8 @@ public class IdleStateController : MonoBehaviour {
 						panelData = JSON.Parse(environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)]);
 					}
 
-					po.panelID = panelData ["reference_title"];
-					usedContentPanels.Add(panelData["reference_title"]);
+					po.panelID = panelData ["nid"];
+					usedContentPanels.Add(panelData["nid"]);
 
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
 					po.Assemble (panelData);
@@ -853,6 +870,10 @@ public class IdleStateController : MonoBehaviour {
 					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
 					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
 					po.ActivateView (PanelBase.PanelView.Front, !flip);
+
+					//consider: track which view of placed panels is active.
+					//if duplicate panel is chosen, show opposite view
+
 				}
 			}
 
