@@ -654,8 +654,10 @@ public class PanelBase : MonoBehaviour {
 	}
 	void PanelMovedToUserGrid(){
 		UpdatePanelView ();
-		transform.parent = myKiosk.userGrid;
-		transform.SetParent (myKiosk.userGrid, false);
+		if (transform.parent != myKiosk.userGrid) {
+			transform.parent = myKiosk.userGrid;
+		}
+		//transform.SetParent (myKiosk.userGrid, false);
 		//transform.localScale = Vector3.one;
 		myKiosk.somePanelIsAnimating = false;
 		myKiosk.activePanel = null;
@@ -767,14 +769,20 @@ public class PanelBase : MonoBehaviour {
 			//FlipAround ();
 		}
 
-		//panel in kiosk context that is background should close active kiosk
+
 		if (panelContext == PanelContext.Kiosk && panelView == PanelView.Background) {
 			//make sure the kiosk isnt in the middle of animating something 
 			if (!myKiosk.somePanelIsAnimating) {
+				/*
+				//panel in kiosk context that is background should close active kiosk
 				//first check if another panel is active, and hide that one
 				if (myKiosk.activePanel) {
 					Debug.Log ("\t has active panel, closing that panel first");
 					myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+				}
+				*/
+				if (!myKiosk.activePanel) {
+
 				}
 			}
 		}
@@ -841,7 +849,7 @@ public class PanelBase : MonoBehaviour {
 		myKiosk.somePanelIsAnimating = true;
 		myKiosk.activePanel = transform;
 		myKiosk.userGrid.GetComponent<UserGrid> ().emptySpot = transform.localPosition;
-		myKiosk.userGrid.GetComponent<UserGrid> ().emptySize = transform.localScale.x < 1.1f ? 0.3f : 0.609f;
+		myKiosk.userGrid.GetComponent<UserGrid> ().emptySize = transform.localScale.x < 1.1f ? 0.3f : 0.606f;
 		Vector3 goTo = myKiosk.menu.localPosition;
 		goTo.z = 25f;
 		goTo.x = 0.16f;

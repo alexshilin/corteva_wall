@@ -85,7 +85,9 @@ public class Pin : MonoBehaviour {
 	void UpdatePinView(){
 		//WARN if you got here from a console error, its likely all those parent.parent... traversals
 		if (transform.parent.parent.localScale.x < transform.parent.parent.GetComponent<PinDropEarth>().PD.initGlobeSize) {
-			ToggleInfo (false);
+			if (!user) {
+				ToggleInfo (false);
+			}
 		} else {
 			ToggleInfo (true);
 		}
@@ -95,11 +97,11 @@ public class Pin : MonoBehaviour {
 
 	void TogglePin(bool _on){
 		icon.gameObject.SetActive (_on);
-		ToggleInfo (false);
+		ToggleInfo (_on);
 	}
 
 	void ToggleInfo(bool _on){
-		if (active && !user) {
+		if (active) {
 			info.gameObject.SetActive (_on);
 		}
 	}

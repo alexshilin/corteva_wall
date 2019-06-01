@@ -98,6 +98,7 @@ public class PinDropMenu : MonoBehaviour {
 
 	public void ShowQuestionOne(){
 		PD.menu.instruct.text = "";
+		PD.menu.ToggleWelcome (0);
 		closeBtn.SetActive (true);
 		bg.SetActive (true);
 		q1.SetActive (true);

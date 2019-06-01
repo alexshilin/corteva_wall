@@ -278,6 +278,7 @@ public class PinDropEarth : MonoBehaviour {
 
 	private void GoIdle(){
 		idling = true;
+		Destroy (newUserPin);
 		PD.menu.CloseQuestions ();
 		PD.menu.ToggleWelcome (1, 0f);
 		PD.menu.icons.SetActive (true);

@@ -90,7 +90,7 @@ public class UserGrid : MonoBehaviour {
 				
 				currRow = flip ? 2.5f : 1.5f;
 				currColumn += 0.5f;//1.5f;
-				panelScale = 2.03f;
+				panelScale = 2.019f;
 
 			} else if (currPanels / 5f <= 1) {
 				
@@ -128,7 +128,7 @@ public class UserGrid : MonoBehaviour {
 					Debug.Log ("\ti: " + panelPostion + " (reserved)");
 					//save its position in the grid
 					emptySpot = panelPostion;
-					emptySize = panelScale < 1.1f ? 0.3f : 0.609f;
+					emptySize = panelScale < 1.1f ? 0.3f : 0.606f;
 					//go to next item
 					continue;
 				}

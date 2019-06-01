@@ -14,6 +14,7 @@ public class UserNav : MonoBehaviour {
 	private Image ring;
 	private float currPos;
 	public float goPos = 0f;
+	public float ringSpeed = 4f;
 
 	private TapGesture tapGesture;
 	private 
@@ -22,7 +23,14 @@ public class UserNav : MonoBehaviour {
 	void Start () {
 		if (hasRing) {
 			ring = transform.Find ("ring").GetComponent<Image> ();
-			goPos = selected ? 1f : 0f;
+			//goPos = selected ? 1f : 0f;
+			if (selected) {
+				ringSpeed = 4f;
+				goPos = 1f;
+			} else {
+				ringSpeed = 8f;
+				goPos = 0f;
+			}
 		}
 	}
 
@@ -45,7 +53,7 @@ public class UserNav : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (hasRing) {
-			ring.fillAmount = Mathf.Lerp (ring.fillAmount, goPos, Time.deltaTime * 4f);
+			ring.fillAmount = Mathf.Lerp (ring.fillAmount, goPos, Time.deltaTime * ringSpeed);
 		}
 	}
 
@@ -54,9 +62,11 @@ public class UserNav : MonoBehaviour {
 			if (hasRing) {
 				if (_env != envID) {
 					ring.fillClockwise = false;
+					ringSpeed = 8f;
 					goPos = 0f;
 				} else {
 					ring.fillClockwise = true;
+					ringSpeed = 4f;
 					goPos = 1f;
 				}
 			}
