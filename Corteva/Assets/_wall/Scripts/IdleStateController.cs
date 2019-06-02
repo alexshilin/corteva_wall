@@ -257,18 +257,20 @@ public class IdleStateController : MonoBehaviour {
 					for (int n = 0; n < idleSequence.Count; n++) {
 						//if theres a panel in the column that the kiosk wants to open in
 						if (idleSequence [n].col == (int)_gridPos.x) {
-							if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ()) {
-								//check if the cell cam for that panel is active
-								if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
-									//if it is, disable it
-									Debug.Log ("\tdisabling idle cam at col " + n);
-									if (idleSequence [n].panelType == new Vector2 (2, 2)) {
-										//what to do with 2x2 panel when a kiosk is opened on top of it?
-									} else {
-										//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
-										StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
-									}
+							if (idleSequence [n].cellCam) {
+								if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ()) {
+									//check if the cell cam for that panel is active
+									if (idleSequence [n].cellCam.GetComponentInChildren<Camera> ().isActiveAndEnabled) {
+										//if it is, disable it
+										Debug.Log ("\tdisabling idle cam at col " + n);
+										if (idleSequence [n].panelType == new Vector2 (2, 2)) {
+											//what to do with 2x2 panel when a kiosk is opened on top of it?
+										} else {
+											//turns off the cell cam after 0.5 seconds (same amount of time it takes kiosk to animate open)
+											StartCoroutine (DisableCellCamUnderKiosk (n, 0.5f));
+										}
 
+									}
 								}
 							}
 							//if this was activated by a content panel
@@ -306,8 +308,10 @@ public class IdleStateController : MonoBehaviour {
 	/// <param name="_wait">the amount of time to wait before disabling it</param>
 	private IEnumerator DisableCellCamUnderKiosk(int _cam, float _wait){
 		yield return new WaitForSeconds (_wait);
-		if (idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ()) {
-			idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+		if (idleSequence [_cam].cellCam) {
+			if (idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ()) {
+				idleSequence [_cam].cellCam.GetComponentInChildren<Camera> ().enabled = false;
+			}
 		}
 	}
 

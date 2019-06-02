@@ -50,6 +50,7 @@ public class UserKiosk : MonoBehaviour {
 	public bool dragNav = false;
 	public bool dragGrid = false;
 	public Vector3 dragDelta;
+	public float gridWidth = 0;
 
 	private PressGesture pressGesture;
 	private TransformGesture transformGesture;
@@ -178,7 +179,7 @@ public class UserKiosk : MonoBehaviour {
 		userGrid.GetComponent<UserGrid> ().MakeGrid ();
 
 		//calculate where new grid should animate to
-		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3f;
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3.5f;
 
 		//animate
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 0.5f, 0f, EaseCurve.Instance.easeOut, null, "local");
@@ -375,7 +376,7 @@ public class UserKiosk : MonoBehaviour {
 	/// Animates the grid and background in
 	/// </summary>
 	void Next2(){
-		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3f;
+		gridFinalPos = userGrid.transform.localPosition + Vector3.left * 3.5f;
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 1f, 0f, EaseCurve.Instance.easeOut, FinishOpen, "local");
 	}
@@ -443,8 +444,18 @@ public class UserKiosk : MonoBehaviour {
 			userGrid.localPosition = gridGoTo;
 
 			Vector3 bgGoTo = bgPanel.transform.localPosition;
-			bgGoTo.x -= dragDelta.x * 0.25f;
+			bgGoTo.x -= dragDelta.x * 0.1f;
 			bgPanel.transform.localPosition = bgGoTo;
+
+			if(userGrid.localPosition.x > -1.5f)
+				userGrid.localPosition = new Vector3 (-1.5f, userGrid.localPosition.y, userGrid.localPosition.z);
+			if(userGrid.localPosition.x < (-1.5f + gridWidth))
+				userGrid.localPosition = new Vector3 ((-1.5f + gridWidth), userGrid.localPosition.y, userGrid.localPosition.z);
+
+			if(bgPanel.transform.localPosition.x < 0)
+				bgPanel.transform.localPosition = new Vector3 (0f, bgPanel.transform.localPosition.y, bgPanel.transform.localPosition.z);
+			if(bgPanel.transform.localPosition.x > Mathf.Abs(gridWidth) * 0.1f)
+				bgPanel.transform.localPosition = new Vector3 (Mathf.Abs(gridWidth * 0.1f), bgPanel.transform.localPosition.y, bgPanel.transform.localPosition.z);
 		}
 
 		if (dragNav) {

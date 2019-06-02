@@ -74,10 +74,16 @@ public class UserGrid : MonoBehaviour {
 
 		currPanels = 3;
 		currColumn = 0.5f;//-1.5f;
-		 
 
+		//calc grid width using groupings of 3
+		//round total panel count to next multiple of 3
+		//then divide that by 3 to get group count
+		//each group is 1.5 units of movement
+		myKiosk.gridWidth = (((Mathf.Ceil(myKiosk.env.envPanelData.Count / 3f) * 3f) / 3) * -1.5f);
+		 
 		//loop through enviroment panels JSON
 		for (int i = 0; i < myKiosk.env.envPanelData.Count; i++) {
+
 			panelScale = 1f;
 			//update position vars
 			currPanels++;
@@ -104,7 +110,7 @@ public class UserGrid : MonoBehaviour {
 
 			}
 
-			Debug.Log ("----- "+currPanels + " " + flip+" "+currColumn);
+			//Debug.Log ("----- "+currPanels + " " + flip+" "+currColumn);
 
 			//calculate panel position
 			panelX = (currColumn * 5.333333f) + (currColumn * panelSpacing);
@@ -150,7 +156,6 @@ public class UserGrid : MonoBehaviour {
 			po.environment = myKiosk.env;
 			po.Assemble (panelData);
 			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
-
 		}
 	}
 }

@@ -16,6 +16,7 @@ public class PanelBase : MonoBehaviour {
 	public Transform front;
 	public Transform back;
 	public Transform thumbnail;
+	public Collider collider;
 
 	//enums for panel states
 	public enum PanelContext
@@ -74,6 +75,7 @@ public class PanelBase : MonoBehaviour {
 	private FlickGesture flickGesture;
 
 	//ref to pmp where panel module prefabs are referenced
+	//used for assembling various templates
 	private PanelModulePool PMP;
 
 	private AssetManager AM;
@@ -471,6 +473,14 @@ public class PanelBase : MonoBehaviour {
 				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
 			}
 			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
+
+			return;
 			return;
 		}
 
@@ -516,6 +526,42 @@ public class PanelBase : MonoBehaviour {
 			t.GetComponentInChildren<InfoCard> ().SetText (_templateData ["content"]["title"], _templateData ["content"]["body"], bgColor, new Color(0,0,0,0.75f), txtColor);
 			t.transform.localPosition += transform.forward * -0.01f;
 
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
+
+			return;
+		}
+
+		if (template == "flows_of_trade") {
+			t = LoadModule ("flows_of_trade", _view);
+
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.02f;
+
+			return;
+		}
+
+		if (template == "food_waste") {
+			//
+			t = LoadModule ("food_waste", _view);
+
+			//TODO need text template for infographics
+			/*
+			t = LoadModule ("1x1_txt_layout_02", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+			*/
 
 			//
 			t = LoadModule ("1x1_extras", _view);
@@ -793,8 +839,8 @@ public class PanelBase : MonoBehaviour {
 			if (!myKiosk.somePanelIsAnimating) {
 				//first check if another panel is active, and hide that one
 				if (myKiosk.activePanel) {
-					Debug.Log ("\t has active panel, closing that panel first");
-					myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
+					//Debug.Log ("\t has active panel, closing that panel first");
+					//myKiosk.activePanel.GetComponent<PanelBase> ().BackToGrid ();
 				} else {
 					Debug.Log ("\t no active panel, opening thumbnail");
 					ActivateFromGrid (false);
@@ -825,18 +871,19 @@ public class PanelBase : MonoBehaviour {
 	public void BackToGrid()
 	{
 		Debug.Log ("[BackToGrid] " + name);
-		if (currViewFacingForward != PanelView.Thumbnail) 
-		{
-			ActivateView (PanelView.Thumbnail, true);
+		if (!myKiosk.somePanelIsAnimating) {
+			if (currViewFacingForward != PanelView.Thumbnail) {
+				ActivateView (PanelView.Thumbnail, true);
+			}
+			panelState = PanelState.Animating;
+			myKiosk.somePanelIsAnimating = true;
+			myKiosk.ToggleTint (false);
+			Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint (myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
+			float scaleTo = myKiosk.GetComponentInChildren<UserGrid> ().emptySize;
+			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
+			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
+			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * scaleTo, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
 		}
-		panelState = PanelState.Animating;
-		myKiosk.somePanelIsAnimating = true;
-		myKiosk.ToggleTint (false);
-		Vector3 goTo = myKiosk.GetComponentInChildren<UserGrid> ().transform.TransformPoint(myKiosk.GetComponentInChildren<UserGrid> ().emptySpot);
-		float scaleTo = myKiosk.GetComponentInChildren<UserGrid> ().emptySize;
-		EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
-		EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
-		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * scaleTo, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
 	}
 
 	private void ActivateFromGrid(bool _waitForActiveToClose){
@@ -944,7 +991,11 @@ public class PanelBase : MonoBehaviour {
 			FlipAround ();
 		} else {
 			if (front.GetComponentInChildren<PanelExtras> ()) {
-				front.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
+				if (panelView == PanelView.Front && back.childCount == 0) {
+					front.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, false);
+				} else {
+					front.GetComponentInChildren<PanelExtras> ().ToggleBtns (true, false, true);
+				}
 			}
 		}
 	}

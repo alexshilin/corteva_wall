@@ -36,7 +36,7 @@ public class PinDropEarth : MonoBehaviour {
 
 	public GameObject newUserPin;
 
-	private float maxTimeToWait = 10f;
+	private float maxTimeToWait = 20f;
 	private float timeWaited = 0f;
 	private bool idling = true;
 

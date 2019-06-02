@@ -13,8 +13,8 @@ public class UserNav : MonoBehaviour {
 	public bool selected = false;
 	private Image ring;
 	private float currPos;
-	public float goPos = 0f;
-	public float ringSpeed = 4f;
+	private float goPos = 0f;
+	private float ringSpeed = 4f;
 
 	private TapGesture tapGesture;
 	private 

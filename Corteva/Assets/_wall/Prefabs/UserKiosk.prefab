@@ -1072,6 +1072,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myKiosk: {fileID: 114011449947804456}
   emptySpot: {x: 0, y: 0, z: 0}
+  emptySize: 0
 --- !u!114 &114151569005489000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1141,7 +1142,6 @@ MonoBehaviour:
   envID: 1
   hasRing: 1
   selected: 0
-  goPos: 0
 --- !u!114 &114255197113691966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1513,7 +1513,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 0659b5ca92d274027a39a12732af80c3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5b61f3722fe534d0ba8f448f4b6c4b09, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1586,7 +1586,6 @@ MonoBehaviour:
   envID: 3
   hasRing: 1
   selected: 0
-  goPos: 0
 --- !u!114 &114492780013081412
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1606,7 +1605,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7c5e16e4883684f048303a8519a35331, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 046523595054f4a9287264896742978c, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1647,7 +1646,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 981fd8ac5f9dc48f5aba71e31470df5c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fbdf8a66f16c04a5face797db078e914, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1719,7 +1718,6 @@ MonoBehaviour:
   envID: 2
   hasRing: 1
   selected: 0
-  goPos: 0
 --- !u!114 &114636356715267324
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1735,7 +1733,6 @@ MonoBehaviour:
   envID: -1
   hasRing: 0
   selected: 0
-  goPos: 0
 --- !u!114 &114640304266765464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1755,7 +1752,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 3261159a1cd4746cdbb445db40251328, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 355e11532aa774e6ab031a8e853748bb, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1873,8 +1870,7 @@ MonoBehaviour:
   myKiosk: {fileID: 114011449947804456}
   envID: 0
   hasRing: 1
-  selected: 1
-  goPos: 0
+  selected: 0
 --- !u!114 &114913072885167028
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1933,7 +1929,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Tap to retain session
+  m_text: Are you still there?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 21e97fa842cc8457dbbbe3569f49b803, type: 2}
   m_sharedMaterial: {fileID: 21696548423370904, guid: 21e97fa842cc8457dbbbe3569f49b803,
@@ -2246,7 +2242,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.27000004, y: -0.2375}
+  m_AnchoredPosition: {x: 0.37, y: -0.2375}
   m_SizeDelta: {x: 0.4, y: 0.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224100419128734778
@@ -2283,7 +2279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.27, y: -0.2375}
+  m_AnchoredPosition: {x: 0.37, y: -0.2375}
   m_SizeDelta: {x: 0.4, y: 0.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224141624480265068
@@ -2416,8 +2412,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.029999971, y: 0.27999997}
-  m_SizeDelta: {x: 0.54, y: -1.0999999}
+  m_AnchoredPosition: {x: 0.09, y: 0.27999997}
+  m_SizeDelta: {x: 0.74, y: -1.0999999}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224644655838370442
 RectTransform:
@@ -2434,7 +2430,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.27000004, y: -0.2375}
+  m_AnchoredPosition: {x: 0.37, y: -0.2375}
   m_SizeDelta: {x: 0.4, y: 0.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224684233974408256
@@ -2452,7 +2448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.27000004, y: -0.2375}
+  m_AnchoredPosition: {x: 0.37, y: -0.2375}
   m_SizeDelta: {x: 0.4, y: 0.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224770270857441900
