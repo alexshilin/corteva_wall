@@ -661,7 +661,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 4.5
-  m_Depth: 2
+  m_Depth: 3
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 67108607
@@ -1000,6 +1000,7 @@ MonoBehaviour:
   dragNav: 0
   dragGrid: 0
   dragDelta: {x: 0, y: 0, z: 0}
+  gridWidth: 0
   timeSinceLastTouch: 0
 --- !u!114 &114028785210886832
 MonoBehaviour:

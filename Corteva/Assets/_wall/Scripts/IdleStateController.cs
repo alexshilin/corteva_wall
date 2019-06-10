@@ -671,7 +671,7 @@ public class IdleStateController : MonoBehaviour {
 
 	void AllocatePanelPlacement(int _row, int _col, string _type, Vector3 _dir){
 		//calculate 1Darray index(i) from 2Darray point(x,y)
-		//this is used to grap world position coordinates from List previously calculated by GridManager
+		//this is used to grab world position coordinates from List previously calculated by GridManager
 		int id = _col + (int)GM.desiredGrid.x * _row;
 //		Debug.Log ("\t\t\t[PlacePanel] "+_type+" into " + _row + "," + _col + " [" + id + "]");
 
@@ -958,6 +958,33 @@ public class IdleStateController : MonoBehaviour {
 		timeElapsedSinceLastTransition = 0;
 		panelsInTransition = false;
 		titleHidden = false;
+
+		StartCoroutine (TapToStart ());
+	}
+
+	IEnumerator TapToStart(){
+		float timeIconIsVisible = 3f;
+		int maxIconsToShowPerIdle = 2;
+		float timeBetweenIcons = (timeToNextTransition - (timeIconIsVisible * maxIconsToShowPerIdle)) / (2 + (maxIconsToShowPerIdle-1));
+		List<int> cols = new List<int> ();
+		for (int i = 1; i < (int)GM.desiredGrid.x + 1; i++) {
+			cols.Add (i);
+		}
+		//Debug.Log ("***** " + timeToNextTransition + " >> " + timeBetweenIcons + "(" + (2 + (maxIconsToShowPerIdle - 1)) + ") , " + timeIconIsVisible + " (" + maxIconsToShowPerIdle + ")");
+		for (int i = 0; i < maxIconsToShowPerIdle; i++) {
+			yield return new WaitForSeconds (timeBetweenIcons);
+			GameObject tts = Instantiate (AM.tapToStart);
+			int r = Random.Range (0, cols.Count);
+			int col = cols[r];
+			cols.RemoveAt (r);
+			//Debug.Log ("*** " + col);
+			Vector3 pos = GM.gridPositions.Find (x => (x.col == col) && (x.row == 0)).center;
+			pos.z = 2f;
+			tts.transform.position = pos;
+			yield return new WaitForSeconds (timeIconIsVisible);
+			Destroy (tts);
+		}
+		yield return null;
 	}
 
 	void UnPlaceCameras(){

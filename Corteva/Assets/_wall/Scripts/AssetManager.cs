@@ -53,13 +53,12 @@ public class AssetManager : MonoBehaviour {
 	[Header("GameObject references")]
 	public Camera mainCamera;
 	public Camera userInitCamera;
+	public Camera tapToStartCamera;
 	public Camera userPanelCamera;
 	public Transform panels;
 	public Transform cams;
 	public Transform kiosks;
 	public Transform idleBackgrounds;
-	public PanelObject bgPanel1;
-	public PanelObject bgPanel2;
 	#endregion
 
 
@@ -69,6 +68,7 @@ public class AssetManager : MonoBehaviour {
 	public GameObject NEWpanelPrefab;
 	public GameObject cellCameraPrefab;
 	public GameObject userKioskPrefab;
+	public GameObject tapToStart;
 	public List<GameObject> panelPool = new List<GameObject> ();
 	public List<Environment> environments = new List<Environment>();
 	#endregion

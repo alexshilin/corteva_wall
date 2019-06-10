@@ -20,7 +20,7 @@ public class GridManagerOrtho : MonoBehaviour {
 		
 	[HideInInspector]
 	public Vector2 desiredGrid = new Vector2 (6, 3);
-	[HideInInspector]
+	//[HideInInspector]
 	public List<GridItem> gridPositions = new List<GridItem>();
 
 	private Vector2 desiredFullScreenAspect = new Vector2 (32, 9);
@@ -64,6 +64,7 @@ public class GridManagerOrtho : MonoBehaviour {
 		Debug.Log ("GridManagerOrtho [Init]");
 		AssetManager.Instance.mainCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 		AssetManager.Instance.userInitCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
+		AssetManager.Instance.tapToStartCamera.orthographicSize = desiredFullScreenAspect.y * 0.5f;
 
 		//EventsManager.Instance.OnSceneFinishedLoading += sceneLoaded;
 		//AssetManager.Instance.LoadScene("earth_bg");
