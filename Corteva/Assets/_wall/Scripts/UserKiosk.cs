@@ -443,7 +443,7 @@ public class UserKiosk : MonoBehaviour {
 			gridGoTo.x += dragDelta.x;
 			userGrid.localPosition = gridGoTo;
 
-			Vector3 bgGoTo = bgPanel.transform.localPosition;
+			Vector3 bgGoTo = bgPanel.transform.localPosition; 
 			bgGoTo.x -= dragDelta.x * 0.1f;
 			bgPanel.transform.localPosition = bgGoTo;
 
