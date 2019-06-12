@@ -143,6 +143,112 @@ Transform:
   m_Father: {fileID: 846936179}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &23432989
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 846936179}
+    m_Modifications:
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 33436893574504206, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33508768444994798, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33666046146963164, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33336910906308770, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114985009819955250, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114985009819955250, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114032093887588872, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114032093887588872, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114175104234973788, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114175104234973788, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114364447530996570, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114364447530996570, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780974551670924, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
+  m_IsPrefabParent: 0
 --- !u!4 &46439747 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4802058859812714, guid: 5aac698dd7449464d93e7d8d6b7ff7b6,
@@ -420,7 +526,18 @@ MonoBehaviour:
   userKioskPrefab: {fileID: 1091292406517696, guid: 52922933ad9614f5a934d19a4df1123a,
     type: 2}
   tapToStart: {fileID: 1260192608682946, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
-  panelPool: []
+  baseTemplateNames:
+  - template_01
+  - template_02_tl
+  - template_02_tr
+  - template_03
+  - template_04
+  - template_05
+  customTemplateNames:
+  - flows_of_trade
+  - food_waste
+  - pearl_millet
+  - food_consumption
   environments: []
   rootDir: 
   dataDir: 
@@ -1585,6 +1702,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &784426001 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4565678559457004, guid: 6f19e2f916d5a46c7974d4cb76a73172,
+    type: 2}
+  m_PrefabInternal: {fileID: 23432989}
 --- !u!1 &824526357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1767,7 +1889,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 846936178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -100, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 3, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1451945108}
@@ -1781,6 +1903,7 @@ Transform:
   - {fileID: 1711540438}
   - {fileID: 1489456970}
   - {fileID: 1050091989}
+  - {fileID: 784426001}
   m_Father: {fileID: 0}
   m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4237,6 +4360,8 @@ MonoBehaviour:
     prefab: {fileID: 1779652889656138, guid: f69e13da0b0854fa8bb5f8fc7757f091, type: 2}
   - name: pearl_millet
     prefab: {fileID: 1626402528074400, guid: a975601a27c604c96bca5e0cecc738de, type: 2}
+  - name: food_consumption
+    prefab: {fileID: 1780974551670924, guid: 6f19e2f916d5a46c7974d4cb76a73172, type: 2}
   recycler: []
 --- !u!4 &2115049105
 Transform:

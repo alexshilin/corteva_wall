@@ -277,34 +277,6 @@ public class PanelBase : MonoBehaviour {
 		}
 
 
-		//bg	video OR image OR color
-		if (template == "template_00") 
-		{
-			t = LoadModule ("1x1_texture_color", _view);
-
-			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
-			if (isVideo) {
-				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
-				vid.url = AssetManager.Instance.GetVideo (bgPath);
-				vid.enabled = true;
-				vid.Prepare ();
-				if (_view == PanelView.Front)
-					vid.Play ();
-			} else {
-				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
-				if (isImage) {
-					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
-					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
-				} else {
-					if (_templateData ["content"]["bg_color"].Count == 3) {
-						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
-					} else {
-						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
-					}
-				}
-			}
-			return;
-		}
 
 		if (template == "template_01") {
 			//
@@ -596,36 +568,13 @@ public class PanelBase : MonoBehaviour {
 			return;
 		}
 
+		if (template == "food_consumption") {
+			t = LoadModule ("food_consumption", _view);
 
-
-
-		if (template == "infographic_01") {
-			t = LoadModule ("1x1_texture_color", _view);
-			if (_templateData ["content"]["bg_color"].Count == 3) {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);
-			} else {
-				t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
-			}
-
-			//
-			t = LoadModule ("1x1_txt_layout_02", _view);
-			if (_templateData ["content"]["title"] != "") {
-				t.transform.Find ("Title").GetComponent<TextMeshPro> ().text = _templateData ["content"]["title"];
-			}
-			if (_templateData ["content"]["body"] != "") {
-				t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = _templateData ["content"]["body"];
-			}
-			t.transform.localPosition += transform.forward * -0.01f;
-
-			//
 			t = LoadModule ("1x1_extras", _view);
 
 			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
 			t.transform.localPosition += transform.forward * -0.02f;
-
-			//
-			t = LoadModule ("1x1_viz_earth", _view);
-			t.transform.localPosition += transform.forward * -0.03f;
 
 			return;
 		}

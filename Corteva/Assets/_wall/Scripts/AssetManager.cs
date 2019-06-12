@@ -69,7 +69,13 @@ public class AssetManager : MonoBehaviour {
 	public GameObject cellCameraPrefab;
 	public GameObject userKioskPrefab;
 	public GameObject tapToStart;
-	public List<GameObject> panelPool = new List<GameObject> ();
+	#endregion
+
+
+	#region lists
+	[Header("List references")]
+	public List<string> baseTemplateNames = new List<string> ();
+	public List<string> customTemplateNames = new List<string> ();
 	public List<Environment> environments = new List<Environment>();
 	#endregion
 
@@ -85,7 +91,6 @@ public class AssetManager : MonoBehaviour {
 			_instance = this;
 		}
 	}
-
 
 
 	private ScreenManager SM;
@@ -219,9 +224,14 @@ public class AssetManager : MonoBehaviour {
 		SM.Log ("contentPanelsJSON: (" + Ncp["data"].Count + ") " + (dataDir + contentJsonDocName));
 
 		for (int i = 0; i < Ncp ["data"].Count; i++) {
-			string envKey = Ncp ["data"] [i] ["environment"];
-			int eI = environments.FindIndex (x => x.envKey == envKey);
-			environments [eI].envPanelData.Add(Ncp ["data"] [i].ToString());
+			//check that the desired template is actually available
+			if (baseTemplateNames.Contains (Ncp ["data"] [i] ["views"] ["front"] ["template"]) || customTemplateNames.Contains (Ncp ["data"] [i] ["views"] ["front"] ["template"])) {
+				string envKey = Ncp ["data"] [i] ["environment"];
+				int eI = environments.FindIndex (x => x.envKey == envKey);
+				environments [eI].envPanelData.Add (Ncp ["data"] [i].ToString ());
+			} else {
+				SM.Log ("\t --[" + Ncp ["data"] [i] ["nid"] +"] "+Ncp ["data"] [i] ["reference_title"] + " (\"" + Ncp ["data"] [i] ["views"] ["front"] ["template"] + "\" TEMPLATE UNAVALABLE)");
+			}
 		}
 
 		//presentations (which content panels / beauty panels to use in the idle state for each environment)
