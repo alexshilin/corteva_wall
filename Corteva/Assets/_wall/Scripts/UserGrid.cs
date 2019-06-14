@@ -76,10 +76,11 @@ public class UserGrid : MonoBehaviour {
 		currColumn = 0.5f;//-1.5f;
 
 		//calc grid width using groupings of 3
-		//round total panel count to next multiple of 3
-		//then divide that by 3 to get group count
-		//each group is 1.5 units of movement
-		myKiosk.gridWidth = (((Mathf.Ceil(myKiosk.env.envPanelData.Count / 3f) * 3f) / 3) * -1.5f);
+		//each group is 3.25 units of movement
+		myKiosk.gridWidth = Mathf.Ceil(myKiosk.env.envPanelData.Count / 3f) * -3.25f;
+//		Debug.Log("**** "+myKiosk.env.envPanelData.Count+
+//			" | "+Mathf.Ceil(myKiosk.env.envPanelData.Count / 3f)+
+//			" | "+(Mathf.Ceil(myKiosk.env.envPanelData.Count / 3f) * -3.25f));
 		 
 		//loop through enviroment panels JSON
 		for (int i = 0; i < myKiosk.env.envPanelData.Count; i++) {

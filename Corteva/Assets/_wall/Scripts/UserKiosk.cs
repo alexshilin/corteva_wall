@@ -449,13 +449,13 @@ public class UserKiosk : MonoBehaviour {
 
 			if(userGrid.localPosition.x > -1.5f)
 				userGrid.localPosition = new Vector3 (-1.5f, userGrid.localPosition.y, userGrid.localPosition.z);
-			if(userGrid.localPosition.x < (-1.5f + gridWidth))
-				userGrid.localPosition = new Vector3 ((-1.5f + gridWidth), userGrid.localPosition.y, userGrid.localPosition.z);
+			if(userGrid.localPosition.x < gridWidth+2f)
+				userGrid.localPosition = new Vector3 (gridWidth+2f, userGrid.localPosition.y, userGrid.localPosition.z);
 
 			if(bgPanel.transform.localPosition.x < 0)
 				bgPanel.transform.localPosition = new Vector3 (0f, bgPanel.transform.localPosition.y, bgPanel.transform.localPosition.z);
-			if(bgPanel.transform.localPosition.x > Mathf.Abs(gridWidth) * 0.1f)
-				bgPanel.transform.localPosition = new Vector3 (Mathf.Abs(gridWidth * 0.1f), bgPanel.transform.localPosition.y, bgPanel.transform.localPosition.z);
+			if(bgPanel.transform.localPosition.x > Mathf.Abs(gridWidth) * 0.05f)
+				bgPanel.transform.localPosition = new Vector3 (Mathf.Abs(gridWidth) * 0.05f, bgPanel.transform.localPosition.y, bgPanel.transform.localPosition.z);
 		}
 
 		if (dragNav) {
