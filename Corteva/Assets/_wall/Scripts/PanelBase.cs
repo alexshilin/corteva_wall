@@ -534,6 +534,7 @@ public class PanelBase : MonoBehaviour {
 
 		if (template == "pearl_millet") {
 			//
+			/*
 			t = LoadModule ("1x2_texture_color_l", _view);
 
 			panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
@@ -544,6 +545,7 @@ public class PanelBase : MonoBehaviour {
 			} else {
 				t.transform.Find ("ColorQuad").GetComponent<Renderer> ().material.color = environment.envColor;
 			}
+			*/
 
 			//
 			t = LoadModule ("1x2_txt_layout_r", _view);
