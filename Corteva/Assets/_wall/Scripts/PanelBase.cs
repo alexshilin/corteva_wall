@@ -16,7 +16,7 @@ public class PanelBase : MonoBehaviour {
 	public Transform front;
 	public Transform back;
 	public Transform thumbnail;
-	public Collider collider;
+	public Collider collide;
 
 	//enums for panel states
 	public enum PanelContext
@@ -659,6 +659,10 @@ public class PanelBase : MonoBehaviour {
 				}
 			}
 		}
+
+		if (panelContext == PanelContext.Idle && _viewToShow == PanelView.Front) {
+			collide.transform.localPosition = new Vector3 (0, 0, -1);
+		}
 			
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
 			front.gameObject.SetActive (false);
@@ -771,6 +775,7 @@ public class PanelBase : MonoBehaviour {
 			&& panelState == PanelState.Active) 
 		{
 			//content panels are interactable, and should remain when tapped
+			collide.transform.localPosition = Vector3.zero;
 			transform.parent = AssetManager.Instance.panels;
 			transform.localScale = Vector3.one;
 			Debug.Log ("\tgridCell: " + this.gridID + " | gridPosID: " + GridManagerOrtho.Instance.gridPositions [this.gridID].id);

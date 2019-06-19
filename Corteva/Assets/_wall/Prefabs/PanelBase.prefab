@@ -269,7 +269,7 @@ MonoBehaviour:
   front: {fileID: 4255852751102080}
   back: {fileID: 4664057513898534}
   thumbnail: {fileID: 4509939764676954}
-  collider: {fileID: 65909391720075166}
+  collide: {fileID: 65909391720075166}
   currViewFacingForward: 0
   currViewFacingAway: 0
   panelState: 0
