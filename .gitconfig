@@ -1,8 +1,0 @@
-[mergetool "unity_yaml"]
-cmd = '/Applications/Unity/Unity.app/Contents/Tools/UnityYAMLMerge' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
-trustExitCode = false
-keepTemporaries = true
-keepBackup = false
- 
-[merge]
-tool = unity_yaml
