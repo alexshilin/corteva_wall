@@ -73,16 +73,19 @@ public class CropPipeline : MonoBehaviour {
 	}
 
 	void updateRing(){
-		currStop = Mathf.Floor (((360f - handle.localEulerAngles.z) / stopAngle) + 0.1f);
+		//currStop = Mathf.Floor (((360f - handle.localEulerAngles.z) / stopAngle) + 0.1f); //switch On #
+		currStop = Mathf.Round (((360f - handle.localEulerAngles.z) / stopAngle)); //switch Btw #s
 		currStop = currStop >= stops.Count ? 0 : currStop ;
-		//disFromCurrStop = Mathf.Round ((360f - handle.localEulerAngles.z) % stopAngle);
+
+		float txtStop = Mathf.Floor (((360f - handle.localEulerAngles.z) / stopAngle) + 0.1f); //switch On #
+		//float txtStop = Mathf.Round (((360f - handle.localEulerAngles.z) / stopAngle)); //switch Btw #s
+		txtStop = txtStop >= stops.Count ? 0 : txtStop ;
 
 		float fill = 1f - (handle.localEulerAngles.z / 360f); 
 		ring.fillAmount = fill > .999999f ? 0f : fill;
 
-		Debug.Log ("**** " + Mathf.RoundToInt(currStop)+" ("+(((360f - handle.localEulerAngles.z) / stopAngle) + 0.1f)+")"+" ["+Mathf.Floor (((360f - handle.localEulerAngles.z) / stopAngle) + 0.1f)+"]");
-		title.text = titles [Mathf.RoundToInt(currStop)];
-		body.text = bodies [Mathf.RoundToInt(currStop)];
+		title.text = titles [Mathf.RoundToInt(txtStop)];
+		body.text = bodies [Mathf.RoundToInt(txtStop)];
 	}
 
 	void Update () {
