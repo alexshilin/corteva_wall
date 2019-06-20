@@ -9,6 +9,7 @@ public class CrisprWhy : MonoBehaviour {
 	public TransformGesture transformGesture;
 	public SpriteRenderer plant;
 	public List<CrisprWhyIcon> icons = new List<CrisprWhyIcon>();
+	public List<CrisprWhyIcon2> icons2 = new List<CrisprWhyIcon2>();
 
 	private float dist;
 
@@ -24,6 +25,9 @@ public class CrisprWhy : MonoBehaviour {
 		crispr.localPosition = new Vector3 (-1.69f, -0.874f, -0.02f);
 		crispr.localScale = Vector3.one * 0.07033154f;
 		foreach (CrisprWhyIcon i in icons) {
+			i.Clean ();
+		}
+		foreach (CrisprWhyIcon2 i in icons2) {
 			i.Clean ();
 		}
 	}
@@ -42,6 +46,9 @@ public class CrisprWhy : MonoBehaviour {
 				i.Clean ();
 			}
 		}
+		foreach (CrisprWhyIcon2 i in icons2) {
+			i.Clean ();
+		}
 	}
 
 	void transformEndHandler(object sender, System.EventArgs e){
@@ -53,6 +60,7 @@ public class CrisprWhy : MonoBehaviour {
 			foreach (CrisprWhyIcon i in icons) {
 				i.End ();
 			}
+			StartCoroutine (showAfter ());
 		} else {
 			plant.color = Color.white;
 			crispr.localPosition = new Vector3 (-1.69f, -0.874f, -0.02f);
@@ -61,4 +69,11 @@ public class CrisprWhy : MonoBehaviour {
 			}
 		}
 	} 
+
+	IEnumerator showAfter(){
+		yield return new WaitForSeconds (0.5f);
+		foreach (CrisprWhyIcon2 i in icons2) {
+			i.End ();
+		}
+	}
 }

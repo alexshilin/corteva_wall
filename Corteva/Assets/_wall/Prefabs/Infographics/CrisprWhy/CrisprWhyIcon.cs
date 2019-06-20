@@ -8,20 +8,17 @@ public class CrisprWhyIcon : MonoBehaviour {
 
 	public Transform gfx;
 	public Transform labels;
-	public SpriteRenderer before;
-	public SpriteRenderer after;
+	public SpriteRenderer icon;
 	public Image ring;
-	public Image ring_d;
 
-	private Vector3 gfxPos;
 	private float ring_dFill; 
 	private float ring_dRot;
-	private float ringFill;
+	private float ring_dScl;
+	private Color ring_dCol;
+	private Vector3 txtPos;
 	private Vector3 txtRot;
 	private Vector3 beforeScl;
-	private Vector3 afterScl;
 	private Color beforeCol;
-	private Color afterCol;
 
 	private float lerpDuration = 0.5f;
 	private float t = 0.0f;
@@ -34,45 +31,42 @@ public class CrisprWhyIcon : MonoBehaviour {
 
 	public void Clean(){
 		if (step != 0) {
-			gfxPos = Vector3.zero;
 			ring_dFill = 0;
 			ring_dRot = 0;
-			ringFill = 0;
+			ring_dScl = 0.00276f;
+			ring_dCol = new Color32 (0, 191, 111, 255);
+			txtPos = new Vector3 (0f, -0.2f, -0.066f);
 			txtRot = Vector3.zero;
 			beforeScl = Vector3.one * 0.0345f;
-			afterScl = Vector3.one * 0.01f;
 			beforeCol = new Color (1, 1, 1, 1);
-			afterCol = new Color32 (0, 191, 111, 0);
 			t = 0;
 			step = 0;
 		}
 	}
 	public void Ready(){
 		if (step != 1) {
-			gfxPos = new Vector3 (0, 0.075f, 0);
 			ring_dFill = 1f;
 			ring_dRot = 1f;
-			ringFill = 0;
+			ring_dScl = 0.00276f;
+			ring_dCol = new Color32 (0, 191, 111, 255);
+			txtPos = new Vector3 (0f, -0.242f, -0.066f);
 			txtRot = Vector3.zero;
-			beforeScl = Vector3.one * 0.0345f;
-			afterScl = Vector3.one * 0.01f;
+			beforeScl = Vector3.one * 0.025f;
 			beforeCol = new Color (1, 1, 1, 1);
-			afterCol = new Color32 (0, 191, 111, 0);
 			t = 0;
 			step = 1;
 		}
 	}
 	public void End(){
 		if (step != 2) {
-			gfxPos = new Vector3 (0, 0.05f, 0);
-			ring_dFill = 0f;
+			ring_dFill = 1f;
 			ring_dRot = 0f;
-			ringFill = 1f;
+			ring_dScl = 0.00347f;
+			ring_dCol = new Color32 (0, 191, 111, 0);
+			txtPos = new Vector3 (0f, -0.2f, -0.066f);
 			txtRot = new Vector3 (-90f, 0, 0);
 			beforeScl = Vector3.one * 0.01f;
-			afterScl = Vector3.one * 0.0345f;
 			beforeCol = new Color (1, 1, 1, 0);
-			afterCol = new Color32 (0, 191, 111, 255);
 			t = 0;
 			step = 2;
 		}
@@ -82,20 +76,26 @@ public class CrisprWhyIcon : MonoBehaviour {
 		float rate = 1 / lerpDuration;
 		if (t < 1.0f) {
 			t += rate * Time.deltaTime;
-			gfx.localPosition = Vector3.Lerp (gfx.localPosition, gfxPos, t);
-			ring_d.fillAmount = Mathf.Lerp (ring_d.fillAmount, ring_dFill, t);
-			ring.fillAmount = Mathf.Lerp (ring.fillAmount, ringFill, t);
+			//gfx.localPosition = Vector3.Lerp (gfx.localPosition, gfxPos, t);
+			icon.transform.localScale = Vector3.Lerp(icon.transform.localScale, beforeScl, t);
+			ring.fillAmount = Mathf.Lerp (ring.fillAmount, ring_dFill, t);
+			ring.rectTransform.localScale = Vector3.Lerp(ring.rectTransform.localScale, Vector3.one * ring_dScl, t);
+			ring.color = Color.Lerp (ring.color, ring_dCol, t);
+			//ring.fillAmount = Mathf.Lerp (ring.fillAmount, ringFill, t);
+
+			labels.localPosition = Vector3.Lerp (labels.localPosition, txtPos, t);
 			labels.localRotation = Quaternion.Lerp (labels.localRotation, Quaternion.Euler (txtRot), t);
-			before.transform.localScale = Vector3.Lerp (before.transform.localScale, beforeScl, t);
-			after.transform.localScale = Vector3.Lerp (after.transform.localScale, afterScl, t);
-			before.color = Color.Lerp (before.color, beforeCol, t);
-			after.color = Color.Lerp (after.color, afterCol, t);
+
+			icon.transform.localScale = Vector3.Lerp (icon.transform.localScale, beforeScl, t);
+			//after.transform.localScale = Vector3.Lerp (after.transform.localScale, afterScl, t);
+			icon.color = Color.Lerp (icon.color, beforeCol, t);
+			//after.color = Color.Lerp (after.color, afterCol, t);
 		}
 
 		if (ring_dRot > 0) {
-			ring_d.rectTransform.RotateAround (ring_d.rectTransform.position, Vector3.forward, ring_dRot);
+			ring.rectTransform.RotateAround (ring.rectTransform.position, Vector3.forward, ring_dRot);
 		} else {
-			ring_d.rectTransform.localRotation = Quaternion.Euler (0, 0, 180f);
+			ring.rectTransform.localRotation = Quaternion.Euler (0, 0, 180f);
 		}
 	}
 }
