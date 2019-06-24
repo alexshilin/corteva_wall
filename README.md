@@ -14,9 +14,9 @@ Please make sure you have it installed.
 ### Opening
 **Clone the repo**
 
-`git clone https://github.com/alexshilin/corteva_wall.git`
+`git clone --branch master https://github.com/alexshilin/corteva_wall.git corteva_app`
 
-**Pull down large files from LFS**
+`cd corteva_app`
 
 `git lfs pull`
 
