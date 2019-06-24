@@ -612,6 +612,29 @@ public class PanelBase : MonoBehaviour {
 
 			return;
 		}
+
+		if (template == "crispr_what") {
+			//
+			t = LoadModule ("crispr_what", _view);
+
+			//
+			t = LoadModule ("1x1_txt_layout_06", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (new Color32(230, 231, 232, 255), environment.envColor);
+			t.transform.localPosition += transform.forward * -0.03f;
+
+			return;
+		}
 	}
 
 
