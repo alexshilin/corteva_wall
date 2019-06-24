@@ -1,7 +1,7 @@
 # corteva_wall
 
 ## Unity 
-This project was built using the latest Untiy 2017.4 LTS (2017.4.25f1 at time of original commit). Please only edit this project using a version of Unity from this LTS build.
+This project was built using the latest **Untiy 2017.4 LTS** (*2017.4.25f1 at time of original commit*). Please only edit this project using a version of Unity from this LTS build.
 
 *The LTS version updates include address crashes, regressions, and issues that affect the wider community but do not add any new features, API changes or improvements.*
 
@@ -13,10 +13,12 @@ Please make sure you have it installed.
 
 ### Opening
 **Clone the repo**
-git clone https://github.com/alexshilin/corteva_wall.git 
+
+`git clone https://github.com/alexshilin/corteva_wall.git`
 
 **Pull down large files from LFS**
-git lfs pull
+
+`git lfs pull`
 
 **Open Project in Unity**
 open Unity, select `Open` in the Projects dialogue, 
