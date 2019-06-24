@@ -44,9 +44,6 @@ sysinfo.txt
 #
 # Project specific
 #
-# Ignore everything in the "_builds" directory, except the "assets" directory.
-_builds/*
-!_builds/assets/
 
 #
 # macOS specific
