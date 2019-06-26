@@ -34,6 +34,7 @@ public class CrisprWhat : MonoBehaviour {
 	private float pieceScl = 0.6f;
 
 	private bool autoRotate = false;
+	private float rotateSpeed = -10f;
 
 	private Vector3 newPieceStart = new Vector3 (-0.175f, -0.449f, -1.027319f);
 
@@ -102,17 +103,17 @@ public class CrisprWhat : MonoBehaviour {
 			oldPieceRing.gameObject.SetActive (true);
 		if (line.gameObject.activeSelf)
 			line.gameObject.SetActive (false);
-		if (Vector2.Distance (oldPiece.position, snap.position) < 0.3f) {
-			oldPiece.position = snap.position;
-			oldPiece.parent = helix;
-			if(oldPieceRing.gameObject.activeSelf)
-				oldPieceRing.gameObject.SetActive (false);
-			if (!line.gameObject.activeSelf)
-				line.gameObject.SetActive (true);
-		}
+//		if (Vector2.Distance (oldPiece.position, snap.position) < 0.3f) {
+//			oldPiece.position = snap.position;
+//			oldPiece.parent = helix;
+//			if(oldPieceRing.gameObject.activeSelf)
+//				oldPieceRing.gameObject.SetActive (false);
+//			if (!line.gameObject.activeSelf)
+//				line.gameObject.SetActive (true);
+//		}
 	}
 	void oldPieceTransformEndHandler(object sender, System.EventArgs e){
-		if (Vector2.Distance (oldPiece.position, snap.position) < 0.3f) {
+		if (Vector2.Distance (oldPiece.position, snap.position) < 0.1f) {
 			oldPiece.position = snap.position;
 			oldPiece.parent = helix;
 			autoRotate = true;
@@ -166,13 +167,13 @@ public class CrisprWhat : MonoBehaviour {
 		autoRotate = false;
 		newPiece.parent = transform;
 		newPiece.localPosition += newPieceGesture.DeltaPosition;
-		if (Vector2.Distance (newPiece.position, snap.position) < 0.3f) {
-			setNewPiece ();
-		}
+//		if (Vector2.Distance (newPiece.position, snap.position) < 0.3f) {
+//			StartCoroutine(setNewPiece ());
+//		}
 	}
 	void newPieceTransformEndHandler(object sender, System.EventArgs e){
 		if (Vector2.Distance (newPiece.position, snap.position) < 0.3f) {
-			setNewPiece ();
+			StartCoroutine(setNewPiece ());
 		} else {
 			newPiece.parent = transform;
 			newPiece.localPosition = newPieceStart;
@@ -180,24 +181,38 @@ public class CrisprWhat : MonoBehaviour {
 		}
 	}
 
-	void setNewPiece(){
+	IEnumerator setNewPiece(){
+		newPieceGesture.Transformed -= newPieceTransformHandler;
+		newPieceGesture.TransformCompleted -= newPieceTransformEndHandler;
 		newPiece.position = snap.position;
 		newPiece.parent = helix;
 		newPiece.localScale = Vector3.one;
-		autoRotate = true;
+		//autoRotate = true;
 		newPieceRing.gameObject.SetActive (false);
 		newPieceTitle.SetActive (false);
 		newPieceInstruct.SetActive (false);
-		EaseCurve.Instance.MatColor (helixR.material, helixR.material.color, new Color32 (0, 114, 206, 255), 0.5f, 0f, EaseCurve.Instance.linear);
+		EaseCurve.Instance.MatColor (helixR.material, helixR.material.color, new Color32 (0, 114, 206, 255), 3f, 0f, EaseCurve.Instance.linear);
+		t = 0;
+		float rate = 1 / 4f;
+		float spd = -12f;
+		while (t < 1.0f) {
+			if (transform.gameObject.activeSelf) {
+				t += rate * Time.deltaTime;
+				helix.Rotate (Vector3.up, spd, Space.Self);
+				spd = Mathf.Lerp (-12f, -1f, t);
+				yield return null;
+			} else {
+				yield break;
+			}
+		}
+		autoRotate = true;
 		newTitle.SetActive (true);
-		newPieceGesture.Transformed -= newPieceTransformHandler;
-		newPieceGesture.TransformCompleted -= newPieceTransformEndHandler;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (autoRotate) {
-			helix.Rotate (Vector3.up, Time.deltaTime * -10f, Space.Self);
+			helix.Rotate (Vector3.up, Time.deltaTime * rotateSpeed, Space.Self);
 		}
 		if(newPiece.parent == transform)
 			newPiece.rotation = snap.rotation;
