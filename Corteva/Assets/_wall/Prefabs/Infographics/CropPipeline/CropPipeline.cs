@@ -13,17 +13,19 @@ public class CropPipeline : MonoBehaviour {
 	public TextMeshPro title;
 	public TextMeshPro body;
 
-	private string[] titles = new string[5]{ 
+	private string[] titles = new string[6]{ 
 		"1. Discovery", 
 		"2. Development", 
-		"3. Globe pre-launch\n& launch", 
-		"4. Extend & Improve", 
-		"5. Operation" 
+		"3. Launch", 
+		"4. Ramp-Up",
+		"5. Extend & Improve", 
+		"6. Operation" 
 	};
-	private string[] bodies = new string[5]{ 
+	private string[] bodies = new string[6]{ 
 		"Invent new products\nand technology.", 
 		"Complete research to enable product development.", 
-		"Complete preparations\nfor global launch.", 
+		"Complete preparations and launch product globally.",
+		"Optimize product usage.", 
 		"Expand use or launch new varieties.", 
 		"Product support and defense." 
 	};
@@ -67,6 +69,13 @@ public class CropPipeline : MonoBehaviour {
 	}
 	void transformEndHandler(object sender, System.EventArgs e){
 		toRotation = Quaternion.identity * Quaternion.AngleAxis (360f - (currStop * stopAngle), pinnedGesture.RotationAxis);
+
+		handle.rotation = toRotation;
+		updateRing ();
+	}
+
+	public void manualStop(int _stop){
+		toRotation = Quaternion.identity * Quaternion.AngleAxis (360f - (_stop * stopAngle), pinnedGesture.RotationAxis);
 
 		handle.rotation = toRotation;
 		updateRing ();
