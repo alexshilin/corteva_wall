@@ -77,6 +77,10 @@ public class UserNav : MonoBehaviour {
 		if (!myKiosk.somePanelIsAnimating) {
 			if (envID == -1) {
 				myKiosk.StartPinDrop ();
+				AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+					.SetEventCategory(AssetManager.Instance.displayName)
+					.SetEventAction("Pin Drop > Open")
+					.SetEventLabel("Kiosk "+(myKiosk.column+1)));
 			} else {
 				EventsManager.Instance.UserKioskEnvironmentSwitchRequest (myKiosk, envID);
 				myKiosk.SwitchEnvironment (envID);

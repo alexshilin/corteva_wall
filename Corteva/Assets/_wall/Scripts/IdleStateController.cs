@@ -864,6 +864,7 @@ public class IdleStateController : MonoBehaviour {
 					}
 
 					po.panelID = panelData ["nid"];
+					po.panelName = panelData ["reference_title"];
 					usedContentPanels.Add(panelData["nid"]);
 
 					panel.name = environments[currEnv].envTitle + "_" + po.panelID;

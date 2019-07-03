@@ -62,6 +62,7 @@ public class PanelBase : MonoBehaviour {
 	public Environment environment{ get; set; }
 	//id from JSON
 	public string panelID;
+	public string panelName;
 	//gridID is to reference its physical position in idle state
 	public int gridID;
 	//ref to panels kiosk parent
@@ -805,6 +806,11 @@ public class PanelBase : MonoBehaviour {
 			} else {
 				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
 				EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
+				//Track
+				AM.GA.LogEvent(new EventHitBuilder()
+					.SetEventCategory(AM.displayName)
+					.SetEventAction("Kiosk > Open")
+					.SetEventLabel("Kiosk "+(tappedGridPos.x+1)));
 			}
 		}
 
@@ -831,6 +837,16 @@ public class PanelBase : MonoBehaviour {
 			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
 			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment, transform);
 			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
+			//Track
+			AM.GA.LogEvent(new EventHitBuilder()
+				.SetEventCategory(AM.displayName)
+				.SetEventAction("Kiosk > Open")
+				.SetEventLabel("Kiosk "+(this.panelGridPos.x+1)));
+			//Track
+			AM.GA.LogEvent(new EventHitBuilder()
+				.SetEventCategory(AM.displayName)
+				.SetEventAction("Panel > Open")
+				.SetEventLabel("["+panelID+"] "+panelName));
 		}
 
 		//the rest are all kiosk related
@@ -879,6 +895,11 @@ public class PanelBase : MonoBehaviour {
 				} else {
 					Debug.Log ("\t no active panel, opening thumbnail");
 					ActivateFromGrid (false);
+					//Track
+					AM.GA.LogEvent(new EventHitBuilder()
+						.SetEventCategory(AM.displayName)
+						.SetEventAction("Panel > Open")
+						.SetEventLabel("["+panelID+"] "+panelName));
 				}
 			}
 		}
@@ -918,6 +939,11 @@ public class PanelBase : MonoBehaviour {
 			EaseCurve.Instance.Vec3 (transform, transform.position, goTo, 0.5f, 0, EaseCurve.Instance.easeOut);
 			EaseCurve.Instance.Rot (transform, transform.localRotation, 180f, transform.up, 0.7f, 0f, EaseCurve.Instance.easeOutBack);
 			EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * scaleTo, 0.8f, 0f, EaseCurve.Instance.easeOutBack, PanelMovedToUserGrid);
+			//Track
+			AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+				.SetEventCategory(AssetManager.Instance.displayName)
+				.SetEventAction("Panel > Close")
+				.SetEventLabel("["+panelID+"] "+panelName));
 		}
 	}
 

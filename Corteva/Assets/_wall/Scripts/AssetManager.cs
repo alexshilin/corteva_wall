@@ -36,7 +36,13 @@ public class AssetManager : MonoBehaviour {
 	private int relativeFolderOffset;
 	private string assetsFolder;
 
+	[Header("Google Analytics")]
+	public GoogleAnalyticsV4 GA;
+	[HideInInspector]
+	public string displayName;
 
+
+	[Header("Loaded Assets")]
 	public List<string> imageFiles = new List<string>();
 	[HideInInspector]
 	public List<Texture2D> imageTextures = new List<Texture2D>();
@@ -141,6 +147,12 @@ public class AssetManager : MonoBehaviour {
 		var rootNode = (YamlMappingNode)yaml.Documents[0].RootNode;
 		rootDir = ParsePath (rootNode.Children [new YamlScalarNode ("root_path")] + "/");
 		SM.Log ("\trootDir: " + rootDir);
+
+		if ((string)rootNode.Children [new YamlScalarNode ("nickname")] != "") {
+			displayName = rootNode.Children [new YamlScalarNode ("location")] + " (" + rootNode.Children [new YamlScalarNode ("nickname")] + ")";
+		} else {
+			displayName = (string)rootNode.Children [new YamlScalarNode ("location")];
+		}
 
 		var dataNode = (YamlMappingNode)rootNode.Children [new YamlScalarNode ("data")];
 		dataDir = ParsePath (rootDir + dataNode.Children [new YamlScalarNode ("directory")] + "/");
