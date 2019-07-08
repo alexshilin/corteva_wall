@@ -4,7 +4,7 @@ using UnityEngine;
 using TouchScript.Gestures;
 
 public class PinDropBackBtn : MonoBehaviour {
-
+    public GameObject PindropObj;//menu
 	private TapGesture tapGesture;
 
 	void OnEnable(){
@@ -17,7 +17,9 @@ public class PinDropBackBtn : MonoBehaviour {
 		tapGesture.Tapped -= tapHandler;
 	}
 
-	void tapHandler(object sender, System.EventArgs e){
-		GetComponentInParent<PinDropMenu> ().PD.myKiosk.StopPinDrop ();
-	}
+	public void tapHandler(object sender, System.EventArgs e){
+        //GA--user taps on back button to go back to wall
+        PindropObj.GetComponent<PinDropMenu> ().PD.myKiosk.StopPinDrop ();
+        PindropObj.SetActive(false);
+    }
 }

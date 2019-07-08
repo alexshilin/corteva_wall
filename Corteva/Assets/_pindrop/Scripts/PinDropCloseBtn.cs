@@ -19,6 +19,6 @@ public class PinDropCloseBtn : MonoBehaviour {
 
 	void tapHandler(object sender, System.EventArgs e){
 		transform.parent.GetComponent<PinDropMenu>().instruct.text = "Tap CONFIRM to continue";
-		GetComponentInParent<PinDropMenu> ().CloseQuestions ();
+		//GetComponentInParent<PinDropMenu> ().CloseQuestions ();
 	}
 }

@@ -7,7 +7,7 @@ using TouchScript.Gestures;
 public class Pin : MonoBehaviour {
 
 	private bool ready = false;
-	private bool active = true;
+	public bool active = true;
 	private bool user = false;
 	public Transform icon;
 	public Transform info;
@@ -23,6 +23,7 @@ public class Pin : MonoBehaviour {
 	public float baseSize;
 
 	void Awake(){
+       
 	}
 
 	void OnEnable(){
@@ -54,21 +55,23 @@ public class Pin : MonoBehaviour {
 		tapGesture.Tapped += tapHandler;
 	}
 
-	public void UnsetConfirm(){
+	public void UnsetConfirm(){//make this pin not the active pin
 		if (tapGesture != null) {
-			//user = false;
+			user = false;
 			bc.enabled = false;
 			tapGesture.Tapped -= tapHandler;
 		}
-	}
+       
+    }
 
 	void OnDisable(){
 		UnsetConfirm ();
 	}
 
 	void tapHandler(object sender, System.EventArgs e){
-		Debug.Log ("QUESTION TIME");
-		transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.ShowQuestionOne ();
+		Debug.Log ("PIN CONFIRMED");
+        //GA--user hits "confirm"
+        transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.SetFinalPin ();
 	}
 		
 	public void SetPinText(string _text){
@@ -76,10 +79,12 @@ public class Pin : MonoBehaviour {
 		label.ForceMeshUpdate ();
 		bg.size = new Vector2 (bg.size.y + (label.textBounds.size.x * 5.5f), bg.size.y);
 		ready = true;
+        UpdatePinView();
 	}
 
 	public void SetPinColor(Color _color){
 		bg.GetComponent<Renderer> ().material.color = _color;
+        bg.transform.GetChild(0).GetComponent<Renderer>().material.color = _color;
 	}
 
 	void UpdatePinView(){
@@ -97,11 +102,23 @@ public class Pin : MonoBehaviour {
 
 	void TogglePin(bool _on){
 		icon.gameObject.SetActive (_on);
-		ToggleInfo (_on);
-	}
+        PinDropMenu _menu = transform.parent.parent.GetComponent<PinDropEarth>().PD.menu;
+        if (active || _menu.lastPin == gameObject || _menu.undecidedPin == gameObject)
+        {
+            info.gameObject.SetActive(_on);
+        }
 
-	void ToggleInfo(bool _on){
-		if (active) {
+    }
+
+    void ToggleInfo(bool _on){
+        PinDropMenu _menu = transform.parent.parent.GetComponent<PinDropEarth>().PD.menu;
+        if (_menu.lastPin == gameObject || _menu.undecidedPin == gameObject)
+        {
+            //Debug.Log("DO NOT ZOOM");
+            return;
+        }
+
+        if (active) {
 			info.gameObject.SetActive (_on);
 		}
 	}
