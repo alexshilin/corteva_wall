@@ -21,11 +21,11 @@ public class GA : MonoBehaviour {
 
 		Tracking = GetComponent<GoogleAnalyticsV4> ();
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		if(testTrackingCode!=""){
 			Debug.Log("using TEST GA ID for unity editor: "+testTrackingCode);
 			Tracking.otherTrackingCode = testTrackingCode;
 		}
-		#endif
+#endif
 	}
 }
