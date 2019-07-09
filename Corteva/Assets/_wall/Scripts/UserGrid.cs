@@ -155,6 +155,8 @@ public class UserGrid : MonoBehaviour {
 			po.panelState = PanelBase.PanelState.Ready;
 			po.myKiosk = myKiosk; //TMP, change this
 			po.environment = myKiosk.env;
+			po.panelID = panelData ["nid"];
+			po.panelName = panelData ["reference_title"];
 			po.Assemble (panelData);
 			po.ActivateView (PanelBase.PanelView.Thumbnail, false);
 		}
