@@ -36,8 +36,6 @@ public class AssetManager : MonoBehaviour {
 	private int relativeFolderOffset;
 	private string assetsFolder;
 
-	[Header("Google Analytics")]
-	public GoogleAnalyticsV4 GA;
 	[HideInInspector]
 	public string displayName;
 

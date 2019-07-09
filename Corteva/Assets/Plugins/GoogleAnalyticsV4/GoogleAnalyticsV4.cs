@@ -113,7 +113,6 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
 #endif
 
   void Awake() {
-    InitializeTracker ();
     if (sendLaunchEvent) {
       LogEvent("Google Analytics", "Auto Instrumentation", "Game Launch", 0);
     }
@@ -129,6 +128,10 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
       }
     }
   }
+
+	void Start(){
+		InitializeTracker ();
+	}
 
   void Update() {
     if (!string.IsNullOrEmpty(uncaughtExceptionStackTrace)) {

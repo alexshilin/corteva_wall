@@ -92,7 +92,7 @@ public class UserKiosk : MonoBehaviour {
 			waitingForSave = false;
 			closer.gameObject.SetActive (false);
 			//Track
-			AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+			GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 				.SetEventCategory(AssetManager.Instance.displayName)
 				.SetEventAction("Kiosk > Keep Alive")
 				.SetEventLabel("Kiosk "+(column+1)));
@@ -167,7 +167,7 @@ public class UserKiosk : MonoBehaviour {
 		EaseCurve.Instance.Vec3 (userGrid.transform, userGrid.transform.localPosition, gridLeave, 0.3f, 0f, EaseCurve.Instance.easeIn, ContinueSwitch, "local"); 
 		//EaseCurve.Instance.Vec3 (headerPanelOld.transform, headerPanelOld.transform.localPosition, headerPanelOld.transform.localPosition + Vector3.up * 6f, 0.5f, 0f, EaseCurve.Instance.linear, null, "local"); 
 	
-		AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 			.SetEventCategory(AssetManager.Instance.displayName)
 			.SetEventAction("Nav > Switch Environment")
 			.SetEventLabel(env.envTitle));
@@ -268,11 +268,11 @@ public class UserKiosk : MonoBehaviour {
 		//animate the camera closing
 		EaseCurve.Instance.CamRect (userCam, camOpenedRect, camClosedRect, 0.5f, EaseCurve.Instance.easeIn, HariKari);
 		//Track
-		AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 			.SetEventCategory(AssetManager.Instance.displayName)
 			.SetEventAction("Kiosk > Close")
 			.SetEventLabel("Kiosk "+(column+1)));
-		AssetManager.Instance.GA.LogTiming(new TimingHitBuilder()
+		GA.Instance.Tracking.LogTiming(new TimingHitBuilder()
 				.SetTimingCategory(AssetManager.Instance.displayName)
 				.SetTimingInterval((long)Mathf.RoundToInt(timeAlive) * 1000L)
 				.SetTimingName("Kiosk > Lifetime")

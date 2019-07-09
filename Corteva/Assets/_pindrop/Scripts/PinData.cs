@@ -14,6 +14,9 @@ public class PinData : MonoBehaviour {
 	public string oldPinsLoad;
 	public JSONNode pinData;
 
+	[HideInInspector]
+	public string displayName;
+
 	private static PinData _instance;
 	public static PinData Instance { get { return _instance; } }
 	private void Awake()
@@ -44,6 +47,13 @@ public class PinData : MonoBehaviour {
 		var rootNode = (YamlMappingNode)yaml.Documents[0].RootNode;
 		var dataNode = (YamlMappingNode)rootNode.Children [new YamlScalarNode ("data")];
 		var filesNode = (YamlMappingNode)dataNode.Children [new YamlScalarNode ("files")];
+
+		//get display name for GA tracking
+		if ((string)rootNode.Children [new YamlScalarNode ("nickname")] != "") {
+			displayName = rootNode.Children [new YamlScalarNode ("location")] + " (" + rootNode.Children [new YamlScalarNode ("nickname")] + ")";
+		} else {
+			displayName = (string)rootNode.Children [new YamlScalarNode ("location")];
+		}
 
 		//get file path where to save pins
 		newPinsSave = ParsePath ((string)rootNode.Children [new YamlScalarNode ("new_dropped_pins")]);

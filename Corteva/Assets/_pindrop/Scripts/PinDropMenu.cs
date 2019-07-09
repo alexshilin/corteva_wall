@@ -110,9 +110,17 @@ public class PinDropMenu : MonoBehaviour {
         if(CurrentPage == q1)
         {
             //GA--user closes question one with 'X' button
+			GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+				.SetEventCategory(PinData.Instance.displayName)
+				.SetEventAction("PinDrop > CloseQuestion1")
+				.SetEventLabel(""));
         }else if(CurrentPage == q2)
         {
             //GA--user closes question one with 'X' button
+			GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+				.SetEventCategory(PinData.Instance.displayName)
+				.SetEventAction("PinDrop > CloseQuestion2")
+				.SetEventLabel(""));
         }
 
         foreach (Transform kid in Pages.transform)
@@ -130,6 +138,10 @@ public class PinDropMenu : MonoBehaviour {
 
     public void ContinueExploring(){
         //GA--user taps 'continue exploring' button
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > ContinueExploring")
+			.SetEventLabel(""));
         thankYou.GetComponent<PinDropThankScreen>().reset();
         HideAllPages();
     }
@@ -206,6 +218,10 @@ public class PinDropMenu : MonoBehaviour {
 	public void AnswerQuestionOne(string _answer){
         //GA--user answers question one
         PD.globe.timeWaited = 0;
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > AnswerQuestion1")
+			.SetEventLabel(_answer));
         Debug.Log ("1: " + _answer);
 		q1a = _answer;
 		Invoke ("ShowQuestionTwo", 0.2f);
@@ -213,6 +229,10 @@ public class PinDropMenu : MonoBehaviour {
 	public void AnswerQuestionTwo(string _answer){
         //GA--user answers question two
         PD.globe.timeWaited = 0;
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > AnswerQuestion2")
+			.SetEventLabel(_answer));
         Debug.Log ("2: " + _answer);
 		q2a = _answer;
 		Invoke ("ShowQ3", 0.2f);
@@ -238,6 +258,10 @@ public class PinDropMenu : MonoBehaviour {
     public void ShowQ3WithInfoBtn()
     {
         //GA--when user taps info button
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > Info")
+			.SetEventLabel(""));
         showQ3withInfo = true;
         q3.transform.Find("proceed").gameObject.SetActive(false);
         ShowPage(q3.transform);
@@ -326,6 +350,10 @@ public class PinDropMenu : MonoBehaviour {
 
     public void QuitPinDropScene(){
         //GA--user taps on 'back to wall' button
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > BackToWall")
+			.SetEventLabel("Kiosk "+(GetComponentInParent<PinDropMenu>().PD.myKiosk.column+1)));
         GetComponentInParent<PinDropMenu>().PD.myKiosk.StopPinDrop();
         gameObject.SetActive(false);
     }

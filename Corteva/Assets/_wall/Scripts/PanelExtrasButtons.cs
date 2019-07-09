@@ -36,14 +36,14 @@ public class PanelExtrasButtons : MonoBehaviour {
 			panel.FlipAround ();
 			if (btn == BtnType.More) {
 				//Track
-				AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+				GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 					.SetEventCategory(AssetManager.Instance.displayName)
 					.SetEventAction("Panel > More")
 					.SetEventLabel("["+panel.panelID+"] "+panel.panelName));
 			}
 			if (btn == BtnType.Back) {
 				//Track
-				AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+				GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 					.SetEventCategory(AssetManager.Instance.displayName)
 					.SetEventAction("Panel > Back")
 					.SetEventLabel("["+panel.panelID+"] "+panel.panelName));

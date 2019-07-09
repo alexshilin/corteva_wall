@@ -71,6 +71,10 @@ public class Pin : MonoBehaviour {
 	void tapHandler(object sender, System.EventArgs e){
 		Debug.Log ("PIN CONFIRMED");
         //GA--user hits "confirm"
+		GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+			.SetEventCategory(PinData.Instance.displayName)
+			.SetEventAction("PinDrop > PinSubmitted")
+			.SetEventLabel(""));
         transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.SetFinalPin ();
 	}
 		

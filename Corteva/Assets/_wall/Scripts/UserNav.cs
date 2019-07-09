@@ -77,7 +77,7 @@ public class UserNav : MonoBehaviour {
 		if (!myKiosk.somePanelIsAnimating) {
 			if (envID == -1) {
 				myKiosk.StartPinDrop ();
-				AssetManager.Instance.GA.LogEvent(new EventHitBuilder()
+				GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 					.SetEventCategory(AssetManager.Instance.displayName)
 					.SetEventAction("Pin Drop > Open")
 					.SetEventLabel("Kiosk "+(myKiosk.column+1)));
