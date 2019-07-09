@@ -36,9 +36,10 @@ public class PinDropEarth : MonoBehaviour {
 
 	public GameObject newUserPin;
 
-	private float maxTimeToWait = 20f;
-	private float timeWaited = 0f;
-	private bool idling = true;
+    public float maxTimeToWait = 5f;
+	public float timeWaited = 0f;
+	public bool idling = true;
+
 
 	void Awake () {
 		tex = earthSphere.GetComponent<Renderer> ().material.GetTexture ("_CloudAndNightTex") as Texture2D;
@@ -174,18 +175,28 @@ public class PinDropEarth : MonoBehaviour {
 	void PlacePin(Vector2 _latlon, string _text, bool _newUser = false){
 		if (newUserPin != null) {
 			Destroy (newUserPin);
-			PD.menu.instruct.text = "Tap to drop a pin in your home location";
+			//PD.menu.instruct.text = "Tap to drop a pin in your home location";
 		}
 		GameObject p = Instantiate (pin.gameObject, pinContainer);
 		p.transform.localPosition = LatLonToXYZ (_latlon);
+
+        //Debug.Log("place pin ");
+        //hideOtherPins(p.transform);
+        //p.transform.localPosition = new Vector3(Mathf.Round(LatLonToXYZ(_latlon).x * 50f) / 50f, LatLonToXYZ(_latlon).y, Mathf.Round(LatLonToXYZ(_latlon).z * 50f) / 50f);
+
 		p.GetComponent<Pin> ().SetPinText (_text);
 		p.GetComponent<Pin> ().latLon = _latlon;
+        p.GetComponent<Pin>().info.gameObject.SetActive(true);
+        PD.menu.undecidedPin = p;
+
+        
+
 		if (_newUser) {
 			p.GetComponent<Pin> ().SetConfirm ();
 			p.GetComponent<Pin> ().SetPinColor (new Color32 (252, 76, 2, 255));
 			p.GetComponent<Pin> ().baseSize *= 2f;
 			newUserPin = p;
-			PD.menu.ToggleWelcome (0);
+			//PD.menu.ToggleWelcome (0);
 			PD.menu.icons.SetActive (false);
 			PD.menu.instruct.text = "Tap CONFIRM to continue";
 		}
@@ -193,14 +204,31 @@ public class PinDropEarth : MonoBehaviour {
 		//p.transform.rotation = Quaternion.LookRotation((p.transform.position - earthSphere.position), earthSphere.forward);
 	}
 
+
+    private void hideOtherPins(Transform _pin){
+        float distlimit = 3f;
+
+        foreach (Transform p in pinContainer)
+        {
+            if (Vector3.Distance(p.localPosition, _pin.localPosition) < distlimit && p != _pin)
+            {
+                Debug.Log("HAS FOUND");
+                p.GetComponent<Pin>().info.gameObject.SetActive(false);
+            }
+
+        }
+
+
+    }
+
 	private void transformStartedHandler(object sender, EventArgs e){
 		flicking = false;
 		spinning = false;
 		spinVelocity = 0;
-		PD.menu.ToggleWelcome (0);
-		PD.menu.icons.SetActive (false);
-		if(newUserPin==null)
-			PD.menu.instruct.text = "Tap to drop a pin in your home location";
+		//PD.menu.ToggleWelcome (0);
+		//PD.menu.icons.SetActive (false);
+		//if(newUserPin==null)
+			//PD.menu.instruct.text = "Tap to drop a pin in your home location";
 	}
 
 	private void transformedHandler(object sender, EventArgs e){
@@ -217,10 +245,10 @@ public class PinDropEarth : MonoBehaviour {
 		flicking = false;
 		spinning = false;
 		twoFingerRotate = true;
-		PD.menu.ToggleWelcome (0);
+		//PD.menu.ToggleWelcome (0);
 		PD.menu.icons.SetActive (false);
-		if(newUserPin==null)
-			PD.menu.instruct.text = "Tap to drop a pin in your home location";
+		//if(newUserPin==null)
+			//PD.menu.instruct.text = "Tap to drop a pin in your home location";
 	}
 
 	private void twoFingerTransformHandler(object sender, System.EventArgs e)
@@ -230,12 +258,26 @@ public class PinDropEarth : MonoBehaviour {
 
 		//apply scaling
 		transform.localScale *= twoFingerTransformGesture.DeltaScale;
+
 		//set scaling limits
 		if (transform.localScale.x > 2f)
 			transform.localScale = Vector3.one * 2f;
 		if (transform.localScale.x < .5f)
 			transform.localScale = Vector3.one * .5f;
 	}
+
+    private void scaleWithMouse(){
+        //apply scaling
+        transform.localScale += Vector3.one * Input.mouseScrollDelta.y * 0.05f;
+
+        //set scaling limits
+        if (transform.localScale.x > 2f)
+            transform.localScale = Vector3.one * 2f;
+        if (transform.localScale.x < .5f)
+            transform.localScale = Vector3.one * .5f;
+        
+
+    }
 
 	private void twoFingerTransformEndHandler(object sender, EventArgs e){
 		twoFingerRotate = false;
@@ -246,26 +288,33 @@ public class PinDropEarth : MonoBehaviour {
 		spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
 		spinning = false;
 		flicking = true;
-		PD.menu.ToggleWelcome (0);
-		PD.menu.icons.SetActive (false);
-		if(newUserPin==null)
-			PD.menu.instruct.text = "Tap to drop a pin in your home location";
+		//PD.menu.ToggleWelcome (0);
+		//PD.menu.icons.SetActive (false);
+		//if(newUserPin==null)
+			//PD.menu.instruct.text = "Tap to drop a pin in your home location";
 		//Debug.Log ("FLICK " + spinAxis + " " + spinVelocity);
 	}
 
 	private void tapHandler(object sender, EventArgs e){
-		if (Physics.Raycast (cam.ScreenPointToRay (tapGesture.ScreenPosition), out hit)) {
+        if (Physics.Raycast (cam.ScreenPointToRay (tapGesture.ScreenPosition), out hit)) {
+            PD.menu.icons.SetActive(false);
+            PD.menu.instruct.text = "";
+
 			spinning = false;
 			Debug.Log ("[tapHandler] "+hit.transform.name+" (" + hit.point + ") | (" + earthSphere.InverseTransformPoint (hit.point) + " )");
 			XYZtoLatLon (earthSphere.InverseTransformPoint(hit.point));
 			if (IsItLand (hit.textureCoord)) {
-				PD.menu.CloseQuestions ();
-				PlacePin (XYZtoLatLon (earthSphere.InverseTransformPoint (hit.point)), "CONFIRM", true);
+                PD.menu.HideAllPages ();
+
+                if(PD.menu.questionCompleted){
+                    PlacePin(XYZtoLatLon(earthSphere.InverseTransformPoint(hit.point)), "CONFIRM", true);
+                }
+				
 			} else {
 				if (newUserPin != null) {
 					Destroy (newUserPin);
-					PD.menu.CloseQuestions ();
-					PD.menu.instruct.text = "Tap to drop a pin in your home location";
+                    PD.menu.HideAllPages ();
+					//PD.menu.instruct.text = "Tap to drop a pin in your home location";
 				}
 			}
 		} 
@@ -276,16 +325,29 @@ public class PinDropEarth : MonoBehaviour {
 		idling = false;
 	}
 
-	private void GoIdle(){
+	private void GoIdle(){//Close all other menus
+
+        if(PD.menu.CurrentPage == PD.menu.welcome)
+        {
+            Debug.Log("NO IDLE");
+            return;
+        }
+
+        //GA--Idle timer reset
+
+        Debug.Log("!!!!GoIdle");
 		idling = true;
 		Destroy (newUserPin);
-		PD.menu.CloseQuestions ();
-		PD.menu.ToggleWelcome (1, 0f);
-		PD.menu.icons.SetActive (true);
-		PD.menu.instruct.text = "Explore and Drop a Pin";
-		EaseCurve.Instance.RotTo (transform, Quaternion.Euler (0, -10f, 0), 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
-		EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * PD.initGlobeSize, 1.5f, 0f, EaseCurve.Instance.easeIn);
-	}
+
+        PD.menu.ShowPage(PD.menu.welcome.transform);
+        PD.menu.instruct.text = "";
+        //      PD.menu.HideAllPages ();
+        //PD.menu.ToggleWelcome (1, 0f);
+        //PD.menu.icons.SetActive (true);
+        //PD.menu.instruct.text = "Explore and Drop a Pin";
+        EaseCurve.Instance.RotTo (transform, Quaternion.Euler (0, -10f, 0), 2f, 0f, EaseCurve.Instance.easeIn, GoIdle2);
+        EaseCurve.Instance.Scl (transform, transform.localScale, Vector3.one * PD.initGlobeSize, 1.5f, 0f, EaseCurve.Instance.easeIn);
+    }
 
 	void GoIdle2(){
 		spinning = true;
@@ -320,5 +382,9 @@ public class PinDropEarth : MonoBehaviour {
 		if (spinning) {
 			transform.Rotate (transform.up, -spinSpeed * Time.deltaTime);
 		}
+
+        if(Input.mouseScrollDelta.y != 0){
+            scaleWithMouse();
+        }
 	}
 }

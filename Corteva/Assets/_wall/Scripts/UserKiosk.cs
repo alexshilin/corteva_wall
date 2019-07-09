@@ -506,6 +506,7 @@ public class UserKiosk : MonoBehaviour {
 	}
 
 	private void StartPinDrop2(){
+        Debug.Log("START PIN DROPPPP ");
 		menu.gameObject.SetActive (false);
 		tint.gameObject.SetActive (false);
 		headerPanel.gameObject.SetActive (false);

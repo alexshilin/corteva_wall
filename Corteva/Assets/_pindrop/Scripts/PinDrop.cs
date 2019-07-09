@@ -21,7 +21,7 @@ public class PinDrop : MonoBehaviour {
 	}
 
 	public void Init(){
-		if (myKiosk != null) {
+		if (myKiosk != null) {//is not standalong version
 			menu.backBtn.SetActive (true);
 			Vector3 backGoTo = menu.backBtn.transform.localPosition;
 			backGoTo.x = -2.5f;
@@ -29,17 +29,18 @@ public class PinDrop : MonoBehaviour {
 		}
 
 		menu.transform.localScale = Vector3.one * initWindowSize;
-		menu.ToggleWelcome (1, 2);
+        //menu.ToggleWelcome (1, 2);
+        menu.GetComponent<PinDropMenu>().bg.gameObject.SetActive(true);
 
 		globe.transform.localScale = Vector3.one * initGlobeSize * 0.5f;
 		globe.cam = globeCam;
-		EaseCurve.Instance.Scl(globe.transform, globe.transform.localScale, Vector3.one * initGlobeSize, 3f, 0f, EaseCurve.Instance.easeOut, ShowInstructions);
+        EaseCurve.Instance.Scl(globe.transform, globe.transform.localScale, Vector3.one * initGlobeSize, 3f, 0f, EaseCurve.Instance.easeOut, null);
 	}
 
-	void ShowInstructions(){
-		menu.instruct.gameObject.SetActive (true);
-		menu.icons.SetActive (true);
-	}
+	//public void ShowInstructions(){
+	//	menu.instruct.gameObject.SetActive (true);
+	//	menu.icons.SetActive (true);
+	//}
 
 	public void Off(){
 		globe.pinContainer.transform.localPosition += Vector3.up * 100f;
