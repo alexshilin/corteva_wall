@@ -63,7 +63,7 @@ public class IdleStateController : MonoBehaviour {
 
 
 	float timeElapsedSinceLastTransition;
-	public float timeToNextTransition = 10f;
+	public float timeToNextTransition = 15f;
 	bool activeTransitionLoop = false;
 
 	bool panelsInTransition = false;
@@ -962,16 +962,16 @@ public class IdleStateController : MonoBehaviour {
 	}
 
 	IEnumerator TapToStart(){
-		float timeIconIsVisible = 3f;
+		float timeIconIsVisible = 6.5f;
 		int maxIconsToShowPerIdle = 2;
-		float timeBetweenIcons = (timeToNextTransition - (timeIconIsVisible * maxIconsToShowPerIdle)) / (2 + (maxIconsToShowPerIdle-1));
+		float timeBetweenIcons = (timeToNextTransition - (timeIconIsVisible * maxIconsToShowPerIdle)) / (1 + (maxIconsToShowPerIdle-1));
 		List<int> cols = new List<int> ();
 		for (int i = 1; i < (int)GM.desiredGrid.x + 1; i++) {
 			cols.Add (i);
 		}
 		//Debug.Log ("***** " + timeToNextTransition + " >> " + timeBetweenIcons + "(" + (2 + (maxIconsToShowPerIdle - 1)) + ") , " + timeIconIsVisible + " (" + maxIconsToShowPerIdle + ")");
 		for (int i = 0; i < maxIconsToShowPerIdle; i++) {
-			yield return new WaitForSeconds (timeBetweenIcons);
+			//yield return new WaitForSeconds (timeBetweenIcons);
 			GameObject tts = Instantiate (AM.tapToStart);
 			int r = Random.Range (0, cols.Count);
 			int col = cols[r];
@@ -979,6 +979,7 @@ public class IdleStateController : MonoBehaviour {
 			//Debug.Log ("*** " + col);
 			Vector3 pos = GM.gridPositions.Find (x => (x.col == col) && (x.row == 0)).center;
 			pos.z = 2f;
+			pos.y -= 0.75f;
 			tts.transform.position = pos;
 			yield return new WaitForSeconds (timeIconIsVisible);
 			Destroy (tts);
