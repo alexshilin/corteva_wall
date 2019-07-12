@@ -6,6 +6,7 @@ public class DroneFlight: MonoBehaviour {
 
 	public Transform body;
 	public List<Transform> rotors = new List<Transform> ();
+	public GameObject cam;
 	private Vector3 tempPos;
 	private Vector3 posOffset;
 	private float frequency = 0.2f;
@@ -48,6 +49,12 @@ public class DroneFlight: MonoBehaviour {
 		}
 	}
 
+	IEnumerator TakePic(){
+		cam.SetActive (true);
+		yield return 0;
+		cam.SetActive (false);
+	}
+
 	void Update(){
 		transform.position = Vector3.MoveTowards(transform.position, positions [mark].position, Time.deltaTime * 0.8f);
 		transform.LookAt (positions [mark].position, transform.up);
@@ -57,9 +64,14 @@ public class DroneFlight: MonoBehaviour {
 		distanceToMark = Vector3.Distance (transform.position, positions [mark].position);
 		if (step < steps.Count - 1) {
 			if (pathProgress > steps [step]) {
+				Debug.Log (step);
 				step++;
 				mask.UpdateMask (step);
+				//StartCoroutine (TakePic ());
+				cam.SetActive (true);
 				Debug.Log (step + ": " + pathProgress + "/" + pathDistance);
+			} else {
+				cam.SetActive (false);
 			}
 		}
 		if (distanceToMark < 0.01f) {
