@@ -1,16 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TouchScript.Gestures.TransformGestures;
 
 public class DroneField : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+	private bool autoSpin = true;
+	private TransformGesture transformGesture;
+
+	void OnEnable(){
+		transformGesture = GetComponent<TransformGesture> ();
+
+		transformGesture.Transformed += transformHandler;
+	}
+
+	void OnDisable(){
+		transformGesture.Transformed -= transformHandler;
+	}
+
+	void transformHandler(object sender, System.EventArgs e){
+		autoSpin = false;
+		transform.Rotate(Vector3.up, transformGesture.DeltaPosition.x*-50, Space.Self);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.RotateAround (transform.position, transform.up, Time.deltaTime * -5f);
+		if(autoSpin)
+			transform.RotateAround (transform.position, transform.up, Time.deltaTime * -5f);
 	}
 }

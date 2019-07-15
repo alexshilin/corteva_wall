@@ -19,7 +19,7 @@ public class DroneFlight: MonoBehaviour {
 	private int mark = 0;
 	private float pathDistance;
 	private float pathProgress;
-	private List<float> steps = new List<float> ();
+	private List<float> steps = new List<float> (); 
 	private Vector3 direction;
 	private int step = 0;
 	private Vector3 lastPosition;
@@ -31,7 +31,7 @@ public class DroneFlight: MonoBehaviour {
 		step = 0;
 		mark = 0;
 		lastPosition = transform.position;
-		direction = positions [mark].position - transform.position;
+		direction = positions [mark].localPosition - transform.localPosition;
 	}
 
 	void CalcPathDistance(){
@@ -39,7 +39,7 @@ public class DroneFlight: MonoBehaviour {
 		marks.Add (pathDistance);
 		for (int i = 0; i < positions.Count; i++) {
 			if (i < positions.Count - 1) {
-				pathDistance += Vector3.Distance (positions [i].position, positions [i + 1].position);
+				pathDistance += Vector3.Distance (positions [i].localPosition, positions [i + 1].localPosition);
 				marks.Add (pathDistance);
 			}
 		}
@@ -56,12 +56,12 @@ public class DroneFlight: MonoBehaviour {
 	}
 
 	void Update(){
-		transform.position = Vector3.MoveTowards(transform.position, positions [mark].position, Time.deltaTime * 0.8f);
+		transform.localPosition = Vector3.MoveTowards(transform.localPosition, positions [mark].localPosition, Time.deltaTime * 0.8f);
 		transform.LookAt (positions [mark].position, transform.up);
 		if (mark > 0) {
-			pathProgress += Vector3.Distance (transform.position, lastPosition);
+			pathProgress += Vector3.Distance (transform.localPosition, lastPosition);
 		}
-		distanceToMark = Vector3.Distance (transform.position, positions [mark].position);
+		distanceToMark = Vector3.Distance (transform.localPosition, positions [mark].localPosition);
 		if (step < steps.Count - 1) {
 			if (pathProgress > steps [step]) {
 				Debug.Log (step);
@@ -87,7 +87,7 @@ public class DroneFlight: MonoBehaviour {
 		tempPos.y += Mathf.Sin (Time.fixedTime * Mathf.PI * frequency) * amplitude;
 		body.localPosition = tempPos;
 
-		lastPosition = transform.position;
+		lastPosition = transform.localPosition;
 
 		foreach (Transform r in rotors) {
 			r.localRotation *= Quaternion.Euler (0, 100f * rotateDir, 0);
