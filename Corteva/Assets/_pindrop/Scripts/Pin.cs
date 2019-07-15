@@ -27,7 +27,7 @@ public class Pin : MonoBehaviour {
 	}
 
 	void OnEnable(){
-		baseSize = 0.2f;
+		baseSize = 0.15f;
 	}
 
 	void Update(){
@@ -101,7 +101,12 @@ public class Pin : MonoBehaviour {
 			ToggleInfo (true);
 		}
 		transform.rotation = Quaternion.identity;
-		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.one * (0.02f / (transform.parent.parent.localScale.x * 0.02f)) * baseSize, 0.75f);
+		//pin scaling 
+		//based on posisition of pin in world space and scale of globe parent container
+		Vector3 pinSize = Vector3.one * (0.02f / (transform.parent.parent.localScale.x * 0.03f)) * baseSize;
+		if (transform.position.z < 100f)
+			pinSize += Vector3.one * ((100f - transform.position.z) * .01f);
+		transform.localScale = Vector3.Lerp (transform.localScale, pinSize, 0.75f);
 	}
 
 	void TogglePin(bool _on){

@@ -4860,7 +4860,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 1644680602}
   m_GameObject: {fileID: 1346043726}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &1382716267
+--- !u!1001 &1357481664
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -4916,6 +4916,35 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1260192608682946, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591591408987560, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591591408987560, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591591408987560, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453910002607580, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453910002607580, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453910002607580, guid: 4bfedb3577c7b48748a4f5853d56823e, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.14591
+      objectReference: {fileID: 0}
+    - target: {fileID: 114318816524768114, guid: 4bfedb3577c7b48748a4f5853d56823e,
+        type: 2}
+      propertyPath: m_fontColor32.rgba
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -5349,7 +5378,7 @@ MeshFilter:
 Transform:
   m_PrefabParentObject: {fileID: 4097358497108546, guid: 4bfedb3577c7b48748a4f5853d56823e,
     type: 2}
-  m_PrefabInternal: {fileID: 1382716267}
+  m_PrefabInternal: {fileID: 1357481664}
 --- !u!1001 &1500060202
 Prefab:
   m_ObjectHideFlags: 0

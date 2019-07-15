@@ -962,28 +962,49 @@ public class IdleStateController : MonoBehaviour {
 	}
 
 	IEnumerator TapToStart(){
-		float timeIconIsVisible = 6.5f;
+		float timeIconIsVisible = 5.5f;
 		int maxIconsToShowPerIdle = 2;
 		float timeBetweenIcons = (timeToNextTransition - (timeIconIsVisible * maxIconsToShowPerIdle)) / (1 + (maxIconsToShowPerIdle-1));
 		List<int> cols = new List<int> ();
 		for (int i = 1; i < (int)GM.desiredGrid.x + 1; i++) {
 			cols.Add (i);
 		}
+
+		//peristant tap to start in middle col
+		GameObject tts_middle = Instantiate (AM.tapToStart);
+		int col = cols [1];
+		cols.RemoveAt (1);
+		//Debug.Log ("*** " + col);
+		Vector3 pos = GM.gridPositions.Find (x => (x.col == col) && (x.row == 0)).center;
+		pos.z = 2f;
+		pos.y -= 0.75f;
+		tts_middle.transform.position = pos;
+
+		//wait a bit before another shows
+		yield return new WaitForSeconds (timeIconIsVisible*0.25f);
+
 		//Debug.Log ("***** " + timeToNextTransition + " >> " + timeBetweenIcons + "(" + (2 + (maxIconsToShowPerIdle - 1)) + ") , " + timeIconIsVisible + " (" + maxIconsToShowPerIdle + ")");
+		//show random on side columns
 		for (int i = 0; i < maxIconsToShowPerIdle; i++) {
 			//yield return new WaitForSeconds (timeBetweenIcons);
 			GameObject tts = Instantiate (AM.tapToStart);
 			int r = Random.Range (0, cols.Count);
-			int col = cols[r];
+			col = cols[r];
 			cols.RemoveAt (r);
 			//Debug.Log ("*** " + col);
-			Vector3 pos = GM.gridPositions.Find (x => (x.col == col) && (x.row == 0)).center;
+			pos = GM.gridPositions.Find (x => (x.col == col) && (x.row == 0)).center;
 			pos.z = 2f;
 			pos.y -= 0.75f;
 			tts.transform.position = pos;
 			yield return new WaitForSeconds (timeIconIsVisible);
 			Destroy (tts);
 		}
+
+		//wait a bit before removing persistent tap to start
+		yield return new WaitForSeconds (timeIconIsVisible*0.25f);
+
+		Destroy (tts_middle);
+
 		yield return null;
 	}
 
