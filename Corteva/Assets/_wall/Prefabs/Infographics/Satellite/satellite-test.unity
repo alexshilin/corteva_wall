@@ -281,6 +281,42 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1087238210175248, guid: 9e7e91859dfb947b3ad769c7694bd7ce, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1682872311338990, guid: 9e7e91859dfb947b3ad769c7694bd7ce, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056165458623658, guid: 9e7e91859dfb947b3ad769c7694bd7ce,
+        type: 2}
+      propertyPath: m_text
+      value: 'SkySat satellites empower us to make more informed,
+
+        data-driven decisions that will improve the profitability of farmers and the
+        welfare of societies around the world.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056165458623658, guid: 9e7e91859dfb947b3ad769c7694bd7ce,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056165458623658, guid: 9e7e91859dfb947b3ad769c7694bd7ce,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056165458623658, guid: 9e7e91859dfb947b3ad769c7694bd7ce,
+        type: 2}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: 140
+      objectReference: {fileID: 0}
+    - target: {fileID: 114056165458623658, guid: 9e7e91859dfb947b3ad769c7694bd7ce,
+        type: 2}
+      propertyPath: m_textInfo.characterCount
+      value: 167
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e7e91859dfb947b3ad769c7694bd7ce, type: 2}
   m_IsPrefabParent: 0
