@@ -659,6 +659,29 @@ public class PanelBase : MonoBehaviour {
 
 			return;
 		}
+
+		if (template == "plant_health") {
+			//
+			t = LoadModule ("stressed_plant", _view);
+
+			//
+			t = LoadModule ("1x1_txt_layout_06", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor);
+			t.transform.localPosition += transform.forward * -0.01f;
+
+			//
+			t = LoadModule ("1x1_extras", _view);
+
+			t.GetComponent<PanelExtras> ().ColorBtns (environment.envColor, Color.white);
+			t.transform.localPosition += transform.forward * -0.03f;
+
+			return;
+		}
 	}
 
 

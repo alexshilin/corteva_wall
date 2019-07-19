@@ -33,15 +33,18 @@ public class Pin : MonoBehaviour {
 	void Update(){
 		if (!ready)
 			return;
-		
-		if (transform.position.z>100f) {
+
+		if (transform.position.z > 100f || transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.hidePins) {
 			if (active) {
-				TogglePin(false);
+				TogglePin (false);
 				active = false;
 			}
-		} else {
+		}
+
+		if ((transform.position.z <= 100f && !transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu.hidePins)
+			|| (transform.position.z <=100 && user)) {
 			if (!active) {
-				TogglePin(true);
+				TogglePin (true);
 				active = true;
 			}
 		}
@@ -110,14 +113,12 @@ public class Pin : MonoBehaviour {
 	}
 
 	void TogglePin(bool _on){
+		PinDropMenu _menu = transform.parent.parent.GetComponent<PinDropEarth> ().PD.menu;
 		icon.gameObject.SetActive (_on);
-        PinDropMenu _menu = transform.parent.parent.GetComponent<PinDropEarth>().PD.menu;
-        if (active || _menu.lastPin == gameObject || _menu.undecidedPin == gameObject)
-        {
-            info.gameObject.SetActive(_on);
-        }
-
-    }
+		if (active || _menu.lastPin == gameObject || _menu.undecidedPin == gameObject) {
+			info.gameObject.SetActive (_on);
+		}
+	}
 
     void ToggleInfo(bool _on){
         PinDropMenu _menu = transform.parent.parent.GetComponent<PinDropEarth>().PD.menu;

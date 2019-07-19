@@ -1,5 +1,8 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
+
+
+
 Shader "Ciconia Studio/Double Sided/Transparent/Diffuse Bump" {
     Properties {
         _Diffusecolor ("Diffuse color", Color) = (1,1,1,1)
@@ -15,7 +18,7 @@ Shader "Ciconia Studio/Double Sided/Transparent/Diffuse Bump" {
     }
     SubShader {
         Tags {
-            "Queue"="Transparent"
+            "Queue"="AlphaTest"
             "RenderType"="Transparent"
         }
         Pass {
@@ -176,6 +179,7 @@ Shader "Ciconia Studio/Double Sided/Transparent/Diffuse Bump" {
                 float3 indirectDiffuse = float3(0,0,0);
                 indirectDiffuse += gi.indirect.diffuse;
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
+                clip(_MainTex_var.a - 0.5);
                 float3 diffuseColor = (_MainTex_var.rgb*_Diffusecolor.rgb);
                 diffuseColor *= 1-specularMonochrome;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
@@ -291,6 +295,7 @@ Shader "Ciconia Studio/Double Sided/Transparent/Diffuse Bump" {
                 NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 float3 directDiffuse = max( 0.0, NdotL) * attenColor;
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
+                clip(_MainTex_var.a - 0.5);
                 float3 diffuseColor = (_MainTex_var.rgb*_Diffusecolor.rgb);
                 diffuseColor *= 1-specularMonochrome;
                 float3 diffuse = directDiffuse * diffuseColor;

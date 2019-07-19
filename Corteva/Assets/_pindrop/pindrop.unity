@@ -230,6 +230,11 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 114527981892874004, guid: be9df754388944b288209d11486889db,
+        type: 2}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 1549111092}
     - target: {fileID: 114111914927825840, guid: be9df754388944b288209d11486889db,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -509,6 +514,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5f4564ce06daa48c6ae1ea45edcf1c0d, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1549111092 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114832804906208410, guid: acfe5d3cbe5324554ab95102bccedb6f,
+    type: 2}
+  m_PrefabInternal: {fileID: 1749815880}
+  m_Script: {fileID: 11500000, guid: 1d45b1880e25344e0838f8233e8688f2, type: 3}
 --- !u!1001 &1578998541
 Prefab:
   m_ObjectHideFlags: 0
@@ -719,6 +730,21 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 33735700229218962, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33498432513580910, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33434719541738000, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 33050679434469672, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
       propertyPath: m_Mesh
@@ -734,15 +760,35 @@ Prefab:
       propertyPath: globeCam
       value: 
       objectReference: {fileID: 1080796545}
-    - target: {fileID: 33225926682331634, guid: acfe5d3cbe5324554ab95102bccedb6f,
+    - target: {fileID: 114126317309796424, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
-      propertyPath: m_Mesh
-      value: 
+      propertyPath: m_havePropertiesChanged
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 33837140030432618, guid: acfe5d3cbe5324554ab95102bccedb6f,
+    - target: {fileID: 114126317309796424, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
-      propertyPath: m_Mesh
-      value: 
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813670563617072, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813670563617072, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114945956932829914, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114945956932829914, guid: acfe5d3cbe5324554ab95102bccedb6f,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114265609108386820, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
@@ -750,26 +796,6 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114265609108386820, guid: acfe5d3cbe5324554ab95102bccedb6f,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114008265971832412, guid: acfe5d3cbe5324554ab95102bccedb6f,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114008265971832412, guid: acfe5d3cbe5324554ab95102bccedb6f,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114239813114557868, guid: acfe5d3cbe5324554ab95102bccedb6f,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114239813114557868, guid: acfe5d3cbe5324554ab95102bccedb6f,
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1

@@ -50,7 +50,7 @@ public class PinButton : MonoBehaviour{
 		label.text = _text;
 		label.ForceMeshUpdate ();
 		float txtWidth = (label.bounds.size.x * 32f);
-		Debug.Log (label.bounds.size.x+" "+txtWidth + " "+_text);
+		//Debug.Log (label.bounds.size.x+" "+txtWidth + " "+_text);
 		outline.size = new Vector2 (txtWidth + 4f, outline.size.y);
 		bg.size = new Vector2 (txtWidth + 4f, bg.size.y);
 		bc.size = bg.size;

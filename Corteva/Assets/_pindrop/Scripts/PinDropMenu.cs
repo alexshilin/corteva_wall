@@ -39,6 +39,8 @@ public class PinDropMenu : MonoBehaviour {
 
     public bool questionCompleted;
 
+	public bool hidePins = false;
+
     [Header("Pins")]
     public GameObject lastPin, undecidedPin;
 
@@ -105,7 +107,7 @@ public class PinDropMenu : MonoBehaviour {
     }
 
     public void HideAllPages(){
-        //Debug.Log("hide all pages");
+        Debug.Log("hide all pages");
 
         if(CurrentPage == q1)
         {
@@ -171,9 +173,9 @@ public class PinDropMenu : MonoBehaviour {
         else{//show Welcome
             welcomeChild.gameObject.SetActive(false);
             welcomeTxt.alpha = 0;
-            welcomeTxt.gameObject.SetActive(true);
-            EaseCurve.Instance.TextAlpha(welcomeTxt, welcomeTxt.alpha, _to, 1f, _delay, EaseCurve.Instance.linear, showWelcomeChild);
-            ShowBackground(true);
+            //welcomeTxt.gameObject.SetActive(true);
+            EaseCurve.Instance.TextAlpha(welcomeTxt, welcomeTxt.alpha, _to, 2f, 0.5f, EaseCurve.Instance.linear, showWelcomeChild);
+            ShowBackground(true, 0.5f);
         }
 	}
 
@@ -181,6 +183,7 @@ public class PinDropMenu : MonoBehaviour {
     void showWelcomeChild()
     {
         welcomeChild.SetActive(true);
+		welcomeTxt.gameObject.SetActive(true);
     }
 
     //------BACKGROUND CONTROL-------
@@ -240,6 +243,8 @@ public class PinDropMenu : MonoBehaviour {
         thankYou.GetComponent<PinDropThankScreen>().FetchAnswers();
 
         questionCompleted = true;
+
+
 	}
 
     public void ShowQuestionTwo()
@@ -269,6 +274,8 @@ public class PinDropMenu : MonoBehaviour {
 
     public void FinishQuestions()
     {
+		if(questionCompleted)
+			hidePins = true;
         PD.globe.timeWaited = 0;
         HideAllPages();
         instruct.text = showQ3withInfo ? "" : "Tap to drop a pin in your home location";
@@ -312,12 +319,14 @@ public class PinDropMenu : MonoBehaviour {
         //remove on random  pin from list
 
         questionCompleted = false;
+		hidePins = false;
         Invoke("ShowThankyouScreen", 0.8f);
 
     }
 
     public void ShowThankyouScreen()
     {
+		
         Debug.Log("showing thank you screen");
         ShowBackground(true, 0.1f);
         Invoke("showthankyouscreen", 0.2f);

@@ -15,7 +15,7 @@ public class PinDropEarth : MonoBehaviour {
 	public Transform pin;
 
 	private bool spinning = false;
-	private float spinSpeed = 2f;
+	private float spinSpeed = 3f;
 	private bool flicking = true;
 	private float spinVelocity = 0f;
 	private Vector3 spinAxis = Vector3.up;
@@ -108,7 +108,8 @@ public class PinDropEarth : MonoBehaviour {
 			lookup.Add (pins ["challenges"] [i] ["machine_name"], pins ["challenges"] [i] ["title"]);
 		}
 
-		int maxPins = pins ["pins"].Count > 100 ? 100 : pins ["pins"].Count;
+		//int maxPins = pins ["pins"].Count > 100 ? 100 : pins ["pins"].Count;
+		int maxPins = pins["pins"].Count;
 		for (int i = 0; i < maxPins; i++) { 
 			string role = lookup [pins ["pins"] [i] ["role"]];
 			string chal = lookup [pins ["pins"] [i] ["challenge"]];
@@ -189,7 +190,6 @@ public class PinDropEarth : MonoBehaviour {
         p.GetComponent<Pin>().info.gameObject.SetActive(true);
         PD.menu.undecidedPin = p;
 
-        
 
 		if (_newUser) {
 			p.GetComponent<Pin> ().SetConfirm ();
@@ -233,8 +233,14 @@ public class PinDropEarth : MonoBehaviour {
 
 	private void transformedHandler(object sender, EventArgs e){
 		if (!twoFingerRotate) {
-			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * 0.5f);
-			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * 0.5f);
+			
+			//scale 0.5, mod 0.5
+			//scale 1, mod 0.25
+			//scale 2, mod 0.1
+			float mod = 0.2553933f*Mathf.Pow(transform.localScale.x, -1.011058f);
+			//Debug.Log((transform.localScale.x * 0.05f));
+			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * mod);
+			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * mod);
 		}
 	}
 
@@ -337,6 +343,7 @@ public class PinDropEarth : MonoBehaviour {
 
         Debug.Log("!!!!GoIdle");
 		idling = true;
+		PD.menu.hidePins = false;
 		Destroy (newUserPin);
 
         PD.menu.ShowPage(PD.menu.welcome.transform);
