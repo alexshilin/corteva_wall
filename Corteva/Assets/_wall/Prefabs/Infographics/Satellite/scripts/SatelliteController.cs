@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SatelliteController : MonoBehaviour {
-    private static SatelliteController singleton;
-    public static SatelliteController s { get { return singleton; } }
+   // private static SatelliteController singleton;
+    //public static SatelliteController s { get { return singleton; } }
 
-    private void Awake()
-    {
-        singleton = this;
-    }
+//    private void Awake()
+//    {
+//        singleton = this;
+//    }
     public GameObject globe;
     public Transform icons;
     public Transform firstSatellite;

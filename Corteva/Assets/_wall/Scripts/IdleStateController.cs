@@ -871,8 +871,16 @@ public class IdleStateController : MonoBehaviour {
 					po.Assemble (panelData);
 					//TEMP show either the front of thumbnail view
 					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
-					po.ActivateView (PanelBase.PanelView.Front, !flip);
+
+//					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
+//					po.ActivateView (PanelBase.PanelView.Front, !flip);
+
+					if (flip) {
+						po.ActivateView (PanelBase.PanelView.Thumbnail, false);
+					} else {
+						po.ActivateView (PanelBase.PanelView.Front, false);
+					}
+
 
 					//consider: track which view of placed panels is active.
 					//if duplicate panel is chosen, show opposite view

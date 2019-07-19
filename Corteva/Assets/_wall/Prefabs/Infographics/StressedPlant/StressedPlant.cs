@@ -7,6 +7,7 @@ using TouchScript.Gestures.TransformGestures;
 public class StressedPlant : MonoBehaviour {
 
 	public List<GameObject> plants = new List<GameObject>();
+	public List<Renderer> plantRenderers = new List<Renderer>();
 	public List<GameObject> fields = new List<GameObject>();
 	public List<GameObject> leaves = new List<GameObject>();
 	public List<Transform> marks = new List<Transform> ();
@@ -26,7 +27,7 @@ public class StressedPlant : MonoBehaviour {
 	private Transform slider;
 	public TransformGesture sliderGesture;
 
-	private List<Renderer> plantRenderers = new List<Renderer> ();
+	//private List<Renderer> plantRenderers = new List<Renderer> ();
 	private float[] plantTransparency = new float[]{1,0,0};
 
 	private int step;
@@ -41,9 +42,9 @@ public class StressedPlant : MonoBehaviour {
 		distToB = Vector3.Distance (marks [0].localPosition, marks [1].localPosition);
 		distToC = Vector3.Distance (marks [0].localPosition, marks [2].localPosition); 
 		plant = plantGesture.GetComponent<Transform> ();
-		for (int i = 0; i < plants.Count; i++) {
-			plantRenderers.Add (plants [i].GetComponentInChildren<Renderer> ());
-		}
+//		for (int i = 0; i < plants.Count; i++) {
+//			plantRenderers.Add (plants [i].GetComponentInChildren<Renderer> ());
+//		}
 		slider = sliderGesture.GetComponent<Transform> ();
 		plantGesture.Transformed += plantHandler;
 		sliderGesture.Transformed += sliderHandler;

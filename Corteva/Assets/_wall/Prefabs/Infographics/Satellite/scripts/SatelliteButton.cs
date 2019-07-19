@@ -7,6 +7,7 @@ using TMPro;
 
 public class SatelliteButton : MonoBehaviour {
 
+	public SatelliteController SC;
     public Transform myInfo, myGlobeObj;
     public TextMeshPro number, txt;
 
@@ -30,7 +31,7 @@ public class SatelliteButton : MonoBehaviour {
     {
         Debug.Log("Being clicked");
         //Select myself
-        SatelliteController.s.ClickOnSatellite(transform);
+        SC.ClickOnSatellite(transform);
         //ring animate
         //ring.GetComponent<Image>().fillAmount = 0;
         //setactive colored model
