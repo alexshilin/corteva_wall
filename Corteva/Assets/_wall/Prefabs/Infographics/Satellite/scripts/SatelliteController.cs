@@ -22,7 +22,7 @@ public class SatelliteController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		globe.transform.Rotate(transform.forward, -5 * Time.deltaTime, Space.Self);
+		globe.transform.Rotate(transform.forward, 5 * Time.deltaTime, Space.Self);
     }
 
     public void ClickOnSatellite(Transform _satellite)
