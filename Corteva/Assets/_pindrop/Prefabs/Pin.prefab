@@ -314,7 +314,7 @@ BoxCollider:
   m_GameObject: {fileID: 1527528719753436}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 2.62, y: 1.08, z: 1}
   m_Center: {x: 1.38, y: 0, z: -20}
@@ -456,7 +456,6 @@ MonoBehaviour:
   bg: {fileID: 212331031592983828}
   latLon: {x: 0, y: 0}
   baseSize: 0
-  menu: {fileID: 114832804906208410, guid: acfe5d3cbe5324554ab95102bccedb6f, type: 2}
 --- !u!114 &114808535901332200
 MonoBehaviour:
   m_ObjectHideFlags: 1
