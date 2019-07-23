@@ -20,8 +20,10 @@ public class RotateGlobe : MonoBehaviour
 
     private void transformedHandler(object sender, System.EventArgs e)
     {
-        Vector3 newrot = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + transformGesture.DeltaPosition.x * 30f);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(newrot), 0.3f);
+        //Vector3 newrot = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + transformGesture.DeltaPosition.x * 100f);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(newrot), 0.3f);
+		transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x);
+		transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y);
         //transform.RotateAround(rotateAround.transform.eulerAngles, transformGesture.DeltaPosition.x * 0.5f);
     }
 }
