@@ -15,19 +15,27 @@ public class SeedPipeline : MonoBehaviour {
 	bool vidReady = false;
 	float rewindSpeed = 7f;
 	private bool tOut = false;
+	private bool isTransitioning = false;
+	private bool playAfterSeek = false;
+	private long currSeekFrame = -1;
+	private bool waitingOnSeek = false;
 
 	void OnEnable(){
 		video.Prepare ();
 		video.prepareCompleted += videoReady;
+		video.seekCompleted += videoSeeked;
 	}
 
 	void OnDisable(){
 		video.prepareCompleted -= videoReady;
+		video.seekCompleted -= videoSeeked;
 	}
 
 	public void Tap(int _id){
+		
 		//Debug.Log ("!!!"+(vidReady && !video.isPlaying)+" "+_id);
-		if (vidReady && !video.isPlaying) {
+		if (vidReady && !video.isPlaying && !isTransitioning) {
+			Debug.Log ("!!! " + _id);
 			for (int i = 0; i < btns.Count; i++) {
 				if (i == _id) {
 					btns [i].Toggle (true);
@@ -40,6 +48,7 @@ public class SeedPipeline : MonoBehaviour {
 			tOut = true;
 			//Debug.Log ("   LEAVING " + currStep + " to " + nextStep);
 			video.Play ();
+			isTransitioning = true;
 		}
 
 	}
@@ -52,16 +61,35 @@ public class SeedPipeline : MonoBehaviour {
 		Tap (0);
 	}
 
+	private void videoSeeked(VideoPlayer _source){
+		//Debug.Log (" ^ ^ ^ " + waitingOnSeek + "|" + (video.frame == currSeekFrame) + "|" + playAfterSeek);
+		if (waitingOnSeek && video.frame == currSeekFrame && playAfterSeek) {
+			waitingOnSeek = false;
+			playAfterSeek = false;
+			currSeekFrame = -1;
+			isTransitioning = true;
+			_source.Play ();
+		}
+	}
+
+	private void SeekTo(long _frame, bool _continue){
+		//Debug.Log (" > > > " + _frame + " (" + _continue + ")");
+		video.Pause ();
+		isTransitioning = false;
+		waitingOnSeek = true;
+		video.frame = currSeekFrame = _frame;
+		playAfterSeek = _continue;
+	}
+
 	void Update () {
-		if (video.isPlaying) {
+		if (isTransitioning) {
 			//Debug.Log (video.frame + "/" + video.frameCount + " || " + video.time);
 			if (currStep == 0 && tOut && video.frame >= 150) { //out of 0
-				Debug.Log ("      OUT of 0");
+				//Debug.Log ("      OUT of 0");
 				tOut = false;
 				if (nextStep == 2) {
 					//Debug.Log ("        SKIP to 2");
-					video.Play();
-					video.frame = 300; //into of 2
+					SeekTo (300, true);
 				} else {
 					//Debug.Log ("        STAY for 1");
 				}
@@ -72,20 +100,18 @@ public class SeedPipeline : MonoBehaviour {
 				tOut = false;
 				if (nextStep == 0) {
 					//Debug.Log ("        SKIP to 0");
-					video.Play();
-					video.frame = 0; //into of 0
+					SeekTo (0, true);
 				} else {
 					//Debug.Log ("        STAY for 1");
 				}
 			}
 
-			if (currStep == 2 && tOut &&  video.frame >= 449) { //out of 2
+			if (currStep == 2 && tOut &&  video.frame >= 450) { //out of 2
 				Debug.Log ("      OUT of 2");
 				tOut = false;
 				if (nextStep == 1) {
 					//Debug.Log ("        SKIP to 1");
-					video.Play();
-					video.frame = 150; //into of 1
+					SeekTo (150, true);
 				} else {
 					//Debug.Log ("        STAY for 0");
 				}
@@ -95,24 +121,22 @@ public class SeedPipeline : MonoBehaviour {
 			if (nextStep == 0 && video.frame >= 125 && video.frame <= 270) {
 				//Debug.Log ("STOP at 0");
 				tOut = false;
-				video.Pause ();
-				video.frame = 135;
+				SeekTo (135, false);
 			}
-			if (nextStep == 0 && video.frame >= 445) {
-				video.frame = 0;
+			if (nextStep == 0 && video.frame >= 450) {
+				//Debug.Log ("JUMP to Start");
+				SeekTo (0, true);
 			}
 
 			if (nextStep == 1 && video.frame >= 240 && video.frame <= 400) {
 				//Debug.Log ("STOP at 1");
 				tOut = false;
-				video.Pause ();
-				video.frame = 280;
+				SeekTo (280, false);
 			}
 			if (nextStep == 2 && video.frame >= 355) {
 				//Debug.Log ("STOP at 2");
 				tOut = false;
-				video.Pause ();
-				video.frame = 430;
+				SeekTo (430, false);
 			}
 
 
