@@ -53,8 +53,8 @@ public class IdleStateController : MonoBehaviour {
 
 	List<string> usedTypes = new List<string>();
 
-	List<string> availableBeautyPanels = new List<string> ();
-	List<string> usedBeautyPanels = new List<string> ();
+	List<int> availableBeautyPanels = new List<int> ();
+	List<int> usedBeautyPanels = new List<int> ();
 	List<int> availableContentPanels = new List<int> ();
 	List<int> usedContentPanels = new List<int> ();
 	 
@@ -418,6 +418,7 @@ public class IdleStateController : MonoBehaviour {
 
 		//reset vars
 		usedTypes.Clear ();
+		availableBeautyPanels.Clear ();
 		usedBeautyPanels.Clear ();
 		availableContentPanels.Clear ();
 		usedContentPanels.Clear ();
@@ -439,12 +440,6 @@ public class IdleStateController : MonoBehaviour {
 		}
 		//if a kiosk is open, overwrite previous rules
 		if (kioskColumns.Contains(1) && kioskColumns.Contains(0)) {
-			//if(!kioskColumns.Contains(0)){
-				//all kiosks are open
-				//Debug.Log("\tno columns left. ending idle loop.");
-				//activeTransitionLoop = false;
-				//return;
-			//}
 
 			//create a new list of colmns which do not have a kiosk in them
 			List<int> kCols = new List<int> ();
@@ -465,6 +460,12 @@ public class IdleStateController : MonoBehaviour {
 			availableContentPanels.Add (i);
 		}
 
+		for (int i = 0; i < environments[currEnv].bty1x1PanelData.Count; i++) {
+			availableBeautyPanels.Add (i);
+		}
+
+
+		//startColumn = 1;
 		//set starting panel position
 		startPanelPos = new Vector2 (0, startColumn);
 		Debug.Log ("\tSTARTING at column [" + startColumn+"]");
@@ -473,7 +474,10 @@ public class IdleStateController : MonoBehaviour {
 		AllocatePanelPlacement (0, startColumn, "1x1", Vector3.down);
 
 		//should be: go DOWN (because currently in top row)
-		AllocatePanelPlacement (1, startColumn, "1x1", Vector3.down);
+		//unless its welcome screen
+		if (environments [currEnv].envKey != "welcome") {
+			AllocatePanelPlacement (1, startColumn, "1x1", Vector3.down);
+		}
 
 		//in mid row, go outwards
 		int coin = Random.Range(0,2);
@@ -505,6 +509,11 @@ public class IdleStateController : MonoBehaviour {
 			//end of row (screen)
 			//place something in bottom row?
 			int r = Random.Range (0, 2);
+
+			//welcome screen exception
+			if (environments [currEnv].envKey == "welcome")
+				r = 1;
+
 			if (r == 1)
 				CheckDown (_row, _col);
 			return;
@@ -542,6 +551,11 @@ public class IdleStateController : MonoBehaviour {
 
 		if (colsRemainR == 0) {
 			int r = Random.Range (0, 2);
+
+			//welcome screen exception
+			if (environments [currEnv].envKey == "welcome")
+				r = 1;
+
 			if (r == 1)
 				CheckDown (_row, _col);
 			return;
@@ -569,12 +583,13 @@ public class IdleStateController : MonoBehaviour {
 		//no bottom panels when a kiosk is active (middle row only for cleanliness)
 		if (!kioskColumns.Contains (1)) {
 			//ok to add bottom panel if there are enough content panels
-			if (environments [currEnv].env1x1Count >= GM.desiredGrid.x) {
+			if (environments [currEnv].env1x1Count >= GM.desiredGrid.x || (environments[currEnv].envKey == "welcome")) {
 				int nextRow = _row + 1;
 				string p = CheckAvailable (nextRow, _col, 1); 
 				bool ok = TestFit (nextRow, _col, "1x1", Vector3.down); 
-				if (ok)
+				if (ok) {
 					AllocatePanelPlacement (nextRow, _col, "1x1", Vector3.down);
+				}
 			}
 		}
 	}
@@ -590,6 +605,11 @@ public class IdleStateController : MonoBehaviour {
 			//coin flip to see if we use a 2x2
 			//choose btw 0,1, anything over 0 gets a 2x2 (50% chance)
 			coin = Random.Range(0, 2);
+
+			//welcome screen exception
+			if (environments [currEnv].envKey == "welcome")
+				coin = 0;
+			
 			r = (coin > 0) ? "2x2" : "1x1";
 
 		} else if (_panelType == 2) 
@@ -822,13 +842,21 @@ public class IdleStateController : MonoBehaviour {
 			if (i == 0) {
 				//first panel is always a title card
 				po.panelID = environments [currEnv].envTitle + "_Title";
-				po.AssembleBasic ("title_idle");
+				if (environments [currEnv].envKey == "welcome") {
+					//welcome screen exception
+					po.AssembleBasic ("title_welcome");
+				} else {
+					//standard environment title
+					po.AssembleBasic ("title_idle");
+				}
 				po.ActivateView (PanelBase.PanelView.Front, false);
 				po.panelView = PanelBase.PanelView.Background;
 
 			} else {
 				JSONNode panelData;
 				int r;
+
+				Debug.Log ("panelType: " + idleSequence [i].panelType);
 
 				if (idleSequence [i].panelType == new Vector2 (2, 2)) {
 					
@@ -849,38 +877,68 @@ public class IdleStateController : MonoBehaviour {
 					po.ActivateView (PanelBase.PanelView.Front, false);
 				
 				} else {
-					
+
+					bool skipForWelcome = false;
+
+					Debug.Log ("avail: " + availableContentPanels.Count);
+
 					//all others are 1x1, grab a content panel
 					if (availableContentPanels.Count > 0) {
+					
+
 						//choose random index from availableContentPanels
 						r = Random.Range (0, availableContentPanels.Count);
 						//grab data from json based on that index
 						Debug.Log ("grabbing panel at index: " + r + " | " + (availableContentPanels.Count - 1));
-						panelData = JSON.Parse(environments [currEnv].envPanelData [availableContentPanels [r]]);
+						panelData = JSON.Parse (environments [currEnv].envPanelData [availableContentPanels [r]]);
 						availableContentPanels.RemoveAt (r);
-					}else{
-						Debug.Log ("grabbing random panel");
-						panelData = JSON.Parse(environments[currEnv].envPanelData[Random.Range(0, AM.environments[currEnv].envPanelData.Count)]);
-					}
-
-					po.panelID = panelData ["nid"];
-					po.panelName = panelData ["reference_title"];
-					usedContentPanels.Add(panelData["nid"]);
-
-					panel.name = environments[currEnv].envTitle + "_" + po.panelID;
-					po.Assemble (panelData);
-					//TEMP show either the front of thumbnail view
-					bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
-
-//					po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
-//					po.ActivateView (PanelBase.PanelView.Front, !flip);
-
-					if (flip) {
-						po.ActivateView (PanelBase.PanelView.Thumbnail, false);
+					
+				
 					} else {
-						po.ActivateView (PanelBase.PanelView.Front, false);
+					
+
+						if (environments [currEnv].envKey == "welcome") {
+							//r = Random.Range(0, environments[currEnv].bty1x1Indeces.Count);
+							//panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x1Indeces[r]];
+							r = Random.Range (0, availableBeautyPanels.Count);
+							panelData = JSON.Parse (environments [currEnv].bty1x1PanelData [availableBeautyPanels [r]]);
+							po.AssembleBeauty (panelData);
+							po.ActivateView (PanelBase.PanelView.Front, false);
+							skipForWelcome = true;
+							availableBeautyPanels.RemoveAt (r);
+						} else {
+							Debug.Log ("grabbing random panel");
+							panelData = JSON.Parse (environments [currEnv].envPanelData [Random.Range (0, AM.environments [currEnv].envPanelData.Count)]);
+						}
+					
+					
 					}
 
+					if (!skipForWelcome) {
+						po.panelID = panelData ["nid"];
+						po.panelName = panelData ["reference_title"];
+						usedContentPanels.Add (panelData ["nid"]);
+
+						panel.name = environments [currEnv].envTitle + "_" + po.panelID;
+
+						po.Assemble (panelData);
+						//TEMP show either the front of thumbnail view
+						bool flip = UnityEngine.Random.Range (0, 2) == 0 ? true : false;
+
+//						po.ActivateView (PanelBase.PanelView.Thumbnail, flip);
+//						po.ActivateView (PanelBase.PanelView.Front, !flip);
+
+						if (environments [currEnv].envKey != "welcome") {
+							if (flip) {
+								po.ActivateView (PanelBase.PanelView.Thumbnail, false);
+							} else {
+								po.ActivateView (PanelBase.PanelView.Front, false);
+							}
+						} else {
+							//welcome screen exception
+							po.ActivateView (PanelBase.PanelView.Front, false);
+						}
+					}
 
 					//consider: track which view of placed panels is active.
 					//if duplicate panel is chosen, show opposite view
