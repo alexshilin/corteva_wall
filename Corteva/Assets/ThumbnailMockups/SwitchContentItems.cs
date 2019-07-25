@@ -32,5 +32,12 @@ public class SwitchContentItems : MonoBehaviour {
 				showing = 0;
 			SetItem (showing);
 		}
+
+		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			showing--;
+			if (showing == -1)
+				showing = items.Count-1;
+			SetItem (showing);
+		}
 	}
 }
