@@ -251,14 +251,39 @@ public class AssetManager : MonoBehaviour {
 		SM.Log ("presentationsJSON: (" + scenes.Count + ") " + (dataDir + presentationsJsonDocName));
 		for (int i = 0; i < scenes.Count; i++) 
 		{
-			SM.Log ("\t" + scenes [i] ["environment"] +
+			if (scenes [i] ["scene_type"] == "welcome") {
+
+
+				//welcome scene exception
+				e = new Environment ();
+				e.envID = -1;
+				e.envKey = "welcome";
+				e.envTitle = scenes [i] ["title"];
+				e.envSummary = "";
+				e.envColor = new Color32 ((byte)scenes [i] ["colorRGB"] [0].AsInt, (byte)scenes [i] ["colorRGB"] [1].AsInt, (byte)scenes [i] ["colorRGB"] [2].AsInt, 255);
+				//e.envIconPath = ParsePath (rootDir + scenes [i] ["icon"] ["path"]);
+				//e.envKioskBg = ParsePath (rootDir + scenes [i] ["kiosk_background_image"] ["path"]);
+				e.envBg = ParsePath (rootDir + scenes [i] ["idle_background_video"] ["path"]);
+				for (int ii = 0; ii < scenes [i] ["welcome_panels"].Count; ii++) {
+					e.envPanelData.Add (scenes [i] ["welcome_panels"] [ii].ToString ());
+				}
+				e.btyPanelData = scenes [i] ["beauty_panels"];
+				environments.Insert (0, e);
+			
+			
+			} else {
+
+
+				SM.Log ("\t" + scenes [i] ["environment"] +
 				": " + scenes [i] ["content_panels"].Count + " content panels" +
 				", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
 
-			//match "scene" environment from json and match to environment object
-			string envKey = scenes [i] ["environment"];
-			int eI = environments.FindIndex (x => x.envKey == envKey);
-			environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
+				//match "scene" environment from json and match to environment object
+				string envKey = scenes [i] ["environment"];
+				int eI = environments.FindIndex (x => x.envKey == envKey);
+				environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
+			}
+
 
 			/*
 			for (int n = 0; n < scenes [i] ["beauty_panels"].Count; n++) {
@@ -327,8 +352,10 @@ public class AssetManager : MonoBehaviour {
 			for (int a = 0; a < environments[i].btyPanelData.Count; a++) {
 				if (environments[i].btyPanelData [a]["front"]["template"] == "beauty_1x2") {
 					environments[i].bty1x2Indeces.Add (a);
+					environments [i].bty1x2PanelData.Add (environments[i].btyPanelData [a].ToString());
 				} else {
 					environments[i].bty1x1Indeces.Add (a);
+					environments [i].bty1x1PanelData.Add (environments[i].btyPanelData [a].ToString());
 				}
 			}
 			//Debug.Log ("\t- "+environments[i].bty1x1Indeces.Count);

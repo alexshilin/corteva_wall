@@ -222,6 +222,19 @@ public class PanelBase : MonoBehaviour {
 			t.transform.Find ("Body").GetComponent<TextMeshPro> ().text = environment.envSummary;
 			return;
 		}
+
+
+		//TODO need welcome title template
+		if (_template == "title_welcome") {
+			t = LoadModule ("1x1_texture_color", PanelView.Front);
+			t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+
+			//
+			t = LoadModule ("1x1_txt_layout_07", PanelView.Front);
+			t.GetComponent<PanelText> ().SetText ("", "Welcome", "", Color.white);
+			t.transform.localPosition += transform.forward * -0.01f;
+			return;
+		}
 	}
 
 	/// <summary>
@@ -241,7 +254,7 @@ public class PanelBase : MonoBehaviour {
 
 		string template = _templateData ["template"];
 		string bgPath = AM.ParsePath (AM.rootDir + _templateData ["content"] ["bg_path"]);
-		//Debug.Log ("[AssembleView] "+template +" "+ _view+" "+bgPath);
+		Debug.Log ("[AssembleView] "+template +" "+ _view);
 
 		if (template == "beauty_1x1") {
 			t = LoadModule ("1x1_texture_color", _view);
@@ -278,6 +291,44 @@ public class PanelBase : MonoBehaviour {
 				panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
 				panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
 			}
+			return;
+		}
+
+		if (template == "welcome_panel") {
+			//
+			t = LoadModule ("1x1_texture_color", _view);
+
+			bool isVideo = _templateData ["content"] ["bg_type"] == "video" ? true : false;
+			if (isVideo) {
+				VideoPlayer vid = t.transform.Find ("TextureQuad").GetComponent<VideoPlayer> ();
+				vid.url = AssetManager.Instance.GetVideo (bgPath);
+				vid.enabled = true;
+				vid.Prepare ();
+				vid.Play ();
+			} else {
+				bool isImage = _templateData ["content"] ["bg_type"] == "image" ? true : false;
+				if (isImage) {
+					panelRenderer = t.transform.Find ("TextureQuad").GetComponent<Renderer> ();
+					panelRenderer.material.mainTexture = AssetManager.Instance.GetTexture (bgPath);
+				} else {
+					if (_templateData ["content"]["bg_color"].Count == 3) {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = new Color32 ((byte)_templateData ["content"]["bg_color"][0].AsInt, (byte)_templateData ["content"]["bg_color"][1].AsInt, (byte)_templateData ["content"]["bg_color"][2].AsInt, 255);;
+					} else {
+						t.transform.Find ("TextureQuad").GetComponent<Renderer> ().material.color = environment.envColor;
+					}
+				}
+			}
+
+			//
+			t = LoadModule ("1x1_txt_layout_08", _view);
+
+			txtColor = Color.white;
+			if (_templateData ["content"]["txt_color"].Count == 3) {
+				txtColor = new Color32 ((byte)_templateData ["content"]["txt_color"][0].AsInt, (byte)_templateData ["content"]["txt_color"][1].AsInt, (byte)_templateData ["content"]["txt_color"][2].AsInt, 255);
+			}
+			t.GetComponent<PanelText> ().SetText ("", _templateData ["content"]["title"], _templateData ["content"]["body"], txtColor, false);
+			t.transform.localPosition += transform.forward * -0.01f;
+
 			return;
 		}
 

@@ -18,7 +18,7 @@ public class PanelText : MonoBehaviour {
 	/// <param name="_category">Category text (the small bit that appears above the title)</param>
 	/// <param name="_title">Title text.</param>
 	/// <param name="_body">Body text.</param>
-	public void SetText(string _category, string _title, string _body, Color _color){
+	public void SetText(string _category, string _title, string _body, Color _color, bool _reposition = true){
 		//set the title text
 		title.text = _title;
 		title.color = _color;
@@ -30,12 +30,14 @@ public class PanelText : MonoBehaviour {
 				//set the body text
 				body.text = _body;
 				body.color = _color;
-				//reposition it to be directly under the title
-				float titleHeight = 0f;
-				if (_title != "") {
-					titleHeight = title.bounds.size.y;
+				if (_reposition) {
+					//reposition it to be directly under the title
+					float titleHeight = 0f;
+					if (_title != "") {
+						titleHeight = title.bounds.size.y;
+					}
+					body.rectTransform.localPosition = title.transform.localPosition + Vector3.down * (titleHeight + titleMarginBottom);
 				}
-				body.rectTransform.localPosition = title.transform.localPosition + Vector3.down * (titleHeight + titleMarginBottom);
 			} else {
 				//otherwise just hide the gameObject
 				body.gameObject.SetActive (false);
