@@ -27,7 +27,26 @@ public class StressedPlant : MonoBehaviour {
 	private Transform slider;
 	public TransformGesture sliderGesture;
 
-	//private List<Renderer> plantRenderers = new List<Renderer> ();
+
+	public GameObject sliderGO;
+	//public GameObject infoGO;
+	//public GameObject plantGO;
+	public SpriteRenderer satellite;
+	public SpriteRenderer scanDown;
+	public SpriteRenderer scanBox;
+	public SpriteRenderer scanBox2;
+	public SpriteRenderer farm;
+	public SpriteRenderer dropShadow;
+	public SpriteRenderer scanRight1;
+	public SpriteRenderer scanRight2;
+	public Renderer plantBase;
+	public SpriteRenderer infoBG;
+	public SpriteRenderer infoLeaf;
+	public GameObject infoColors;
+
+	private bool introFinished = false;
+
+
 	private float[] plantTransparency = new float[]{1,0,0};
 
 	private int step;
@@ -37,28 +56,49 @@ public class StressedPlant : MonoBehaviour {
 	float distToC;
 
 	void OnEnable(){
+		introFinished = false;
+		//hide all;
+		sliderGO.SetActive(false);
+		satellite.color = new Color(1,1,1,0);
+		scanDown.color = new Color(1,1,1,0);
+		scanBox.gameObject.SetActive(false);
+		scanBox2.gameObject.SetActive(false);
+		farm.color = new Color(1,1,1,0);
+		dropShadow.color = new Color(1,1,1,0);
+		scanRight1.color = new Color(1,1,1,0);
+		scanRight2.color = new Color(1,1,1,0);
+		plantRenderers [0].material.SetColor ("_Color", new Color (1, 1, 1, 0));
+		plantBase.materials[0].SetColor ("_Color", new Color (1, 1, 1, 0));
+		plantBase.materials[1].SetColor ("_Color", new Color (1, 1, 1, 0));
+		infoBG.size = new Vector2(0.32f, 0);
+		infoLeaf.color = new Color (1, 1, 1, 0);
+		infoColors.SetActive (false);
+		leavesTitle.alpha = 0;
+
+		//set up nav
 		step = 0;
 		distToA = 0;
 		distToB = Vector3.Distance (marks [0].localPosition, marks [1].localPosition);
 		distToC = Vector3.Distance (marks [0].localPosition, marks [2].localPosition); 
 		plant = plantGesture.GetComponent<Transform> ();
-//		for (int i = 0; i < plants.Count; i++) {
-//			plantRenderers.Add (plants [i].GetComponentInChildren<Renderer> ());
-//		}
 		slider = sliderGesture.GetComponent<Transform> ();
 		plantGesture.Transformed += plantHandler;
 		sliderGesture.Transformed += sliderHandler;
 		sliderGesture.TransformCompleted += sliderEndHandler;
+
+		//
+		StartCoroutine(BeginIntro ());
 	}
 
 	void OnDisable(){
 		plantGesture.Transformed -= plantHandler;
 		sliderGesture.Transformed -= sliderHandler;
 		sliderGesture.TransformCompleted -= sliderEndHandler;
+		introFinished = false;
 	}
 
 	void Start(){
-		SetStep (0);
+		
 	}
 
 	void plantHandler(object sender, System.EventArgs e){
@@ -109,7 +149,6 @@ public class StressedPlant : MonoBehaviour {
 	void SetStep(int _step){
 		for (int i = 0; i < 3; i++) {
 			if (i == _step) {
-				//plants [i].SetActive (true);
 				plantTransparency [i] = 1;
 				fields [i].SetActive (true);
 				leaves [i].SetActive (true);
@@ -119,25 +158,98 @@ public class StressedPlant : MonoBehaviour {
 				}
 
 			} else {
-				//plants [i].SetActive (false);
 				plantTransparency [i] = 0;
 				fields [i].SetActive (false);
 				leaves [i].SetActive (false);
 			}
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-		for (int i = 0; i < plantRenderers.Count; i++) {
-			if (plantRenderers [i].material.GetColor("_Color").a != plantTransparency [i]) {
-				float tStep = 0.2f;
-				if (plantRenderers [i].material.GetColor("_Color").a > plantTransparency [i])
-					tStep = -0.2f;
 
-				//plantRenderers [i].material.SetFloat ("_Transparency", Mathf.Clamp01 (plantRenderers [i].material.GetFloat ("_Transparency") + tStep));
-				plantRenderers[i].material.SetColor("_Color", new Color(1,1,1,Mathf.Clamp01(plantRenderers [i].material.GetColor("_Color").a + tStep)));
+	IEnumerator BeginIntro(){
+		float speedMod = 0.5f;
+
+		yield return new WaitForSeconds (0.3f);
+
+		satellite.transform.localPosition += Vector3.left * 0.16f;
+		farm.transform.localPosition += Vector3.down * 0.08f;
+
+		//0
+		EaseCurve.Instance.Vec3 (farm.transform, farm.transform.localPosition, farm.transform.localPosition + Vector3.up * 0.08f, 1f * speedMod, 0f * speedMod, EaseCurve.Instance.easeIn, null, "local");
+		EaseCurve.Instance.SpriteColor (farm, farm.color, new Color (1, 1, 1, 1), 1f * speedMod, 0f * speedMod, EaseCurve.Instance.linear);
+		EaseCurve.Instance.SpriteColor (dropShadow, dropShadow.color, new Color (1, 1, 1, 1), 1f * speedMod, 0f * speedMod, EaseCurve.Instance.linear);
+
+		//1
+		EaseCurve.Instance.Vec3 (satellite.transform, satellite.transform.localPosition, satellite.transform.localPosition + Vector3.right * 0.16f, 1.5f * speedMod, 1f * speedMod, EaseCurve.Instance.easeOut, null, "local");
+		EaseCurve.Instance.SpriteColor (satellite, satellite.color, new Color (1, 1, 1, 1), 1f * speedMod, 1f * speedMod, EaseCurve.Instance.easeOut);
+
+		//2.5
+		EaseCurve.Instance.SpriteColor (scanDown, scanDown.color, new Color (1, 1, 1, 1), 0.5f * speedMod, 2.5f * speedMod, EaseCurve.Instance.easeIn);
+
+		yield return new WaitForSeconds (2.5f * speedMod);
+		scanBox.gameObject.SetActive (true);
+		yield return new WaitForSeconds (0.1f);
+		scanBox.gameObject.SetActive (false);
+		yield return new WaitForSeconds (0.1f);
+		scanBox.gameObject.SetActive (true);
+		yield return new WaitForSeconds (0.1f);
+		scanBox.gameObject.SetActive (false);
+		yield return new WaitForSeconds (0.1f);
+		scanBox.gameObject.SetActive (true);
+
+		//0
+		EaseCurve.Instance.SpriteColor (scanRight1, scanRight1.color, new Color (1, 1, 1, 1), 0.5f * speedMod, 0 * speedMod, EaseCurve.Instance.easeIn);
+		 
+		EaseCurve.Instance.MatColor(plantRenderers[0].material, new Color(1,1,1,0), new Color(1,1,1,1), 1f * speedMod, 0.25f * speedMod, EaseCurve.Instance.linear);
+		EaseCurve.Instance.MatColor(plantBase.materials[0], new Color(1,1,1,0), new Color(1,1,1,1), 1f * speedMod, 0.25f * speedMod, EaseCurve.Instance.linear);
+		EaseCurve.Instance.MatColor(plantBase.materials[1], new Color(1,1,1,0), new Color(1,1,1,1), 1f * speedMod, 0.25f * speedMod, EaseCurve.Instance.linear);
+
+
+		yield return new WaitForSeconds (2f * speedMod);
+		scanBox2.gameObject.SetActive (true);
+		yield return new WaitForSeconds (0.1f);
+		scanBox2.gameObject.SetActive (false);
+		yield return new WaitForSeconds (0.1f);
+		scanBox2.gameObject.SetActive (true);
+		yield return new WaitForSeconds (0.1f);
+		scanBox2.gameObject.SetActive (false);
+		yield return new WaitForSeconds (0.1f);
+		scanBox2.gameObject.SetActive (true);
+
+		//0
+		EaseCurve.Instance.SpriteColor (scanRight2, scanRight2.color, new Color (1, 1, 1, 1), 0.5f * speedMod, 0 * speedMod, EaseCurve.Instance.easeIn);
+
+		EaseCurve.Instance.SpriteSize (infoBG, infoBG.size, new Vector2(0.32f, 0.32f), 0.25f * speedMod, 0.25f * speedMod, EaseCurve.Instance.easeIn);
+
+		EaseCurve.Instance.SpriteColor (infoLeaf, infoLeaf.color, new Color (1, 1, 1, 1), 0.5f * speedMod, 0.5f * speedMod, EaseCurve.Instance.easeIn);
+
+		yield return new WaitForSeconds (1.25f * speedMod);
+		infoColors.SetActive (true);
+		for (int ii = 0; ii < colors.Count; ii++) {
+			EaseCurve.Instance.SpriteSize (colors [ii], colors [ii].size, new Vector2 (colors [ii].size.x, colorSets [0] [ii]), 0.25f * speedMod, ii*0.25f * speedMod, EaseCurve.Instance.easeIn);
+		}
+
+		yield return new WaitForSeconds (1.25f * speedMod);
+		//leavesTitle.gameObject.SetActive (true);
+		EaseCurve.Instance.TextAlpha(leavesTitle, leavesTitle.alpha, 1, 0.25f * speedMod, 0 * speedMod, EaseCurve.Instance.linear, null);
+
+		introFinished = true;
+		SetStep (0);
+
+		yield return new WaitForSeconds (1.5f * speedMod);
+		sliderGO.SetActive (true);
+	}
+
+	void Update () {
+		if (introFinished) {
+			for (int i = 0; i < plantRenderers.Count; i++) {
+				if (plantRenderers [i].material.GetColor ("_Color").a != plantTransparency [i]) {
+					float tStep = 0.2f;
+					if (plantRenderers [i].material.GetColor ("_Color").a > plantTransparency [i])
+						tStep = -0.2f;
+
+					//plantRenderers [i].material.SetFloat ("_Transparency", Mathf.Clamp01 (plantRenderers [i].material.GetFloat ("_Transparency") + tStep));
+					plantRenderers [i].material.SetColor ("_Color", new Color (1, 1, 1, Mathf.Clamp01 (plantRenderers [i].material.GetColor ("_Color").a + tStep)));
+				}
 			}
 		}
 	}

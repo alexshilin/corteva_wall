@@ -241,4 +241,47 @@ public class EaseCurve : MonoBehaviour
 		if(_callback!=null)
 			_callback ();
 	}
+
+	public void SpriteColor(SpriteRenderer _sprite, Color32 _startColor, Color32 _endColor, float _duration, float _delay, AnimationCurve _curve){
+		StartCoroutine (SpriteColor (_sprite, _startColor, _endColor, _duration, _delay, _curve, null));
+	}
+	IEnumerator SpriteColor(SpriteRenderer _sprite, Color32 _startColor, Color32 _endColor, float _duration, float _delay, AnimationCurve _curve, Action _callback)
+	{
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			if (_sprite != null) {
+				t += rate * Time.deltaTime;
+				Color32 currentColor = Color32.Lerp (_startColor, _endColor, _curve.Evaluate (t));
+				_sprite.color = currentColor;
+				yield return null;
+			} else {
+				yield break;
+			}
+		}
+		if(_callback!=null)
+			_callback ();
+	}
+
+	public void SpriteSize(SpriteRenderer _sprite, Vector2 _startSize, Vector2 _endSize, float _duration, float _delay, AnimationCurve _curve){
+		StartCoroutine (SpriteSize (_sprite, _startSize, _endSize, _duration, _delay, _curve, null));
+	}
+	IEnumerator SpriteSize(SpriteRenderer _sprite, Vector2 _startSize, Vector2 _endSize, float _duration, float _delay, AnimationCurve _curve, Action _callback)
+	{
+		float t = 0.0f;
+		float rate = 1 / _duration;
+		yield return new WaitForSeconds (_delay);
+		while (t < 1) {
+			if (_sprite != null) {
+				t += rate * Time.deltaTime;
+				_sprite.size = Vector2.Lerp (_startSize, _endSize, _curve.Evaluate (t));
+				yield return null;
+			} else {
+				yield break;
+			}
+		}
+		if(_callback!=null)
+			_callback ();
+	}
 }
