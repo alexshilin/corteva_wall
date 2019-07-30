@@ -54,6 +54,7 @@ public class UserKioskController : MonoBehaviour {
 				uKkiosk.activePanel = _panel;
 			}
 			uKkiosk.userGrid.GetComponent<UserGrid> ().MakeGrid ();
+
 			uKkiosk.SetCam (GridManagerOrtho.Instance.desiredGrid.x, _gridPos.x);
 
 //		if (_gridPos.x > 2)

@@ -142,7 +142,8 @@ public class UserKiosk : MonoBehaviour {
 		//this sequence takes some time, this is a toggle that prevents interruptions from user input during
 		somePanelIsAnimating = true;
 		//set the new environment grabbing from the main environments object in the AssetManager
-		env = AssetManager.Instance.environments [_envID];
+		int i = AssetManager.Instance.environments.FindIndex (x => x.envID == _envID);
+		env = AssetManager.Instance.environments [i];
 
 		//prepare to remove prev bg
 		bgPanelOld = bgPanel;

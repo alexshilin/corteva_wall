@@ -952,7 +952,11 @@ public class PanelBase : MonoBehaviour {
 				IdleStateController.Instance.StartIdleLoop ();
 			} else {
 				Vector2 tappedGridPos = GridManagerOrtho.Instance.CalculateColRowFromScreenPos (tapGesture.ScreenPosition);
-				EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
+				if (environment.envKey == "welcome") {
+					EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition, AM.environments[1]);
+				} else {
+					EventsManager.Instance.UserKioskOpenRequest (tappedGridPos, tapGesture.ScreenPosition);
+				}
 				//Track
 				GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 					.SetEventCategory(AM.displayName)
@@ -973,27 +977,35 @@ public class PanelBase : MonoBehaviour {
 			&& (panelView == PanelView.Front || panelView == PanelView.Thumbnail)
 			&& panelState == PanelState.Active) 
 		{
-			//content panels are interactable, and should remain when tapped
-			collide.transform.localPosition = Vector3.zero;
-			transform.parent = AssetManager.Instance.panels;
-			transform.localScale = Vector3.one;
-			Debug.Log ("\tgridCell: " + this.gridID + " | gridPosID: " + GridManagerOrtho.Instance.gridPositions [this.gridID].id);
-			transform.position = new Vector3 (GridManagerOrtho.Instance.gridPositions [this.gridID].center.x, GridManagerOrtho.Instance.gridPositions [this.gridID].center.y, 10);
-			EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
-			ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
-			Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
-			EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment, transform);
-			StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
-			//Track
+			//welcome screen exception
+			if (environment.envKey == "welcome") {
+				EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, AM.environments [1]);
+			} else {
+				//content panels are interactable, and should remain when tapped
+				collide.transform.localPosition = Vector3.zero;
+				transform.parent = AssetManager.Instance.panels;
+				transform.localScale = Vector3.one;
+				Debug.Log ("\tgridCell: " + this.gridID + " | gridPosID: " + GridManagerOrtho.Instance.gridPositions [this.gridID].id);
+				transform.position = new Vector3 (GridManagerOrtho.Instance.gridPositions [this.gridID].center.x, GridManagerOrtho.Instance.gridPositions [this.gridID].center.y, 10);
+				EaseCurve.Instance.Scl (transform, transform.localScale, transform.localScale * 0.9f, 0.25f, 0, EaseCurve.Instance.linear);
+				ScreenManager.Instance.MoveToLayer (transform, LayerMask.NameToLayer ("UserInit"));
+				Debug.Log ("\tpanelGridPos: " + this.panelGridPos);
+
+				EventsManager.Instance.UserKioskOpenRequest (this.panelGridPos, tapGesture.ScreenPosition, environment, transform);
+				StartCoroutine (MovePanelToKiosk ((int)this.panelGridPos.x));
+				//Track Panel
+				GA.Instance.Tracking.LogEvent(new EventHitBuilder()
+					.SetEventCategory(AM.displayName)
+					.SetEventAction("Panel > Open")
+					.SetEventLabel("["+panelID+"] "+panelName));
+			}
+
+			//Track Kiosk
 			GA.Instance.Tracking.LogEvent(new EventHitBuilder()
 				.SetEventCategory(AM.displayName)
 				.SetEventAction("Kiosk > Open")
 				.SetEventLabel("Kiosk "+(this.panelGridPos.x+1)));
-			//Track
-			GA.Instance.Tracking.LogEvent(new EventHitBuilder()
-				.SetEventCategory(AM.displayName)
-				.SetEventAction("Panel > Open")
-				.SetEventLabel("["+panelID+"] "+panelName));
+			
 		}
 
 		//the rest are all kiosk related
