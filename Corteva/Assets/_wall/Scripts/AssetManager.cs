@@ -47,6 +47,7 @@ public class AssetManager : MonoBehaviour {
 
 
 	public List<string> videoFiles = new List<string> ();
+	public List<string> videoFilesInUse = new List<string> ();
 	private List<string> usedVideoFiles = new List<string> ();
 
 	public JSONNode pins;
@@ -103,6 +104,7 @@ public class AssetManager : MonoBehaviour {
 	public string rootDir;
 	public string dataDir;
 	public string mediaDir;
+	public string inUseDir;
 
 	public string filePrefix;
 
@@ -135,6 +137,9 @@ public class AssetManager : MonoBehaviour {
 		//get ref to user root
 		userRoot = ParsePath(System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal)+"/");
 		SM.Log ("user root: " + userRoot);
+
+		//make ref to temp inuse folder to hold video files that are currenty being streamed by the app.
+		inUseDir = ParsePath (userRoot + "corteva_inuse" +"/");
 
 		//load root YAML file
 		var input = new StringReader(File.ReadAllText (userRoot+rootYamlDocName));
@@ -182,6 +187,14 @@ public class AssetManager : MonoBehaviour {
 			//we've already loaded some textures, this must be an update
 		}
 
+		//create new directory to hold copies of BG videos while they're in use
+		if(Directory.Exists(inUseDir)){
+			//delete everything inside it
+			Directory.Delete(inUseDir, true);
+		}
+		Directory.CreateDirectory (inUseDir);
+
+
 		for (int i = 0; i < Nfiles.Count; i++) 
 		{
 			if (Nfiles [i] ["type"] == "image") 
@@ -201,7 +214,33 @@ public class AssetManager : MonoBehaviour {
 				string path = ParsePath (rootDir + Nfiles [i] ["path"]);
 				if (!videoFiles.Contains (path)) 
 				{
+					//copy all video files to new directory so that sync program can work in background
+					//otherwise if the video files are in use by unity, the sunc fails
+
+					//recreate path structure within "inuse" folder
+					//grab base path
+					string pth = ParsePath (Nfiles [i] ["path"]);
+					//split by slash
+					string[] p = (Application.platform == RuntimePlatform.WindowsPlayer) ? pth.Split (char.Parse("\\")) : pth.Split (char.Parse("/"));
+					//keep track of dir length
+					string currDir = inUseDir;
+					//create directories as needed
+					for (int n = 0; n < p.Length - 1; n++) {
+						string newDir = ParsePath (currDir + p [n] + "/");
+						if (!Directory.Exists (newDir)) {
+							Directory.CreateDirectory (newDir);
+						}
+						currDir = newDir;
+					}
+					//update new path
+					string newBGPath = ParsePath (currDir + Nfiles [i]  ["filename"]);
+					//copy file to that path
+					File.Copy (ParsePath (rootDir + Nfiles [i]  ["path"]), newBGPath);
+					Debug.Log ("\t* " + newBGPath);
+
+					//save old and new path references 
 					videoFiles.Add (path);
+					videoFilesInUse.Add (newBGPath);
 					SM.Log ("\t" + path);
 				}
 			}
@@ -264,9 +303,11 @@ public class AssetManager : MonoBehaviour {
 				//e.envIconPath = ParsePath (rootDir + scenes [i] ["icon"] ["path"]);
 				//e.envKioskBg = ParsePath (rootDir + scenes [i] ["kiosk_background_image"] ["path"]);
 				e.envBg = ParsePath (rootDir + scenes [i] ["idle_background_video"] ["path"]);
+
 				for (int ii = 0; ii < scenes [i] ["welcome_panels"].Count; ii++) {
 					e.envPanelData.Add (scenes [i] ["welcome_panels"] [ii].ToString ());
 				}
+
 				e.btyPanelData = scenes [i] ["beauty_panels"];
 				environments.Insert (0, e);
 			
@@ -308,6 +349,7 @@ public class AssetManager : MonoBehaviour {
 
 		StartCoroutine(LoadImages ());
 	}
+		
 
 	private IEnumerator LoadImages () {
 		//preload images to textures
@@ -382,8 +424,13 @@ public class AssetManager : MonoBehaviour {
 
 
 	public string GetVideo(string _name){
+		//find file based on original path from json
 		int i = videoFiles.FindIndex (x => x.Contains (_name));
-		return videoFiles [i];
+
+		//return reference to same file but in the "inuse" directory
+		return videoFilesInUse[i];
+
+		//return videoFiles [i];
 	}
 
 	public string GetRandomVideo(){
