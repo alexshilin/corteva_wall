@@ -68,7 +68,6 @@ GameObject:
   - component: {fileID: 114598308891224562}
   - component: {fileID: 114920151117532488}
   - component: {fileID: 114527266340478094}
-  - component: {fileID: 114340054814550550}
   m_Layer: 0
   m_Name: PanelBase
   m_TagString: Untagged
@@ -172,39 +171,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5.333333, y: 3, z: 0.05}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114340054814550550
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1452841905065622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ba67d04e07d3491989322c6414feaf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnStateChange:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  basicEditor: 1
-  generalProps: 0
-  limitsProps: 0
-  advancedProps: 0
-  minPointers: 0
-  maxPointers: 0
-  useSendMessage: 0
-  sendStateChangeMessages: 0
-  sendMessageTarget: {fileID: 0}
-  useUnityEvents: 0
-  sendStateChangeEvents: 0
-  requireGestureToFail: {fileID: 0}
-  friendlyGestures: []
-  flickTime: 0.1
-  minDistance: 1
-  movementThreshold: 0.5
-  direction: 1
 --- !u!114 &114527266340478094
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -221,7 +187,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  basicEditor: 1
+  basicEditor: 0
   generalProps: 0
   limitsProps: 0
   advancedProps: 0
@@ -250,7 +216,7 @@ MonoBehaviour:
     m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   type: 1
-  screenTransformThreshold: 0.1
+  screenTransformThreshold: 0.2
   minScreenPointsDistance: 0.5
   projectionProps: 0
   projection: 0
@@ -276,6 +242,7 @@ MonoBehaviour:
   panelContext: 0
   panelView: 0
   panelID: 0
+  panelName: 
   gridID: 0
   myKiosk: {fileID: 0}
   panelGridPos: {x: 0, y: 0}
@@ -295,7 +262,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: TouchScript.Gestures.Gesture+GestureEvent, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  basicEditor: 1
+  basicEditor: 0
   generalProps: 0
   limitsProps: 0
   advancedProps: 0

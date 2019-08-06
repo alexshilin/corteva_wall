@@ -101,8 +101,6 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.Transformed += transformedHandler;
 		transformGesture.TransformCompleted += transformCompletedHandler;
 
-		flickGesture.Flicked += flickHandler;
-
 		//get ref to pmp
 		PMP = PanelModulePool.Instance;
 		AM = AssetManager.Instance;
@@ -120,8 +118,6 @@ public class PanelBase : MonoBehaviour {
 		transformGesture.TransformStarted -= transformStartedHandler;
 		transformGesture.Transformed -= transformedHandler;
 		transformGesture.TransformCompleted -= transformCompletedHandler;
-
-		flickGesture.Flicked -= flickHandler;
 	}
 
 	void Start(){
@@ -855,7 +851,7 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		if (panelContext == PanelContext.Idle && _viewToShow == PanelView.Front) {
-			collide.transform.localPosition = new Vector3 (0, 0, -1);
+			collide.transform.localPosition = new Vector3 (0, 0, -3);
 		}
 			
 		if (currViewFacingAway != PanelView.Front && currViewFacingForward != PanelView.Front) {
@@ -1181,12 +1177,6 @@ public class PanelBase : MonoBehaviour {
 		
 		if (myKiosk != null) {
 			myKiosk.menuFollowPanel = false;
-		}
-	}
-
-	private void flickHandler(object sender, EventArgs e){
-		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Ready && myKiosk.activePanel == null) {
-			//fling grid
 		}
 	}
 	#endregion
