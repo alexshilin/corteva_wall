@@ -111,6 +111,10 @@ public class PinDropEarth : MonoBehaviour {
 		//int maxPins = pins ["pins"].Count > 100 ? 100 : pins ["pins"].Count;
 		int maxPins = pins["pins"].Count;
 		for (int i = 0; i < maxPins; i++) { 
+			//Debug.Log (i+": "+pins ["pins"] [i] ["role"]+" "+pins ["pins"] [i] ["challenge"]);
+
+			//NOTE: do a check to make sure both role and chellenge are not blank
+
 			string role = lookup [pins ["pins"] [i] ["role"]];
 			string chal = lookup [pins ["pins"] [i] ["challenge"]];
 			string txt = "<b>" + chal + "</b><br>" + role;
@@ -241,6 +245,7 @@ public class PinDropEarth : MonoBehaviour {
 			//Debug.Log((transform.localScale.x * 0.05f));
 			transform.RotateAround (Vector3.down, transformGesture.DeltaPosition.x * mod);
 			transform.RotateAround (Vector3.right, transformGesture.DeltaPosition.y * mod);
+
 		}
 	}
 
@@ -260,7 +265,7 @@ public class PinDropEarth : MonoBehaviour {
 	private void twoFingerTransformHandler(object sender, System.EventArgs e)
 	{
 		//apply rotation on global z axis
-		transform.Rotate(Vector3.forward, twoFingerTransformGesture.DeltaRotation, Space.World);
+		//transform.Rotate(Vector3.forward, twoFingerTransformGesture.DeltaRotation, Space.World);
 
 		//apply scaling
 		transform.localScale *= twoFingerTransformGesture.DeltaScale;
@@ -291,9 +296,11 @@ public class PinDropEarth : MonoBehaviour {
 
 	private void flickedHandler(object sender, EventArgs e){
 		spinVelocity = flickGesture.ScreenFlickTime * 200;
-		spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
-		spinning = false;
-		flicking = true;
+		//spinAxis = new Vector3(flickGesture.ScreenFlickVector.y, -flickGesture.ScreenFlickVector.x, 0);
+//		spinAxis = new Vector3(0, -flickGesture.ScreenFlickVector.x, 0);
+//		spinning = false;
+//		flicking = true;
+
 		//PD.menu.ToggleWelcome (0);
 		//PD.menu.icons.SetActive (false);
 		//if(newUserPin==null)

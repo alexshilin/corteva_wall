@@ -95,7 +95,7 @@ public class UserGrid : MonoBehaviour {
 
 			} else if (currPanels / 4f <= 1) {
 				
-				currRow = flip ? 2.5f : 1.5f;
+				currRow = flip ? 2.5065f : 1.4933f;
 				currColumn += 0.5f;//1.5f;
 				panelScale = 2.019f;
 

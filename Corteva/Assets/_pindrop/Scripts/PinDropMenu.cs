@@ -144,7 +144,7 @@ public class PinDropMenu : MonoBehaviour {
 			.SetEventCategory(PinData.Instance.displayName)
 			.SetEventAction("PinDrop > ContinueExploring")
 			.SetEventLabel(""));
-        thankYou.GetComponent<PinDropThankScreen>().reset();
+        //thankYou.GetComponent<PinDropResults>().reset();
         HideAllPages();
     }
 
@@ -240,7 +240,7 @@ public class PinDropMenu : MonoBehaviour {
 		q2a = _answer;
 		Invoke ("ShowQ3", 0.2f);
 
-        thankYou.GetComponent<PinDropThankScreen>().FetchAnswers();
+		//thankYou.GetComponent<PinDropResults>().FetchAnswers();
 
         questionCompleted = true;
 
@@ -352,8 +352,9 @@ public class PinDropMenu : MonoBehaviour {
                 kid.gameObject.SetActive(false);
             }
         }
-        thankYou.GetComponent<PinDropThankScreen>().back.SetActive(PD.myKiosk != null);
-        thankYou.GetComponent<PinDropThankScreen>().restart();
+		thankYou.GetComponent<PinDropResults>().back.SetActive(PD.myKiosk != null);
+		thankYou.GetComponent<PinDropResults>().FetchAnswers();
+		//thankYou.GetComponent<PinDropResults>().reset();
 
     }
 

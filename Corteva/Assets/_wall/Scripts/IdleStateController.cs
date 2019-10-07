@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
+using TMPro;
 
 
 /// <summary>
@@ -1027,6 +1028,42 @@ public class IdleStateController : MonoBehaviour {
 		StartCoroutine (TapToStart ());
 	}
 
+	//applies to current tap_to_start_2 (persistant across each column)
+	IEnumerator TapToStart(){
+		float timeIconIsVisible = 5f;
+		int cols = (int)GM.desiredGrid.x + 1;
+		List<GameObject> ttss = new List<GameObject> ();
+		Vector3 pos = Vector3.zero;
+		for (int i = 1; i < cols; i++) {
+			GameObject tts = Instantiate (AM.tapToStart);
+			ttss.Add (tts);
+			pos = GM.gridPositions.Find (x => (x.col == i) && (x.row == 0)).center;
+			pos.z = 2f;
+			tts.transform.position = pos;
+			EaseCurve.Instance.SpriteColor (tts.transform.Find ("bg").GetComponent<SpriteRenderer> (), new Color32 (0, 0, 0, 0), new Color32 (0, 0, 0, 138), 0.5f, 0, EaseCurve.Instance.linear);
+			EaseCurve.Instance.SpriteColor (tts.transform.Find ("icon").GetComponent<SpriteRenderer> (), new Color32 (255, 255, 255, 0), Color.white, 0.5f, 0, EaseCurve.Instance.linear);
+			EaseCurve.Instance.TextAlpha (tts.transform.Find ("label").GetComponent<TextMeshPro> (), 0, 1, 0.5f, 0, EaseCurve.Instance.linear, null);
+		}
+
+		yield return new WaitForSeconds (timeToNextTransition - 1f);
+
+		for (int i = 0; i < ttss.Count; i++) {
+			EaseCurve.Instance.SpriteColor (ttss[i].transform.Find ("bg").GetComponent<SpriteRenderer> (), new Color32 (0, 0, 0, 138), new Color32 (0, 0, 0, 0), 0.5f, 0, EaseCurve.Instance.linear);
+			EaseCurve.Instance.SpriteColor (ttss[i].transform.Find ("icon").GetComponent<SpriteRenderer> (), Color.white, new Color32 (255, 255, 255, 0), 0.5f, 0, EaseCurve.Instance.linear);
+			EaseCurve.Instance.TextAlpha (ttss[i].transform.Find ("label").GetComponent<TextMeshPro> (), 1, 0, 0.5f, 0, EaseCurve.Instance.linear, null);
+		}
+
+		yield return new WaitForSeconds (0.6f);
+
+		for (int i = 0; i < ttss.Count; i++) {
+			Destroy (ttss[i]);
+		}
+
+		yield return null;
+	}
+
+	/*
+	//this applies to legacy tap_to_start (persistent middle col, alternating on side columns)
 	IEnumerator TapToStart(){
 		float timeIconIsVisible = 5.5f;
 		int maxIconsToShowPerIdle = 2;
@@ -1073,6 +1110,7 @@ public class IdleStateController : MonoBehaviour {
 
 		yield return null;
 	}
+	*/
 
 	void UnPlaceCameras(){
 		Debug.Log ("[UnPlaceCameras]");

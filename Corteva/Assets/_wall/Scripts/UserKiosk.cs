@@ -18,6 +18,10 @@ public class UserKiosk : MonoBehaviour {
 	public TextMeshPro countdown;
 	public Renderer tint;
 	public GameObject pinDropPrefab;
+	public GameObject info;
+	public SpriteRenderer infoBg;
+	public SpriteRenderer infoBtnBg;
+	public SpriteRenderer infoCloseBtn;
 	private GameObject pinDrop;
 
 	private GameObject bgPanel;
@@ -201,7 +205,7 @@ public class UserKiosk : MonoBehaviour {
 		EaseCurve.Instance.Vec3 (bgPanel.transform, bgPanel.transform.localPosition, bgFinalPos, 0.5f, 0f, EaseCurve.Instance.easeOut, null, "local");
 		//EaseCurve.Instance.Vec3 (headerPanel.transform, headerPanel.transform.localPosition, headerInitPos, 0.5f, 0f, EaseCurve.Instance.easeInOut, null, "local");
 
-		//animate bg
+		//animate bg	
 		Material bgMat = bgPanelOld.transform.Find ("Front/1x1_texture/TextureQuad").GetComponent<Renderer> ().material;
 		Color32 toColor = bgMat.color;
 		toColor.a = 0;
@@ -240,6 +244,12 @@ public class UserKiosk : MonoBehaviour {
 		headerPanel.transform.Find("Front/1x1_kiosk_title/Icon").GetComponent<Renderer> ().material.mainTexture = AssetManager.Instance.GetTexture (env.envIconPath);
 		headerPanel.transform.Find ("Front/1x1_kiosk_title/Title").GetComponent<TextMeshPro> ().text = env.envTitle;
 		headerPanel.transform.Find ("Front/1x1_kiosk_title/Body").GetComponent<TextMeshPro> ().text = env.envSummary;
+
+		Color infoBgColor = env.envColor;
+		EaseCurve.Instance.SpriteColor (infoBtnBg, infoBtnBg.color, infoBgColor, 0.5f, 0f, EaseCurve.Instance.linear);
+		EaseCurve.Instance.SpriteColor (infoCloseBtn, infoCloseBtn.color, infoBgColor, 0.5f, 0f, EaseCurve.Instance.linear);
+		infoBgColor.a = 0.8f;
+		EaseCurve.Instance.SpriteColor (infoBg, infoBg.color, infoBgColor, 0.5f, 0f, EaseCurve.Instance.linear);
 	}
 
 	/// <summary>
@@ -326,6 +336,12 @@ public class UserKiosk : MonoBehaviour {
 		navMat.SetColor (prop, env.envColor);
 		navMat.SetFloat ("_position", end);
 
+		Color infoBgColor = env.envColor;
+		infoCloseBtn.color = infoBgColor;
+		infoBtnBg.color = infoBgColor;
+		infoBgColor.a = 0.8f;
+		infoBg.color = infoBgColor;
+
 		//create the content panels
 		Populate ();
 
@@ -372,18 +388,38 @@ public class UserKiosk : MonoBehaviour {
 
 		Vector3 tapOffset = userCam.ScreenToViewportPoint (tapScreenPos);
 		Vector3 menuFinalPos = Vector3.forward * 30f;
-		if (tapOffset.y < 0.5f) {
-			menuFinalPos.y += (0.5f - tapOffset.y) * -10f;
+		Debug.Log ("!!!!! tapOffset " + tapOffset.y);
+
+		//a. this centeres the menu on where the user tapped (alternate to below)
+//		if (tapOffset.y < 0.5f) {
+//			menuFinalPos.y += (0.5f - tapOffset.y) * -10f;
+//		}
+
+		//b. this centers the menu in the ROW where the user tapped (alternate to above)
+		menuFinalPos.y = 0;
+		if (tapOffset.y < 0.333333f) {
+			menuFinalPos.y = -3f;
 		}
+
 		if (menuFinalPos.y < -3) {
 			menuFinalPos.y = -3f;
 		}
 
 		if (activePanel) {
 			Vector3 panelInitPos = activePanel.transform.localPosition;
-			if (tapOffset.y < 0.5f) {
-				panelInitPos.y = (0.5f - tapOffset.y) * -10f;
+
+			//a. this centeres the panel on where the user tapped (alternate to below)
+//			if (tapOffset.y < 0.5f) {
+//				panelInitPos.y = (0.5f - tapOffset.y) * -10f;
+//			}
+
+			//b. this centers the panel in the ROW where the user tapped (alternate to above)
+			panelInitPos.y = 0;
+			if (tapOffset.y < 0.333333f) {
+				panelInitPos.y = -3f;
 			}
+
+
 			if (panelInitPos.y < -3f){
 				panelInitPos.y = -3f;
 			}
@@ -502,6 +538,9 @@ public class UserKiosk : MonoBehaviour {
 	/// Starts the transition to open Pin Drop.
 	/// </summary>
 	public void StartPinDrop(){
+		info.SetActive (false);
+		infoBtnBg.gameObject.SetActive (false);
+
 		somePanelIsAnimating = true;
 
 		//initialize the pin drop
@@ -582,6 +621,7 @@ public class UserKiosk : MonoBehaviour {
 
 	private void StopPinDrop2(){
 		Destroy (pinDrop);
+		infoBtnBg.gameObject.SetActive (true);
 		somePanelIsAnimating =	 false;
 	}
 }

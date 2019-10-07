@@ -1142,6 +1142,8 @@ public class PanelBase : MonoBehaviour {
 		}
 
 		if (panelContext == PanelContext.Kiosk && panelState == PanelState.Active && myKiosk.activePanel == transform) {
+			/*
+			//move active content panel around while in kiosk
 			transform.position += transformGesture.DeltaPosition;
 			if (transform.localPosition.y < -3f)
 				transform.localPosition = new Vector3 (transform.localPosition.x, -3f, transform.localPosition.z);
@@ -1153,6 +1155,8 @@ public class PanelBase : MonoBehaviour {
 				transform.localPosition = new Vector3 (1, transform.localPosition.y, transform.localPosition.z);
 			//
 			myKiosk.menuFollowPanel = true;
+			*/
+
 			//reset idle clock
 			myKiosk.timeSinceLastTouch = 0f;
 
