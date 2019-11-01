@@ -64,12 +64,12 @@ public class DroneFlight: MonoBehaviour {
 		distanceToMark = Vector3.Distance (transform.localPosition, positions [mark].localPosition);
 		if (step < steps.Count - 1) {
 			if (pathProgress > steps [step]) {
-				Debug.Log (step);
+				//Debug.Log (step);
 				step++;
 				mask.UpdateMask (step);
 				//StartCoroutine (TakePic ());
 				cam.SetActive (true);
-				Debug.Log (step + ": " + pathProgress + "/" + pathDistance);
+				//Debug.Log (step + ": " + pathProgress + "/" + pathDistance);
 			} else {
 				cam.SetActive (false);
 			}

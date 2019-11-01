@@ -526,6 +526,7 @@ MonoBehaviour:
   imageTextures: []
   videoFiles: []
   videoFilesInUse: []
+  onDemandVideoFile: 
   mainCamera: {fileID: 1937405590}
   userInitCamera: {fileID: 1721195345}
   tapToStartCamera: {fileID: 1995384784}
@@ -543,6 +544,8 @@ MonoBehaviour:
   userKioskPrefab: {fileID: 1091292406517696, guid: 52922933ad9614f5a934d19a4df1123a,
     type: 2}
   tapToStart: {fileID: 1767864958895138, guid: 0e669ce51ffdf4f77bf62778a1aa6965, type: 2}
+  videoOverlay: {fileID: 1160894878858706, guid: 7c7e0efd17f144def93e520999d484d4,
+    type: 2}
   baseTemplateNames:
   - template_01
   - template_02_tl
@@ -2421,7 +2424,7 @@ Transform:
   - {fileID: 1071653105}
   - {fileID: 332975695}
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &861812447
 Material:
@@ -3735,6 +3738,127 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa2222de265cd4edbb4569d0e759e848, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &1510506379
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302120273908236, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_RootOrder
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 33731127757165746, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33938235730393910, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33115817692872746, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33596966886359306, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 33303537173090710, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114526876326158218, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114526876326158218, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569794203696564, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569794203696564, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114333371358754066, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114333371358754066, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114767949985413254, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114767949985413254, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114227701636202844, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114227701636202844, guid: 7c7e0efd17f144def93e520999d484d4,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160894878858706, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 7c7e0efd17f144def93e520999d484d4, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1532880092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,6 +3888,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   desiredGrid: {x: 6, y: 3}
   gridPositions: []
+  desiredFullScreenAspect: {x: 32, y: 9}
 --- !u!4 &1532880094
 Transform:
   m_ObjectHideFlags: 0
@@ -4520,6 +4645,7 @@ MonoBehaviour:
   kioskColumnsToClose: 
   currEnv: -1
   timeToNextTransition: 15
+  activeTransitionLoop: 0
 --- !u!4 &1783879385
 Transform:
   m_ObjectHideFlags: 0

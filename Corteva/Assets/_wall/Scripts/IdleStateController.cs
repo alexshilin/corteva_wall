@@ -4,6 +4,7 @@ using UnityEngine;
 using SimpleJSON;
 using TMPro;
 
+using UnityEngine.Video;
 
 /// <summary>
 /// this class is responsible for:
@@ -65,7 +66,7 @@ public class IdleStateController : MonoBehaviour {
 
 	float timeElapsedSinceLastTransition;
 	public float timeToNextTransition = 15f;
-	bool activeTransitionLoop = false;
+	public bool activeTransitionLoop = false;
 
 	bool panelsInTransition = false;
 
@@ -110,6 +111,8 @@ public class IdleStateController : MonoBehaviour {
 		EventsManager.Instance.OnClearEverything -= ClearEverything;
 	}
 
+
+	GameObject vidOver;
 	void Update(){
 		//idle loop timer
 		//check that idle loop is running and that its not in the middle of a transition
@@ -140,6 +143,12 @@ public class IdleStateController : MonoBehaviour {
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha8)) {
 			ZoomBG2 ();
+		}
+
+		if (Input.GetKeyDown (KeyCode.P)) {
+			if (AM.onDemandVideoFile != null) {
+				AM.videoOverlay.GetComponent<VideoOverlay> ().LoadVideo (AM.onDemandVideoFile);
+			}
 		}
 
 	}
@@ -374,20 +383,21 @@ public class IdleStateController : MonoBehaviour {
 		if(kioskColumns[_col] == 1)
 			kioskColumnsToClose [_col] = 1;
 	}
-	void CloseKiosks (){
+	public void CloseKiosks (){
 		Debug.Log ("[CheckKiosksToClose]");
-		bool doResumeLoop = kioskColumns.Contains(0) ? false : true;
+		//bool doResumeLoop = kioskColumns.Contains(0) ? false : true;
 		for (int i = 0; i < kioskColumns.Count; i++) {
-			if (kioskColumns [i] == 1 && kioskColumnsToClose [i] == 1) {
+			//if (kioskColumns [i] == 1 && kioskColumnsToClose [i] == 1) {
+			if (kioskColumns [i] == 1) {
 				Debug.Log ("\tclosing kiosk at col " + i);
 				EventsManager.Instance.UserKioskCloseRequest (new Vector2(i,0), true);
 				kioskColumns [i] = 0;
 				kioskColumnsToClose [i] = 0;
 			}
 		}
-		if (doResumeLoop) {
-			StartIdleLoop ();
-		}
+		//if (doResumeLoop) {
+		//	StartIdleLoop ();
+		//}
 	}
 
 	public void StartIdleLoop(){
@@ -902,6 +912,7 @@ public class IdleStateController : MonoBehaviour {
 							//r = Random.Range(0, environments[currEnv].bty1x1Indeces.Count);
 							//panelData = environments[currEnv].btyPanelData[environments[currEnv].bty1x1Indeces[r]];
 							r = Random.Range (0, availableBeautyPanels.Count);
+							Debug.Log (r + " " + currEnv);
 							panelData = JSON.Parse (environments [currEnv].bty1x1PanelData [availableBeautyPanels [r]]);
 							po.AssembleBeauty (panelData);
 							po.ActivateView (PanelBase.PanelView.Front, false);
@@ -1025,14 +1036,18 @@ public class IdleStateController : MonoBehaviour {
 		panelsInTransition = false;
 		titleHidden = false;
 
-		StartCoroutine (TapToStart ());
+		ttsCoroutine = TapToStart ();
+		StartCoroutine (ttsCoroutine);
 	}
 
 	//applies to current tap_to_start_2 (persistant across each column)
+	private IEnumerator ttsCoroutine;
+	List<GameObject> ttss = new List<GameObject> ();
 	IEnumerator TapToStart(){
 		float timeIconIsVisible = 5f;
 		int cols = (int)GM.desiredGrid.x + 1;
-		List<GameObject> ttss = new List<GameObject> ();
+		ttss.Clear ();
+		//ttss = new List<GameObject> ();
 		Vector3 pos = Vector3.zero;
 		for (int i = 1; i < cols; i++) {
 			GameObject tts = Instantiate (AM.tapToStart);
@@ -1047,6 +1062,12 @@ public class IdleStateController : MonoBehaviour {
 
 		yield return new WaitForSeconds (timeToNextTransition - 1f);
 
+		StartCoroutine (CloseTapToStart ());
+	}
+
+	public IEnumerator CloseTapToStart(bool alsoClear = false){
+		StopCoroutine (ttsCoroutine);
+
 		for (int i = 0; i < ttss.Count; i++) {
 			EaseCurve.Instance.SpriteColor (ttss[i].transform.Find ("bg").GetComponent<SpriteRenderer> (), new Color32 (0, 0, 0, 138), new Color32 (0, 0, 0, 0), 0.5f, 0, EaseCurve.Instance.linear);
 			EaseCurve.Instance.SpriteColor (ttss[i].transform.Find ("icon").GetComponent<SpriteRenderer> (), Color.white, new Color32 (255, 255, 255, 0), 0.5f, 0, EaseCurve.Instance.linear);
@@ -1059,7 +1080,12 @@ public class IdleStateController : MonoBehaviour {
 			Destroy (ttss[i]);
 		}
 
-		yield return null;
+		ttss.Clear ();
+
+		if (alsoClear) {
+			CloseKiosks ();
+			UnPlaceCameras ();
+		}
 	}
 
 	/*

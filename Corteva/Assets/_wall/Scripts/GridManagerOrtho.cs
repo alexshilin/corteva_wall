@@ -23,7 +23,7 @@ public class GridManagerOrtho : MonoBehaviour {
 	//[HideInInspector]
 	public List<GridItem> gridPositions = new List<GridItem>();
 
-	private Vector2 desiredFullScreenAspect = new Vector2 (32, 9);
+	public Vector2 desiredFullScreenAspect = new Vector2 (32, 9);
 	private Vector2 desiredGridElementAspect = new Vector2 (16, 9);
 	private Vector2 calculatedGridElementSize;
 

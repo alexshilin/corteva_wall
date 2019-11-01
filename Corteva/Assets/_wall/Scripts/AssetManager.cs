@@ -50,6 +50,8 @@ public class AssetManager : MonoBehaviour {
 	public List<string> videoFilesInUse = new List<string> ();
 	private List<string> usedVideoFiles = new List<string> ();
 
+	public string onDemandVideoFile;
+
 	public JSONNode pins;
 	#endregion
 
@@ -74,6 +76,7 @@ public class AssetManager : MonoBehaviour {
 	public GameObject cellCameraPrefab;
 	public GameObject userKioskPrefab;
 	public GameObject tapToStart;
+	public GameObject videoOverlay;
 	#endregion
 
 
@@ -286,64 +289,80 @@ public class AssetManager : MonoBehaviour {
 		//presentations (which content panels / beauty panels to use in the idle state for each environment)
 		string presentationsJSON = File.ReadAllText (dataDir + presentationsJsonDocName);
 		var Npresentations = JSON.Parse(presentationsJSON);
-		JSONNode scenes = Npresentations ["data"] [0] ["scenes"];
-		SM.Log ("presentationsJSON: (" + scenes.Count + ") " + (dataDir + presentationsJsonDocName));
-		for (int i = 0; i < scenes.Count; i++) 
-		{
-			if (scenes [i] ["scene_type"] == "welcome") {
+		int totalPresentations = Npresentations ["data"].Count;
 
+		for (int a = 0; a < Npresentations ["data"].Count; a++) {
+			if (Npresentations ["data"] [a] ["presentation_type"] == "ondemand") {
+				//this presentation is a takeover video
+				//for now were assuming theres one of these
+				JSONNode scenes = Npresentations ["data"] [a] ["scenes"];
+				onDemandVideoFile = ParsePath (rootDir + scenes [0] ["media"] ["path"]);
+				SM.Log ("presentationsJSON: ondemand video: " + onDemandVideoFile);
 
-				//welcome scene exception
-				e = new Environment ();
-				e.envID = -1;
-				e.envKey = "welcome";
-				e.envTitle = scenes [i] ["title"];
-				e.envSummary = "";
-				e.envColor = new Color32 ((byte)scenes [i] ["colorRGB"] [0].AsInt, (byte)scenes [i] ["colorRGB"] [1].AsInt, (byte)scenes [i] ["colorRGB"] [2].AsInt, 255);
-				//e.envIconPath = ParsePath (rootDir + scenes [i] ["icon"] ["path"]);
-				//e.envKioskBg = ParsePath (rootDir + scenes [i] ["kiosk_background_image"] ["path"]);
-				e.envBg = ParsePath (rootDir + scenes [i] ["idle_background_video"] ["path"]);
-
-				for (int ii = 0; ii < scenes [i] ["welcome_panels"].Count; ii++) {
-					e.envPanelData.Add (scenes [i] ["welcome_panels"] [ii].ToString ());
-				}
-
-				e.btyPanelData = scenes [i] ["beauty_panels"];
-				environments.Insert (0, e);
-			
-			
 			} else {
 
-
-				SM.Log ("\t" + scenes [i] ["environment"] +
-				": " + scenes [i] ["content_panels"].Count + " content panels" +
-				", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
-
-				//match "scene" environment from json and match to environment object
-				string envKey = scenes [i] ["environment"];
-				int eI = environments.FindIndex (x => x.envKey == envKey);
-				environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
-			}
+				//this presentation is main ("presentation_type" = "base" or "scheduled"
+				//for now were assuming theres one of these.
+				JSONNode scenes = Npresentations ["data"] [a] ["scenes"];
+				SM.Log ("presentationsJSON: (" + scenes.Count + ") " + (dataDir + presentationsJsonDocName));
+				for (int i = 0; i < scenes.Count; i++) {
+					if (scenes [i] ["scene_type"] == "welcome") {
 
 
-			/*
-			for (int n = 0; n < scenes [i] ["beauty_panels"].Count; n++) {
-				
-				if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x1") 
-				{
-					environments [eI].bty1x1PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
+						//welcome scene exception
+						e = new Environment ();
+						e.envID = -1;
+						e.envKey = "welcome";
+						e.envTitle = scenes [i] ["title"];
+						e.envSummary = "";
+						e.envColor = new Color32 ((byte)scenes [i] ["colorRGB"] [0].AsInt, (byte)scenes [i] ["colorRGB"] [1].AsInt, (byte)scenes [i] ["colorRGB"] [2].AsInt, 255);
+						//e.envIconPath = ParsePath (rootDir + scenes [i] ["icon"] ["path"]);
+						//e.envKioskBg = ParsePath (rootDir + scenes [i] ["kiosk_background_image"] ["path"]);
+						e.envBg = ParsePath (rootDir + scenes [i] ["idle_background_video"] ["path"]);
+
+						for (int ii = 0; ii < scenes [i] ["welcome_panels"].Count; ii++) {
+							e.envPanelData.Add (scenes [i] ["welcome_panels"] [ii].ToString ());
+						}
+
+						e.btyPanelData = scenes [i] ["beauty_panels"];
+						environments.Insert (0, e);
+
+
+					} else {
+
+
+						SM.Log ("\t" + scenes [i] ["environment"] +
+						": " + scenes [i] ["content_panels"].Count + " content panels" +
+						", " + scenes [i] ["beauty_panels"].Count + " beauty panels");
+
+						//match "scene" environment from json and match to environment object
+						string envKey = scenes [i] ["environment"];
+						int eI = environments.FindIndex (x => x.envKey == envKey);
+						environments [eI].btyPanelData = scenes [i] ["beauty_panels"];
+					}
+
+
+					/*
+					for (int n = 0; n < scenes [i] ["beauty_panels"].Count; n++) {
+						
+						if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x1") 
+						{
+							environments [eI].bty1x1PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
+						}
+
+						if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x2") 
+						{
+							environments [eI].bty1x2PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
+						}
+					
+					}
+					Debug.Log (">>>>");
+					Debug.Log (environments [eI].bty1x1PanelData.Count+" | "+environments [eI].bty1x2PanelData.Count);
+					*/
 				}
-
-				if (scenes [i] ["beauty_panels"] [n] ["front"] ["template"] == "beauty_1x2") 
-				{
-					environments [eI].bty1x2PanelData.Add (scenes [i] ["beauty_panels"] [n].ToString ());
-				}
-			
 			}
-			Debug.Log (">>>>");
-			Debug.Log (environments [eI].bty1x1PanelData.Count+" | "+environments [eI].bty1x2PanelData.Count);
-			*/
 		}
+
 
 
 
@@ -402,6 +421,14 @@ public class AssetManager : MonoBehaviour {
 			}
 			//Debug.Log ("\t- "+environments[i].bty1x1Indeces.Count);
 			//Debug.Log ("\t- "+environments[i].bty1x2Indeces.Count);
+		}
+			
+		if (onDemandVideoFile != "") {
+			if (File.Exists (onDemandVideoFile)) {
+				Instantiate (videoOverlay);
+			} else {
+				SM.Log("ERR ONDEMAND file does't exist: "+onDemandVideoFile);
+			}
 		}
 
 		//START APP IDLE LOOP

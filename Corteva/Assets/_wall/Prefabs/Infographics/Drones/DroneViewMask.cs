@@ -38,7 +38,7 @@ public class DroneViewMask : MonoBehaviour {
 	public void UpdateMask(int _i){
 		int col = Mathf.RoundToInt(_i/cellsX);
 		int row = Mathf.RoundToInt(_i%cellsX);
-		Debug.Log (_i + " = " + row + ", " + col);
+		//Debug.Log (_i + " = " + row + ", " + col);
 		float xPos = startOffsetX + (cellOffsetX * row);
 		float yPos = startOffsetY - (cellOffsetY * col);
 		mask.material.SetTextureOffset ("_MainTex", new Vector2 (xPos, yPos));

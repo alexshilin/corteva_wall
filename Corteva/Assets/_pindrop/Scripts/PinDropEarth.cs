@@ -366,7 +366,7 @@ public class PinDropEarth : MonoBehaviour {
 	void GoIdle2(){
 		spinning = true;
 	}
-	
+		
 	void Update () {
 		if (Input.GetKey (KeyCode.UpArrow)) {
 			if (transform.localScale.x > 0.5f) {
@@ -397,8 +397,8 @@ public class PinDropEarth : MonoBehaviour {
 			transform.Rotate (transform.up, -spinSpeed * Time.deltaTime);
 		}
 
-        if(Input.mouseScrollDelta.y != 0){
-            scaleWithMouse();
-        }
+		if (Input.mouseScrollDelta.y != 0) {
+			scaleWithMouse ();
+		}
 	}
 }

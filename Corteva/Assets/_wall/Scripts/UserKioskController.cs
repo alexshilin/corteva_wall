@@ -89,7 +89,7 @@ public class UserKioskController : MonoBehaviour {
 			if (uKo != null) {
 				//Destroy (uKo.kioskGO);
 				kiosks.Remove (uKo);
-				//uKo.kioskGO.GetComponent<UserKiosk> ().CloseKiosk ();
+				uKo.kioskGO.GetComponent<UserKiosk> ().CloseKiosk ();
 			}
 		} else {
 			//wait
