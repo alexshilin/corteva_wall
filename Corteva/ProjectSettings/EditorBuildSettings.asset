@@ -11,6 +11,3 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_pindrop/pindrop.unity
     guid: 2c82cc18acd664ab78dfc2cf494d0994
-  - enabled: 0
-    path: Assets/ThumbnailMockups/mockups.unity
-    guid: 64aeb88251a304ca981a14f6209be4cd
